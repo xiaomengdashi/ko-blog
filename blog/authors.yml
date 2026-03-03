@@ -1,0 +1,8 @@
+kolane:
+  name: kolane
+  title: 技术学习者
+  url: https://github.com/kolane
+  image_url: https://github.com/kolane.png
+  page: true
+  socials:
+    github: kolane
