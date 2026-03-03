@@ -116,7 +116,9 @@ namespace std {
 }
 ```
 
-以 Widget 为例，给出了 std::forward 的基本原理：
+  图中以 Widget 为例，给出了 std::forward 的基本原理：
+
+![std::forward原理图](./images/std-forward.png)
 
 - 当传递给 func 函数的实参类型为左值 Widget 时，T 被推导为 `Widget&` 类别。然后 forward 会实例化为 `std::forward<Widget&>`，并返回 `Widget&&&`，经过引用折叠变成 `Widget&`（左值引用，根据定义是个左值！）
 - 而当传递给 func 函数的实参类型为右值 Widget 时，T 被推导为 Widget。然后 forward 被实例化为 `std::forward<Widget>`，并返回 `Widget&&`（注意，匿名的右值引用是个右值！）
