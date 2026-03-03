@@ -2,46 +2,37 @@
 sidebar_position: 1
 ---
 
-# Tutorial Intro
+# 欢迎使用 ko-blog
 
-Let's discover **Docusaurus in less than 5 minutes**.
+这是一个基于 [Docusaurus 3](https://docusaurus.io/) 构建的技术博客。
 
-## Getting Started
+## 功能特点
 
-Get started by **creating a new site**.
+- 📝 **博客** - 支持Markdown/MDX格式的博客文章
+- 📚 **文档** - 组织良好的技术文档系统
+- 🔍 **搜索** - 内置全文搜索
+- 🌙 **暗色模式** - 自动适应系统主题
+- 🌐 **国际化** - 支持多语言
+- 🚀 **SEO友好** - 优化的搜索引擎支持
 
-Or **try Docusaurus immediately** with **[docusaurus.new](https://docusaurus.new)**.
+## 快速导航
 
-### What you'll need
+- [入门指南](/docs/getting-started/intro) - 开始使用
+- [常用命令](/docs/getting-started/commands) - 开发命令参考
+- [Markdown语法](/docs/getting-started/markdown) - 写作格式指南
 
-- [Node.js](https://nodejs.org/en/download/) version 20.0 or above:
-  - When installing Node.js, you are recommended to check all checkboxes related to dependencies.
+## 开始写作
 
-## Generate a new site
-
-Generate a new Docusaurus site using the **classic template**.
-
-The classic template will automatically be added to your project after you run the command:
-
-```bash
-npm init docusaurus@latest my-website classic
-```
-
-You can type this command into Command Prompt, Powershell, Terminal, or any other integrated terminal of your code editor.
-
-The command also installs all necessary dependencies you need to run Docusaurus.
-
-## Start your site
-
-Run the development server:
+创建新的博客文章：
 
 ```bash
-cd my-website
-npm run start
+# 在 blog/ 目录下创建新文件
+# 文件名格式: YYYY-MM-DD-your-title.md
 ```
 
-The `cd` command changes the directory you're working with. In order to work with your newly created Docusaurus site, you'll need to navigate the terminal there.
+创建新的文档：
 
-The `npm run start` command builds your website locally and serves it through a development server, ready for you to view at http://localhost:3000/.
-
-Open `docs/intro.md` (this page) and edit some lines: the site **reloads automatically** and displays your changes.
+```bash
+# 在 docs/ 目录下创建新文件
+# 使用 sidebar_position 控制顺序
+```
