@@ -22,7 +22,7 @@ const config: Config = {
 
   // GitHub pages deployment config.
   // If you aren't using GitHub pages, you don't need these.
-  organizationName: 'kolane', // Usually your GitHub org/user name.
+  organizationName: 'xiaomengdashi', // Usually your GitHub org/user name.
   projectName: 'ko-blog', // Usually your repo name.
 
   onBrokenLinks: 'throw',
@@ -89,7 +89,7 @@ const config: Config = {
         },
         {to: '/blog', label: '博客', position: 'left'},
         {
-          href: 'https://github.com/kolane/ko-blog',
+          href: 'https://github.com/xiaomengdashi/ko-blog',
           label: 'GitHub',
           position: 'right',
         },
@@ -116,7 +116,7 @@ const config: Config = {
             },
             {
               label: 'GitHub',
-              href: 'https://github.com/kolane/ko-blog',
+              href: 'https://github.com/xiaomengdashi/ko-blog',
             },
           ],
         },
