@@ -91,7 +91,7 @@ concept ConceptName = requires(T t, 其他参数...) {
 - 表达式 - 需要检查的C++表达式
 - -> - 返回类型约束操作符
 - 类型约束概念 - 标准库或自定义的概念
-- <期望类型> - 约束的目标类型
+- `<期望类型>` - 约束的目标类型
 
 ```cpp
 template<typename T>

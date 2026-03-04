@@ -341,7 +341,7 @@ struct overload : Ts... { 
 };
 ```
 ###### 1. 模板结构体定义
-- template<class... Ts> ：这是一个可变参数模板， Ts... 表示可以接受任意数量的类型参数
+- `template<class... Ts>` ：这是一个可变参数模板， Ts... 表示可以接受任意数量的类型参数
 - struct overload : Ts... ：这个结构体通过 多重继承 继承了所有传入的类型 Ts...
 - using Ts::operator()... ：这是 C++17 的 using 声明包展开 ，它将所有基类的 operator() 函数都引入到当前作用域中
 ```cpp
@@ -350,7 +350,7 @@ overload(Ts...) -> overload<Ts...>;
 ```
 ##### 2. 推导指引（Deduction Guide）
 - 这是 C++17 引入的 类模板参数推导指引
-- 它告诉编译器：当你看到 overload(参数...) 这样的构造时，应该推导出 overload<参数类型...>
+- 它告诉编译器：当你看到 `overload(参数...)` 这样的构造时，应该推导出 `overload<参数类型...>`
 - 这样就可以不用显式指定模板参数，让编译器自动推导
 ##### 工作原理
 当你传入多个 lambda 表达式时：
@@ -363,7 +363,7 @@ auto visitor = overload {
 ```
 编译器会：
    - 推导出每个 lambda 的类型（比如 Lambda1 , Lambda2 , Lambda3 ）
-   - 创建 overload<Lambda1, Lambda2, Lambda3>
+   - 创建 `overload<Lambda1, Lambda2, Lambda3>`
    - 这个类继承了所有 lambda 类型 
    - 通过 using Ts::operator()... 将所有 lambda 的 operator() 都引入
    - 最终得到一个拥有多个重载 operator() 的对象
