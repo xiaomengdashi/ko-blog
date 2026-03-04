@@ -1,5 +1,6 @@
 ---
 sidebar_position: 1
+slug: /C++/实战项目/test
 ---
 
 # 测试文章

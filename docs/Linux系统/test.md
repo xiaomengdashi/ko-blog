@@ -1,5 +1,6 @@
 ---
 sidebar_position: 1
+slug: /Linux系统/test
 ---
 
 # Linux系统 测试文章

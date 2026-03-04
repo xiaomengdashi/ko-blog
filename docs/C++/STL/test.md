@@ -1,5 +1,6 @@
 ---
 sidebar_position: 1
+slug: /C++/STL/test
 ---
 
 # 测试文章

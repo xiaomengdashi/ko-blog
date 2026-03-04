@@ -1,5 +1,6 @@
 ---
 sidebar_position: 1
+slug: /C++/C++并发编程/test
 ---
 
 # 测试文章

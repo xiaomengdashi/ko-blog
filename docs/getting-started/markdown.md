@@ -1,5 +1,6 @@
 ---
-sidebar_position: 3
+sidebar_position: 1
+slug: /getting-started/markdown
 ---
 
 # Markdown 语法

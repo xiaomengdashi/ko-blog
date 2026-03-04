@@ -1,5 +1,6 @@
 ---
 sidebar_position: 1
+slug: /C++/C++网络编程/test
 ---
 
 # 测试文章

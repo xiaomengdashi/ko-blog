@@ -1,5 +1,6 @@
 ---
 sidebar_position: 1
+slug: /其它/test
 ---
 
 # 其它 测试文章

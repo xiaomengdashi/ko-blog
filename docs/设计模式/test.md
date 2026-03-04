@@ -1,5 +1,6 @@
 ---
 sidebar_position: 1
+slug: /设计模式/test
 ---
 
 # 设计模式 测试文章

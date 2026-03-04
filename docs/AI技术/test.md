@@ -1,5 +1,6 @@
 ---
 sidebar_position: 1
+slug: /AI技术/test
 ---
 
 # AI技术 测试文章

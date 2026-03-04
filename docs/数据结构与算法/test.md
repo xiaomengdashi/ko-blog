@@ -1,5 +1,6 @@
 ---
 sidebar_position: 1
+slug: /数据结构与算法/test
 ---
 
 # 数据结构与算法 测试文章

@@ -1,5 +1,6 @@
 ---
 sidebar_position: 1
+slug: /Linux网络/test
 ---
 
 # Linux网络 测试文章

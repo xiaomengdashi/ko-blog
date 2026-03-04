@@ -1,5 +1,6 @@
 ---
 sidebar_position: 1
+slug: /C++/面试题/test
 ---
 
 # 测试文章

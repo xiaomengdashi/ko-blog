@@ -1,5 +1,6 @@
 ---
-sidebar_position: 0
+sidebar_position: 1
+slug: /intro
 ---
 
 # 欢迎使用 ko-blog

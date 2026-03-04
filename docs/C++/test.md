@@ -1,5 +1,6 @@
 ---
 sidebar_position: 1
+slug: /C++/test
 ---
 
 # C++ 测试文章

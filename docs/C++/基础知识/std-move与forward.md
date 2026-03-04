@@ -1,5 +1,6 @@
 ---
 sidebar_position: 1
+slug: /C++/基础知识/std-move与forward
 ---
 
 # std中的move与forward
