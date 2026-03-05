@@ -5,17 +5,17 @@ slug: /Rust/黑客编程之道/Rust序列化王者Serde
 
 作为一名Rust开发者，你一定经常处理JSON、YAML或其他格式的数据。今天，我们将深入探讨Rust生态中最强大的序列化工具 - Serde！
 
-## 1. Serde是什么？
+### 1. Serde是什么？
 Serde（读作"serd-ee"）是Rust的一个序列化框架，名字来源于"Serialization" 和 "Deserialization"的组合。它能够优雅高效地处理数据的转换，支持JSON、YAML、TOML等多种格式。
 
-### 1.1. 为什么选择Serde？
+#### 1.1. 为什么选择Serde？
 + 超高性能，比手写解析快3-10倍
 + 零拷贝设计，内存使用极其高效
 + 类型安全，编译时就能发现错误
 + 支持自定义序列化规则
 + 生态完善，社区活跃
 
-## 2. 应用场景
+### 2. 应用场景
 1. 配置文件处理
     - 读写JSON配置
     - 解析YAML配置
@@ -33,8 +33,8 @@ Serde（读作"serd-ee"）是Rust的一个序列化框架，名字来源于"Seri
     - RPC通信
     - 微服务通信
 
-## 3. 实战案例
-### 3.1. 基础JSON序列化/反序列化
+### 3. 实战案例
+#### 3.1. 基础JSON序列化/反序列化
 ```rust
 use serde::{Deserialize, Serialize};
 use serde_json;
@@ -73,7 +73,7 @@ fn main() -> `Result`<(), `Box<dyn std::error::Error>`> {
 
 这个例子展示了最基本的JSON序列化和反序列化操作。
 
-### 3.2. YAML配置文件处理
+#### 3.2. YAML配置文件处理
 ```rust
 use serde::{Serialize, Deserialize};
 use std::fs;
@@ -119,7 +119,7 @@ fn main() {
 
 这个例子展示了如何处理YAML格式的配置文件。
 
-### 3.3. 自定义字段序列化
+#### 3.3. 自定义字段序列化
 ```rust
 use serde::{Serialize, Deserialize};
 use serde_json;
@@ -157,7 +157,7 @@ fn main() {
 
 这个例子展示了Serde的高级特性，如字段重命名、条件序列化等。
 
-### 3.4. 枚举序列化
+#### 3.4. 枚举序列化
 ```rust
 use serde::{Serialize, Deserialize};
 
@@ -195,7 +195,7 @@ fn main() {
 
 这个例子展示了如何序列化复杂的枚举类型。
 
-### 3.5. 处理网络API响应
+#### 3.5. 处理网络API响应
 ```rust
 use serde::{Serialize, Deserialize};
 use serde_json;
@@ -244,7 +244,7 @@ fn main() {
 
 这个例子展示了如何处理常见的API响应格式。
 
-### 3.6. 配置文件转换器
+#### 3.6. 配置文件转换器
 ```rust
 use serde::{Serialize, Deserialize};
 
@@ -294,7 +294,7 @@ fn main() {
 
 这个例子展示了如何在不同配置格式之间进行转换。
 
-## 4. 总结
+### 4. 总结
 Serde是Rust生态中必不可少的工具：
 
 + 🚀 超高性能

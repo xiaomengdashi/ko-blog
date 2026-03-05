@@ -3,34 +3,34 @@ sidebar_position: 6
 slug: /C++/现代C++特性/现代C++零拷贝处理
 ---
 
-## 1. 零拷贝
-### 1.1. 什么是零拷贝
+### 1. 零拷贝
+#### 1.1. 什么是零拷贝
 零拷贝（Zero-Copy）是一种优化技术，指在数据传输或处理过程中避免不必要的数据复制操作。在传统的数据处理中，当我们需要传递数据时，往往会创建数据的副本，这不仅消耗额外的内存空间，还增加了CPU的处理负担。零拷贝技术通过直接引用原始数据，避免了这些开销。
 
-### 1.2. C++实现零拷贝的常用手段
+#### 1.2. C++实现零拷贝的常用手段
 1. **引用传递**：使用引用避免对象拷贝
 2. **移动语义**：C++11引入的右值引用和移动构造
 3. **视图类型**：C++17和20引入的std::string_view和std::span，提供对现有数据的非拥有性访问
 4. **内存映射**：直接映射文件到内存空间
 
-## 2. std::string_view详解
-### 2.1. 概念
+### 2. std::string_view详解
+#### 2.1. 概念
 std::string_view是C++17引入的一个轻量级字符串视图类，它提供对字符序列的只读、非拥有性访问。string_view不拥有它所指向的字符数据，仅仅是对现有字符串的一个"窗口"。
 
-### 2.2. 
+#### 2.2. 
 + **零拷贝**：不复制字符串数据，只存储指针和长度
 + **只读访问**：提供const访问，不能修改底层数据
 + **轻量级**：只包含两个成员：指针和大小
 + **高效传参**：避免了std::string的拷贝开销
 + **兼容性好**：可以从多种字符串类型构造
 
-### 2.3. 应用场景
+#### 2.3. 应用场景
 1. **函数参数传递**：替代const std::string&参数
 2. **字符串解析**：高效的子串操作
 3. **API设计**：提供统一的字符串接口
 4. **性能敏感场景**：避免不必要的内存分配
 
-### 2.4. 实现原理
+#### 2.4. 实现原理
 基于libcxx源码分析，string_view的核心实现非常简洁：
 
 ```plain
@@ -75,8 +75,8 @@ private:
 3. **constexpr支持**：编译期构造和操作
 4. **类型安全**：通过模板参数支持不同字符类型
 
-### 2.5. 常用API详解
-#### 2.5.1. 构造函数
+#### 2.5. 常用API详解
+##### 2.5.1. 构造函数
 ```cpp
 // 默认构造
 std::string_view sv1;  // 空视图
@@ -92,7 +92,7 @@ std::string str = "example";
 std::string_view sv4(str);
 ```
 
-#### 2.5.2. 访问操作
+##### 2.5.2. 访问操作
 ```cpp
 std::string_view sv("hello");
 
@@ -105,7 +105,7 @@ size_t len = sv.size();    // 5
 bool empty = sv.empty();   // false
 ```
 
-#### 2.5.3. 子串操作
+##### 2.5.3. 子串操作
 ```cpp
 std::string_view sv("hello world");
 
@@ -118,7 +118,7 @@ sv.remove_prefix(6);  // sv现在是"world"
 sv.remove_suffix(2);  // sv现在是"wor"
 ```
 
-#### 2.5.4. 查找操作
+##### 2.5.4. 查找操作
 ```cpp
 std::string_view sv("hello world");
 
@@ -135,7 +135,7 @@ bool ends = sv.ends_with("world");     // true
 bool contains = sv.contains("lo");     // true
 ```
 
-#### 2.5.5. 比较操作
+##### 2.5.5. 比较操作
 ```cpp
 std::string_view sv1("abc");
 std::string_view sv2("def");
@@ -146,7 +146,7 @@ bool equal = (sv1 == sv2);   // false
 bool less = (sv1 < sv2);     // true
 ```
 
-### 2.6. 代码示例
+#### 2.6. 代码示例
 ```cpp
 #include `<iostream>`
 #include `<string_view>`
@@ -206,27 +206,27 @@ int main() {
 }
 ```
 
-## 3. std::span详解
-### 3.1. 概念
+### 3. std::span详解
+#### 3.1. 概念
 std::span是C++20引入的一个模板类，提供对连续内存序列的非拥有性访问。它可以看作是数组、vector、array等连续容器的统一视图接口。
 
-### 3.2. 
+#### 3.2. 
 + **零拷贝**：不复制元素，只存储指针和大小信息
 + **类型安全**：提供边界检查和类型安全的访问
 + **统一接口**：为不同的连续容器提供统一的访问方式
 + **灵活性**：支持静态和动态大小
 + **高效性**：minimal overhead，接近原生指针的性能
 
-### 3.3. 应用场景
+#### 3.3. 应用场景
 1. **函数参数**：统一处理数组、vector、array等容器
 2. **算法接口**：提供容器无关的算法实现
 3. **内存视图**：安全地访问连续内存区域
 4. **API设计**：简化需要处理多种容器类型的接口
 
-### 3.4. 实现原理
+#### 3.4. 实现原理
 基于libcxx源码分析，span有两个特化版本：
 
-#### 3.4.1. 静态大小版本（固定extent）
+##### 3.4.1. 静态大小版本（固定extent）
 ```plain
 template <typename _Tp, size_t _Extent>`
 class span {
@@ -265,7 +265,7 @@ private:
 };
 ```
 
-#### 3.4.2. 动态大小版本（dynamic_extent）
+##### 3.4.2. 动态大小版本（dynamic_extent）
 ```plain
 template `<typename _Tp>`
 class `span`<_Tp, dynamic_extent>` {
@@ -302,8 +302,8 @@ private:
 3. **边界检查**：在debug模式下提供边界检查
 4. **迭代器支持**：提供完整的迭代器接口
 
-### 3.5. 常用API详解
-#### 3.5.1. 构造函数
+#### 3.5. 常用API详解
+##### 3.5.1. 构造函数
 ```cpp
 // 从数组构造
 int arr[] = {1, 2, 3, 4, 5};
@@ -321,7 +321,7 @@ int arr[] = {1, 2, 3, 4, 5};
 `std::`span`<int>` sp5(vec.begin(), vec.begin() + 3);
 ```
 
-#### 3.5.2. 访问操作
+##### 3.5.2. 访问操作
 ```cpp
 ``std::`vector`<int>` vec = {1, 2, 3, 4, 5};
 `std::`span`<int>` sp(vec);
@@ -336,7 +336,7 @@ bool empty = sp.empty();     // false
 size_t bytes = sp.size_bytes(); // 5 * sizeof(int)
 ```
 
-#### 3.5.3. 子视图操作
+##### 3.5.3. 子视图操作
 ```cpp
 ``std::`vector`<int>` vec = {1, 2, 3, 4, 5};
 `std::`span`<int>` sp(vec);
@@ -355,7 +355,7 @@ auto sub2 = sp.subspan(1, 3);   // {2, 3, 4}
 auto sub3 = sp.subspan(2);      // {3, 4, 5}
 ```
 
-#### 3.5.4. 迭代器支持
+##### 3.5.4. 迭代器支持
 ```cpp
 ``std::`vector`<int>` vec = {1, 2, 3, 4, 5};
 `std::`span`<int>` sp(vec);
@@ -376,7 +376,7 @@ for (auto it = sp.rbegin(); it != sp.rend(); ++it) {
 }
 ```
 
-#### 3.5.5. 字节视图
+##### 3.5.5. 字节视图
 ```cpp
 `std::vector<int>`vec = {0x12345678, 0x9ABCDEF0};
 `std::`span`<int>` sp(vec);
@@ -389,7 +389,7 @@ std::cout `<< "Size in bytes: " << bytes.size() << "\n";
 auto writable_bytes = std::as_writable_bytes(sp);
 ```
 
-### 3.6. 代码示例
+#### 3.6. 代码示例
 ```cpp
 #include <iostream>`
 #include <span>

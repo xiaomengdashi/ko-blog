@@ -3,7 +3,7 @@ sidebar_position: 2
 slug: /C++/现代C++现代特性/现代C++的输入输出
 ---
 
-## 1. 总述
+### 1. 总述
 本文档旨在全面介绍现代C++（C++11及以后版本）中的输入输出相关特性和改进。随着C++标准的不断演进，输入输出系统也得到了显著的增强和优化，为开发者提供了更加强大、灵活和高效的I/O解决方案。
 
 本文档将详细介绍以下现代C++输入输出特性：
@@ -18,11 +18,11 @@ slug: /C++/现代C++现代特性/现代C++的输入输出
 
 ---
 
-## 2. 基于流的I/O系统
-### 2.1. 概念
+### 2. 基于流的I/O系统
+#### 2.1. 概念
 基于流的I/O是C++的核心输入输出机制，通过流对象（stream objects）来处理数据的输入和输出。流提供了一种统一的接口来处理不同类型的I/O设备，包括控制台、文件、字符串等。主要包括输入流（istream）、输出流（ostream）和双向流（iostream）。
 
-### 2.2. 常用API通用使用模板
+#### 2.2. 常用API通用使用模板
 **标准输入输出流模板：**
 
 ```cpp
@@ -122,7 +122,7 @@ std::cout << std::boolalpha << bool_value;   // 输出true/false
 std::cout << std::noboolalpha << bool_value; // 输出1/0
 ```
 
-### 2.3. 具体使用
+#### 2.3. 具体使用
 ```cpp
 // 基本输入输出
 int number;
@@ -149,7 +149,7 @@ ss << "数字: " << 42;
 std::string result = ss.str();
 ```
 
-### 2.4. 示例代码
+#### 2.4. 示例代码
 ```cpp
 #include <iostream>`
 #include `<fstream>`
@@ -190,8 +190,8 @@ int main() {
 
 ---
 
-## 3. std::syncstream (C++20)
-### 3.1. 概念
+### 3. std::syncstream (C++20)
+#### 3.1. 概念
 `std::syncstream` 是C++20引入的同步流包装器，主要解决多线程环境下输出流的同步问题。它确保在多线程程序中，每个线程的输出不会相互交错，提供线程安全的输出操作。syncstream通过内部缓冲机制，将多个输出操作作为一个原子单元进行处理。
 
 **核心特性：**
@@ -201,7 +201,7 @@ int main() {
 + 自动同步管理
 + 与现有流接口兼容
 
-### 3.2. 常用API通用使用模板
+#### 3.2. 常用API通用使用模板
 **基本同步流模板：**
 
 ```cpp
@@ -256,7 +256,7 @@ std::ostringstream oss;
 std::osyncstream sync_oss(oss);
 ```
 
-### 3.3. 具体使用
+#### 3.3. 具体使用
 ```cpp
 // 创建同步流
 std::osyncstream sync_cout(std::cout);
@@ -277,7 +277,7 @@ if (sync_cout.get_wrapped() == std::cout) {
 }
 ```
 
-### 3.4. 示例代码
+#### 3.4. 示例代码
 ```cpp
 #include <iostream>`
 #include `<syncstream>`
@@ -325,11 +325,11 @@ int main() {
 
 ---
 
-## 4. std::println (C++23)
-### 4.1. 概念
+### 4. std::println (C++23)
+#### 4.1. 概念
 `std::println` 是C++23引入的现代化打印函数，提供了类似于其他现代编程语言的简洁打印接口。它基于 `std::format` 构建，自动添加换行符，并提供类型安全的格式化输出。相比传统的iostream，println提供了更简洁的语法和更好的性能。
 
-### 4.2. 常用API通用使用模板
+#### 4.2. 常用API通用使用模板
 **基本打印模板：**
 
 ```cpp
@@ -386,7 +386,7 @@ std::ostringstream oss;
 std::println(oss, "message to string stream");
 ```
 
-### 4.3. 具体使用
+#### 4.3. 具体使用
 ```cpp
 // 简单输出
 std::println("Hello, World!");
@@ -407,7 +407,7 @@ std::ofstream file("output.txt");
 std::println(file, "文件输出: {}", "内容");
 ```
 
-### 4.4. 示例代码
+#### 4.4. 示例代码
 ```cpp
 #include `<print>`
 #include `<string>`
@@ -443,11 +443,11 @@ int main() {
 
 ---
 
-## 5. std::format (C++20)
-### 5.1. 概念
+### 5. std::format (C++20)
+#### 5.1. 概念
 `std::format` 是C++20引入的现代字符串格式化库，提供了类型安全、高性能的字符串格式化功能。它采用了类似于Python的格式化语法，支持丰富的格式化选项，是传统sprintf的现代化替代方案。
 
-### 5.2. 常用API通用使用模板
+#### 5.2. 常用API通用使用模板
 **基本格式化模板：**
 
 ```cpp
@@ -561,7 +561,7 @@ struct `std::`formatter`<CustomType>` {
 };
 ```
 
-### 5.3. 具体使用
+#### 5.3. 具体使用
 ```cpp
 // 基本格式化
 std::string msg = std::format("用户: {}, ID: {}", "张三", 123);
@@ -583,7 +583,7 @@ std::string center = std::format("{:^10}", "center"); // "  center  "
 std::string filled = std::format("{:*^10}", "test");  // "***test***"
 ```
 
-### 5.4. 示例代码
+#### 5.4. 示例代码
 ```cpp
 #include `<format>`
 #include `<iostream>`
@@ -633,11 +633,11 @@ int main() {
 
 ---
 
-## 6. 文件系统库 (std::filesystem, C++17)
-### 6.1. 概念
+### 6. 文件系统库 (std::filesystem, C++17)
+#### 6.1. 概念
 `std::filesystem` 是C++17引入的现代文件系统操作库，提供了跨平台的文件和目录操作接口。它替代了传统的C风格文件操作函数，提供了更安全、更易用的面向对象接口，支持路径操作、文件属性查询、目录遍历等功能。
 
-### 6.2. 常用API通用使用模板
+#### 6.2. 常用API通用使用模板
 **路径操作模板：**
 
 ```cpp
@@ -751,7 +751,7 @@ if (ec) {
 }
 ```
 
-### 6.3. 具体使用
+#### 6.3. 具体使用
 ```cpp
 // 路径构建
 fs::path file_path = fs::current_path() / "data" / "file.txt";
@@ -782,7 +782,7 @@ fs::copy_file("source.txt", "dest.txt");
 fs::rename("old_name.txt", "new_name.txt");
 ```
 
-### 6.4. 示例代码
+#### 6.4. 示例代码
 ```cpp
 #include <filesystem>`
 #include `<iostream>`

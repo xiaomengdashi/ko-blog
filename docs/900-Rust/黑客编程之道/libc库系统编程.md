@@ -5,12 +5,12 @@ slug: /Rust/黑客编程之道/libc库系统编程
 
 今天我们要深入探讨一个强大而神秘的库：libc。这个库就像是连接Rust和底层系统的魔法桥梁，掌握它，你就能驾驭操作系统的力量！准备好了吗？让我们开始这段奇妙的旅程！
 
-## 1. libc：Rust的系统魔法书
+### 1. libc：Rust的系统魔法书
 libc库是Rust与C标准库的接口。它允许Rust代码直接调用底层系统API，让你能够进行低级系统编程。无论是文件操作、网络通信，还是内存管理，libc都能帮你搞定！
 
 现在，让我们通过6个精彩的例子，一起领略libc的魔力！
 
-### 1.1. 文件描述符操作：直接掌控I/O
+#### 1.1. 文件描述符操作：直接掌控I/O
 ```rust
 use std::io;
 use libc::{c_void, size_t, ssize_t, c_int};
@@ -33,7 +33,7 @@ fn main() -> io::`Result`<()>` {
 
 这个例子展示了如何使用libc直接写入标准输出。它绕过了Rust的标准库，直接调用系统的write函数。
 
-### 1.2. 进程控制：创造你的小精灵
+#### 1.2. 进程控制：创造你的小精灵
 ```rust
 use libc::{c_int, pid_t};
 use std::io;
@@ -61,7 +61,7 @@ fn main() -> io::`Result`<()>` {
 
 这个例子展示了如何使用libc创建一个新的进程。fork函数复制当前进程，创建一个子进程。
 
-### 1.3. 内存管理：自己动手，丰衣足食
+#### 1.3. 内存管理：自己动手，丰衣足食
 ```rust
 use libc::{c_void, size_t};
 use std::slice;
@@ -91,7 +91,7 @@ fn main() {
 
 这个例子展示了如何使用libc直接管理内存。我们分配了一块内存，使用它，然后释放它。**观看**
 
-### 1.4. 系统时间：时间魔法师
+#### 1.4. 系统时间：时间魔法师
 ```rust
 use libc::{time_t, tm, time, localtime};
 use std::ffi::CStr;
@@ -110,7 +110,7 @@ fn main() {
 
 这个例子展示了如何使用libc获取和格式化系统时间。我们直接调用了C库的time和localtime函数。
 
-### 1.5. 信号处理：捕获系统的呼唤
+#### 1.5. 信号处理：捕获系统的呼唤
 ```rust
 use libc::{c_int, c_void, sighandler_t, signal, SIGINT};
 use std::sync::atomic::{AtomicBool, Ordering};
@@ -176,7 +176,7 @@ fn main() -> std::io::`Result`<()>` {
 
 这个例子展示了如何使用libc进行网络编程。我们创建了一个socket并连接到example.com的80端口。
 
-## 2. 总结
+### 2. 总结
 通过这6个例子，我们看到了libc在Rust中的强大功能。从文件操作到网络编程，libc为我们打开了系统编程的大门。虽然使用libc需要小心处理unsafe代码，但它给了我们直接与操作系统交互的能力。
 
 记住，每次你使用libc，你都在释放Rust的底层魔力！继续探索，让你的Rust技能更上一层楼吧！

@@ -3,19 +3,19 @@ sidebar_position: 4
 slug: /C++/项目实战/C-从零实现一个ping服务_c-ping
 ---
 
-## 1. 前言
+### 1. 前言
 > [ping命令](https://so.csdn.net/so/search?q=ping%E5%91%BD%E4%BB%A4&spm=1001.2101.3001.7020)，因为其简单、易用等特点，几乎所有的操作系统都内置了一个ping命令。如果你是一名C++初学者，对网络编程、系统编程有所了解，但又没有多少实操经验的话，不妨来尝试动手实现一个属于自己的ping命令。这样一来，也能提高你对系统编程、网络编程的能力。
 >
 
-## 2. ICMP
-### 2.1. 概念
+### 2. ICMP
+#### 2.1. 概念
 ICMP是工作在网络层的一种**不可靠的传输协议**，意在辅助IP协议获取报文传输与网络连接的情况，被广泛运用于网络诊断工具（如：ping 和 traceroute）。
 
 ICMP协议可以控制路由将报文错误原因返回给源主机，从而实现对网络状况的诊断。
 
 ![](/img/posts/31534aedf8f1038c49f6aa8cecc0a65c.png)
 
-### 2.2. 报文格式
+#### 2.2. 报文格式
 ICMP协议被封装在IP协议之中，以下为ICMP的报文固定格式：
 
 ![](/img/posts/3e8ff7f46496091e3fcf65aee9248e21.png)
@@ -118,8 +118,8 @@ uint8_t    id_data[1];
 };
 ```
 
-## 3. Ping服务实现
-### 3.1. 系统调用函数
+### 3. Ping服务实现
+#### 3.1. 系统调用函数
 **原始套接字**
 
 要使用ICMP协议就必须绕过传输层(TCP/UDP)，直接操作网络层，所以必须使用原始套接字，在Mac、Linux中使用原始套接字可能会**需要root权限**。
@@ -171,7 +171,7 @@ const struct addrinfo *restrict hints,   //用于限定获取的数据
 struct addrinfo **restrict res);         //结果存放的指针
 ```
 
-### 3.2. 具体实现
+#### 3.2. 具体实现
 ping服务的实现使用了类来进行封装，从而使得其更简洁易懂。
 
 **头文件声明**
@@ -442,7 +442,7 @@ int main(int argc, char* argv[])
 }
 ```
 
-### 3.3. 运行测试
+#### 3.3. 运行测试
 **CMakeList**
 
 ```cpp
@@ -461,7 +461,7 @@ add_executable(test test.cpp
 
 ![](/img/posts/1ccbf7bb0fffbfba09e1905870dcd67c.png)
 
-## 4. 总结
+### 4. 总结
 本篇文章实现了一个简易的ping指令，其对系统编程、[网络编程](https://so.csdn.net/so/search?q=%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B&spm=1001.2101.3001.7020)都有所涉及，但真实的ping指令可远不止这么简单，感兴趣的读者可以通过访问[Linux开源项目](https://github.com/torvalds/linux/blob/master/net/ipv4/ping.c)来了解真正的实现。
 
 >` 📜博客主页：[主页](https://blog.csdn.net/CaTianRi)  

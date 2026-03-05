@@ -27,8 +27,8 @@ Cursor实现了多个重要的trait：
 + Write：允许在游标当前位置写入数据
 + Seek：允许移动游标位置
 
-## 1. 基础使用示例
-### 1.1. 基本读写操作
+### 1. 基础使用示例
+#### 1.1. 基本读写操作
 ```rust
 use std::io::Cursor;
 use std::io::{Read, Write, Seek, SeekFrom};
@@ -49,7 +49,7 @@ fn basic_usage() -> std::io::`Result`<()>` {
 }
 ```
 
-### 1.2. 机访问示例
+#### 1.2. 机访问示例
 ```rust
 use std::io::Cursor;
 use std::io::{Seek, SeekFrom, Write};
@@ -68,8 +68,8 @@ fn random_access() -> std::io::`Result`<()>` {
 }
 ```
 
-## 2. 高级应用场景
-### 2.1. 内存缓存序列化
+### 2. 高级应用场景
+#### 2.1. 内存缓存序列化
 ```rust
 use std::io::Cursor;
 use std::io::{Read, Write};
@@ -96,7 +96,7 @@ fn serialize_to_memory() -> std::io::`Result`<()>` {
 }
 ```
 
-### 2.2. 高效的数据处理管道
+#### 2.2. 高效的数据处理管道
 ```rust
 use std::io::Cursor;
 use std::io::{Read, Write};
@@ -125,8 +125,8 @@ fn process_data_pipeline() -> std::io::`Result`<()>` {
 }
 ```
 
-## 3. 性能优化技巧
-### 3.1. 预分配缓冲区
+### 3. 性能优化技巧
+#### 3.1. 预分配缓冲区
 ```rust
 use std::io::Cursor;
 use std::io::Write;
@@ -143,7 +143,7 @@ fn optimized_buffer() -> std::io::`Result`<()>` {
 }
 ```
 
-### 3.2. 零拷贝读取
+#### 3.2. 零拷贝读取
 ```rust
 use std::io::Cursor;
 use std::io::{Read, Write};
@@ -157,7 +157,7 @@ fn zero_copy_reading() -> std::io::`Result`<()>` {
 }
 ```
 
-## 4. 性能对比
+### 4. 性能对比
 ```rust
 use std::io::Cursor;
 use std::io::{Read, Write};
@@ -181,8 +181,8 @@ fn performance_comparison() -> std::io::`Result`<()>` {
 }
 ```
 
-## 5. 最佳实践
-## 6. 1.使用场景选择
+### 5. 最佳实践
+### 6. 1.使用场景选择
             + 需要随机访问内存数据时
             + 实现内存缓存时
             + 构建数据处理管道时
@@ -197,7 +197,7 @@ fn performance_comparison() -> std::io::`Result`<()>` {
             + 正确处理错误情况
             + 及时释放不需要的资源
 
-## 7. 总结
+### 7. 总结
 + Cursor是Rust中进行内存IO操作的利器，它不仅提供了灵活的接口，还能带来可观的性能提升。合理使用Cursor可以：
         * 提高代码的可维护性
         * 优化内存使用效率

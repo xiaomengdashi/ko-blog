@@ -3,10 +3,10 @@ sidebar_position: 3
 slug: /其它/JWT
 ---
 
-### 1. 使用JWT（JSON Web Token）
+#### 1. 使用JWT（JSON Web Token）
 JWT是一种常用的方式，特别适合无状态的应用场景。用户登录后，服务器生成一个JWT并返回给客户端，客户端将其存储在本地存储（如LocalStorage或SessionStorage）或Cookie中。
 
-#### 1.1. 实现步骤：
+##### 1.1. 实现步骤：
 1. **用户登录**：用户在前端页面提交登录表单，前端将用户凭据发送到后端API。
 2. **生成JWT**：后端验证用户凭据，如果验证成功，生成一个JWT并返回给前端。
 3. **前端保存JWT**：前端将JWT保存在LocalStorage或SessionStorage中。
@@ -56,10 +56,10 @@ fetchWithAuth('/api/some-endpoint')
 </script>
 ```
 
-### 2. 使用Cookie存储Session ID
+#### 2. 使用Cookie存储Session ID
 另一种常见的方法是使用Cookie来存储Session ID。服务器在用户登录成功后，创建一个Session并将Session ID存储在Cookie中。
 
-#### 2.1. 实现步骤：
+##### 2.1. 实现步骤：
 1. **用户登录**：用户在前端页面提交登录表单，前端将用户凭据发送到后端API。
 2. **创建Session**：后端验证用户凭据，如果验证成功，创建一个Session，并将Session ID存储在Cookie中。
 3. **前端请求**：前端在每次请求时自动将Cookie中的Session ID发送到后端。
@@ -101,10 +101,10 @@ app.listen(3000, () => {
 });
 ```
 
-### 3. 混合使用JWT和Cookie
+#### 3. 混合使用JWT和Cookie
 在某些情况下，可以将JWT存储在Cookie中，以便自动在每次请求中发送。
 
-#### 3.1. 实现步骤：
+##### 3.1. 实现步骤：
 1. **用户登录**：用户在前端页面提交登录表单，前端将用户凭据发送到后端API。
 2. **生成JWT并设置Cookie**：后端验证用户凭据，如果验证成功，生成一个JWT，并将其存储在Cookie中。
 3. **前端请求**：浏览器在每次请求时自动将包含JWT的Cookie发送到后端。
@@ -150,6 +150,6 @@ app.listen(3000, () => {
 });
 ```
 
-### 4. 总结
+#### 4. 总结
 在浏览器中直接访问后端API时，保存登录信息的主要方法包括使用JWT、Cookie存储Session ID，或者混合使用JWT和Cookie。选择哪种方法取决于你的应用场景和安全需求。JWT适合无状态应用，而使用Cookie存储Session ID则适合需要在服务器端管理会话状态的场景。
 

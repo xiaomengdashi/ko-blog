@@ -11,33 +11,33 @@ slug: /Rust/黑客编程之道/深入理解Rust闭包三大特征
 
 前面一篇文章[震惊！Rust大神都在用的闭包技巧，让你的代码瞬间升级](http://mp.weixin.qq.com/s?__biz=MzI0NDYwOTU4NQ==&mid=2247484306&idx=1&sn=424b0d400ad534fdda34a47085f19350&chksm=e95a64ccde2dedda2a2d56dfe68bd0c688707ac574bcfeb3930b7f41e64b1fd01e7809bf7675&scene=21#wechat_redirect)介绍了闭包，但是介绍的不够完善，内容不够全面，所以本篇文章作为补充。  
 
-### 0.1. 什么是闭包？
+#### 0.1. 什么是闭包？
 闭包可以看作是一个匿名函数，但它比普通函数更强大，因为它能够捕获其定义时所在环境中的变量。从本质上讲，闭包是将函数和其环境的状态绑定在一起的对象。
 
 示例：
 
 let x = 10;let add = |y| x + y;  // 闭包捕获了环境中的xprintln!("结果: {}", add(5));  // 输出：15
 
-### 0.2. 三大特征深度解析
-#### 0.2.1. Fn特征
+#### 0.2. 三大特征深度解析
+##### 0.2.1. Fn特征
 + 通过不可变引用（&T）捕获环境变量
 + 可以被重复调用
 + 不会改变环境中的值
 + 最严格的约束
 
-#### 0.2.2. FnMut特征
+##### 0.2.2. FnMut特征
 + 通过可变引用（&mut T）捕获环境变量
 + 可以被重复调用
 + 可以修改环境中的值
 + 中等严格的约束
 
-#### 0.2.3. FnOnce特征
+##### 0.2.3. FnOnce特征
 + 通过所有权（T）捕获环境变量
 + 只能被调用一次
 + 消耗掉捕获的值
 + 最宽松的约束
 
-### 0.3. 特征之间的关系
+#### 0.3. 特征之间的关系
 ```rust
 FnOnce ← FnMut ← Fn
 ```
@@ -46,8 +46,8 @@ FnOnce ← FnMut ← Fn
 + FnMut实现了FnOnce
 + 这是一个继承关系，越往右要求越严格
 
-## 1. 实战示例详解
-### 1.1. 简单计数器（FnMut示例）
+### 1. 实战示例详解
+#### 1.1. 简单计数器（FnMut示例）
 ```rust
 fn make_counter() -> impl FnMut() -> i32 {
     let mut count = 0;
@@ -73,7 +73,7 @@ fn main() {
 + 每次调用都修改count的值
 + 使用move关键字获取count的所有权
 
-### 1.2. 事件监听器（Fn示例）
+#### 1.2. 事件监听器（Fn示例）
 ```rust
 struct `EventListener`<F>`
     where
@@ -124,7 +124,7 @@ fn main() {
 
 
 
-### 1.3. 资源清理（FnOnce示例）
+#### 1.3. 资源清理（FnOnce示例）
 ```rust
 struct Resource {
     data: String,
@@ -173,7 +173,7 @@ fn main() {
 
 
 
-### 1.4. 数据转换管道（Fn示例）
+#### 1.4. 数据转换管道（Fn示例）
 ```rust
 struct `Pipeline`<T, U>` {
     transform: `Box`<dyn Fn(T) ->` U>,
@@ -216,7 +216,7 @@ fn main() {
 + 转换函数不需要修改环境
 + 可以多次处理不同的输入
 
-### 1.5. 状态更新器（FnMut示例）
+#### 1.5. 状态更新器（FnMut示例）
 ```rust
 #[derive(Debug)]
 struct GameState {
@@ -292,7 +292,7 @@ fn main() {
 
 
 
-### 1.6. 配置构建器（FnOnce示例）
+#### 1.6. 配置构建器（FnOnce示例）
 ```rust
 #[derive(Debug, Default)]
 struct Config {
@@ -372,7 +372,7 @@ fn main() {
 
 
 
-## 2. 存在的意义
+### 2. 存在的意义
 1. 安全性保证
     - 编译时检查捕获变量的使用方式
     - 防止数据竞争
@@ -386,7 +386,7 @@ fn main() {
     - 编译时优化
     - 最小运行时开销
 
-## 3. 使用建议
+### 3. 使用建议
 1. 选择最严格的特征
     - 能用Fn就不用FnMut
     - 能用FnMut就不用FnOnce
@@ -397,7 +397,7 @@ fn main() {
     - 避免不必要的Box
     - 合理使用引用
 
-## 4. 总结
+### 4. 总结
 Rust的闭包系统通过Fn、FnMut、FnOnce三个特征，提供了：
 
 + 精确的控制能力
@@ -409,4 +409,4 @@ Rust的闭包系统通过Fn、FnMut、FnOnce三个特征，提供了：
 
 
 
-## 
+### 

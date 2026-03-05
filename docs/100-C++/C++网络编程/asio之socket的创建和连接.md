@@ -3,7 +3,7 @@ sidebar_position: 2
 slug: /C++/C++网络编程/asio之socket的创建和连接
 ---
 
-## 1. 网络编程基本流程
+### 1. 网络编程基本流程
 网络编程的基本流程对于服务端是这样的  
 **服务端**  
 	1）socket----创建socket对象。
@@ -29,7 +29,7 @@ slug: /C++/C++网络编程/asio之socket的创建和连接
   
 接下来按照上述流程，我们用boost::asio逐步介绍。
 
-## 2. 终端节点的创建
+### 2. 终端节点的创建
 所谓终端节点就是用来通信的端对端的节点，可以通过ip地址和端口构造，其的节点可以连接这个终端节点做通信.  
 如果我们是客户端，我们可以通过对端的ip和端口构造一个endpoint，用这个endpoint和其通信。
 
@@ -92,7 +92,7 @@ int  server_end_point(){
 }
 ```
 
-## 3. 创建socket
+### 3. 创建socket
 创建socket分为4步，创建上下文iocontext，选择协议，生成socket，打开socket。
 
 ```cpp
@@ -162,7 +162,7 @@ int  create_acceptor_socket() {
 }
 ```
 
-## 4. 绑定acceptor
+### 4. 绑定acceptor
 对于acceptor类型的socket，服务器要将其绑定到指定的断点,所有连接这个端点的连接都可以被接收到。
 
 ```cpp
@@ -202,7 +202,7 @@ int  bind_acceptor_socket() {
 }
 ```
 
-## 5. 连接指定的端点
+### 5. 连接指定的端点
 作为客户端可以连接服务器指定的端点进行连接
 
 ```cpp
@@ -244,7 +244,7 @@ int  connect_to_end() {
 }
 ```
 
-## 6. 服务器接收连接
+### 6. 服务器接收连接
 当有客户端连接时，服务器需要接收连接
 
 ```cpp
@@ -295,7 +295,7 @@ int accept_new_connection(){
 }
 ```
 
-## 7. 关于buffer
+### 7. 关于buffer
 任何网络库都有提供buffer的数据结构，所谓buffer就是接收和发送数据时缓存数据的结构。  
 boost::asio提供了asio::mutable_buffer 和 asio::const_buffer这两个结构，他们是一段连续的空间，首字节存储了后续数据的长度。  
 asio::mutable_buffer用于写服务，asio::const_buffer用于读服务。但是这两个结构都没有被asio的api直接使用。  

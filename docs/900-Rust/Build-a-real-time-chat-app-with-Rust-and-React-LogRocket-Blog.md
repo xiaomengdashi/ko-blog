@@ -10,8 +10,8 @@ updated: '2024-12-23 23:16:05'
 slug: /Rust/Build-a-real-time-chat-app-with-Rust-and-React-LogRocket-Blog---
 ![](/img/posts/4a3a6f108e95508abf4d9da1ac60c159.png)
 
-## 1. See how LogRocket's AI-powered error tracking works
-### 1.1. no signup required
+### 1. See how LogRocket's AI-powered error tracking works
+#### 1.1. no signup required
 Check it out 
 
 _**Editor’s Note:**__ This post was reviewed for accuracy on 26 April 2023. Since publication, _[Rust recently released v1.69](https://blog.rust-lang.org/2023/04/20/Rust-1.69.0.html)_, which contains increased capabilities when using _`_cargo_`_ and even more stabilized APIs. You can _[read more about Rust in our archive](https://blog.logrocket.com/tag/rust/)_ and _[in the official docs](https://www.rust-lang.org/learn)_._
@@ -48,7 +48,7 @@ _Jump ahead:_
     - [useConversation Hook](https://blog.logrocket.com/real-time-chat-app-rust-react/#useconversation-hook)
 + [Building the chat application](https://blog.logrocket.com/real-time-chat-app-rust-react/#building-the-chat-application)
 
-## 2. Introduction to real-time chat applications
+### 2. Introduction to real-time chat applications
 Real-time chat applications allow users to communicate with each other in real time through text, voice, or video. This type of app allows for more immediate messaging than other types of communication such as email or IM.
 
 There are several reasons why chat applications must work in real time:
@@ -57,12 +57,12 @@ There are several reasons why chat applications must work in real time:
 + **Greater responsiveness**: Real-time functionality results in improved user experience
 + **Superior reliability**: With real-time functionality there‘s less opportunity for messages to be lost or delayed
 
-## 3. Introduction to WebSockets
+### 3. Introduction to WebSockets
 WebSockets enables two-way communication between the client and server in real-time chat applications. Using Rust to build the WebSocket server will enable the server to handle a large number of connections without slowing down. This is due to Rust’s speed and reliability.
 
 Now that we have a better understanding of WebSockets, let’s get started building our real-time chat application!
 
-## 4. Getting started
+### 4. Getting started
 First, let’s review some prerequisites:
 
 + **Rust**: Ensure you have Rust installed on your computer. If you don’t have it, use the following command to install it: 
@@ -93,7 +93,7 @@ node --version
 npm --version
 ```
 
-## 5. Designing the real-time chat app architecture
+### 5. Designing the real-time chat app architecture
 Let’s create some design architecture for our real-time chat application. We’ll build a simple server; our application’s architecture will cover the following features:
 
 + **Chat**: between two users via direct messaging
@@ -111,7 +111,7 @@ This architecture is very simple and easy to follow. It consists of just a few c
 + **User manager**: This component is responsible for managing all the users in our application. It will create, update, and delete users. This component will be on the HTTP server as well
 + **Message manager**: This component is responsible for managing all the messages in our application. It will create, update, and delete messages. This component one will be on the WebSocket server and the HTTP server. It will be used to store incoming messages from WebSockets and retrieve all messages already in the database when the user opens the chat room via the Rest API
 
-## 6. Building the WebSocket server in Rust
+### 6. Building the WebSocket server in Rust
 There are many packages we can use to write a WebSocket server in Rust. For this tutorial, we’ll use [Actix Web](https://actix.rs/); it is a mature package and is easy to use.
 
 To start, create a Rust project using the following command:
@@ -235,7 +235,7 @@ Here’s some information about the packages we’re using:
 + `diesel`: Will be used to query the data from our SQLite database. If you prefer, you can change this to Postgres or MySQL
 + `serde_json`: Will be used to parse the JSON data that we’ll send to the React app
 
-### 6.1. Creating the routes
+#### 6.1. Creating the routes
 Now let’s make routes for our server. Since we will use a REST HTTP and WebSocket server, we can easily put everything in one file.
 
 First, add all the packages we’ll need:
@@ -564,7 +564,7 @@ impl `Handler`<Join>` for ChatServer {
 }
 ```
 
-### 6.2. Handling the user session
+#### 6.2. Handling the user session
 Now, let’s address the user session. Here we’ll receive a message, save it to the database, and then send it back to the participant in the chat room.
 
 To start, import all the packages:
@@ -756,7 +756,7 @@ impl WsChatSession {
 }
 ```
 
-## 7. Preparing the database
+### 7. Preparing the database
 Next, let’s prepare the database. We’ll use SQLite to keep things simple. Here’s how the schema will look:
 
 ![](/img/posts/3911131708ac794867f13946cc2423da.png)
@@ -831,7 +831,7 @@ INSERT INTO conversations(id, user_id, room_id, content, created_at)
     ("d3ea6e39-ed58-4613-8922-b78f14a2676a", "1bc833808-05ed-455a-9d26-64fe1d96d62d", "008e9dc4-f01d-4429-ba31-986d7e63cce8", "Hi... are free today?", "2022-12-23T07:56:30.214162+00:00");
 ```
 
-### 7.1. Generating the schema
+#### 7.1. Generating the schema
 Now let’s generate the schema and run the migration:
 
 ```rust
@@ -879,7 +879,7 @@ diesel::allow_tables_to_appear_in_same_query!(
 
 The above code is auto generated, so don’t make any changes to this file.
 
-### 7.2. Creating the structs
+#### 7.2. Creating the structs
 Let’s create some structs to store all the tables. One thing to keep in mind is that the order of the property in the struct should be the same as that in the schema file. You’ll get the wrong data if the order doesn’t match.
 
 ```rust
@@ -927,7 +927,7 @@ pub struct RoomResponse {
 }
 ```
 
-### 7.3. Setting up the queries
+#### 7.3. Setting up the queries
 Now, let’s fetch data from the database.
 
 First, import the dependency:
@@ -956,7 +956,7 @@ fn iso_date() -> String {
 }
 ```
 
-#### 7.3.1. Finding users by phone number
+##### 7.3.1. Finding users by phone number
 Here, we’ll set up a query that will implement a simple login feature and enable us to find a user by phone number. We’re using this login method as an example only. In production, you’ll want to use a method that can be easily verified and debugged:
 
 ```rust
@@ -974,7 +974,7 @@ pub fn find_user_by_phone(
 }
 ```
 
-#### 7.3.2. Adding a new user
+##### 7.3.2. Adding a new user
 Here’s a query for storing a new user who registers for our app. This is also part of our authentication system. Again, please don’t use this approach for your production app:
 
 ```rust
@@ -1015,7 +1015,7 @@ pub fn insert_new_conversation(
 }
 ```
 
-#### 7.3.3. Finding chat rooms and participants
+##### 7.3.3. Finding chat rooms and participants
 Next, let’s set up a query to fetch all the chat rooms and participants from the database:
 
 ```rust
@@ -1060,7 +1060,7 @@ pub fn get_all_rooms(conn: &mut SqliteConnection) -> `Result`<`Vec<RoomResponse>
 }
 ```
 
-## 8. Building the client UI with React
+### 8. Building the client UI with React
 Let’s design a user interface for our client app; the end result will look like this:
 
 ![](/img/posts/1a6f778da89437173bc93095007f994a.png)
@@ -1111,7 +1111,7 @@ Next, import the Tailwind CSS utility to the `globals.css` file:
 
 Now, let’s create some components for our client app.
 
-### 8.1. `avatar` component
+#### 8.1. `avatar` component
 Here we’ll create the avatar for each user:
 
 ```javascript
@@ -1132,7 +1132,7 @@ export default function Avatar({ children, color = '' }) {
 }
 ```
 
-### 8.2. `login` component
+#### 8.2. `login` component
 Here we’ll create the user login component:
 
 ```javascript
@@ -1248,7 +1248,7 @@ export default function Login({ show, setAuth }) {
 }
 ```
 
-### 8.3. `room` component
+#### 8.3. `room` component
 Here we’ll create the chat room components:
 
 ```javascript
@@ -1338,7 +1338,7 @@ export default function ChatList({ onChatChange, userId }) {
 }
 ```
 
-### 8.4. `conversation` component
+#### 8.4. `conversation` component
 Here we’ll create the user conversation component:
 
 ```javascript
@@ -1394,7 +1394,7 @@ key={item.id} />`
 
 Now let’s prepare the Hooks needed to interact with our WebSocket server and REST API server.
 
-### 8.5. `useWebsocket` Hook
+#### 8.5. `useWebsocket` Hook
 This Hook is for connecting to the WebSocket server, enabling us to send and receive messages:
 
 ```javascript
@@ -1427,7 +1427,7 @@ export default function useWebsocket(onMessage) {
 }
 ```
 
-### 8.6. `useLocalStorage` Hook
+#### 8.6. `useLocalStorage` Hook
 This Hook enables us to get the user data from localStorage:
 
 ```javascript
@@ -1456,7 +1456,7 @@ export default function useLocalStorage(key, defaultValue) {
 }
 ```
 
-### 8.7. `useConversation` Hook
+#### 8.7. `useConversation` Hook
 We’ll use this Hook to fetch conversations based on the given room `id`:
 
 ```javascript
@@ -1487,7 +1487,7 @@ export default function useConversations(room_id) {
 }
 ```
 
-## 9. Building the chat application
+### 9. Building the chat application
 Now let’s connect all of our components and Hooks to build our chat application in React with Next.js.
 
 First, let’s import all the dependencies we need:
@@ -1677,14 +1677,14 @@ return (
   )
 ```
 
-## 10. Conclusion
+### 10. Conclusion
 In this article, we discussed the features of WebSockets, its applications in Rust, and how to use it with the `actix-web` package. We demonstrated how to create an efficient, real-time chat application, using React and Next.js to establish WebSocket connections to the Actix Web server. The code from this article is available on [GitHub](https://github.com/ahmadrosid/rust-react-chat).
 
 To further improve our sample real-time chat application, you could enable it to display user status (i.e., online or offline) and create an online group chat for users.
 
 Please feel free to leave a comment if you have any questions about this article. Happy coding!
 
-## 11. Get set up with LogRocket's modern React error tracking in minutes:
+### 11. Get set up with LogRocket's modern React error tracking in minutes:
 1.  Visit [https://logrocket.com/signup/](https://lp.logrocket.com/blg/react-signup-general) to get an app ID 
 2. Install LogRocket via npm or script tag. `LogRocket.init()` must be called client-side, not server-side 
 

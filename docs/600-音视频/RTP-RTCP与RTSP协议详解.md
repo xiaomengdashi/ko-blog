@@ -3,13 +3,13 @@ sidebar_position: 3
 slug: /音视频/RTP!RTCP与RTSP协议详解
 ---
 
-## 1. 概述
+### 1. 概述
 本文档为C++开发者整理RTP（Real-time Transport Protocol）、RTCP（Real-time Transport Control Protocol）和RTSP（Real Time Streaming Protocol）协议的核心知识，重点关注协议结构、数据包格式、实现要点和C++开发中的关键考虑。
 
 ---
 
-## 2. RTP协议详解
-### 2.1. 基本概念
+### 2. RTP协议详解
+#### 2.1. 基本概念
 + **RTP**（实时传输协议）：由IETF于1996年在RFC 1889中提出，用于IP网络上的实时多媒体数据传输（音频、视频等）
 + **工作方式**：运行在传输层之上，通常基于UDP协议
 + **核心功能**：
@@ -18,7 +18,7 @@ slug: /音视频/RTP!RTCP与RTSP协议详解
     - 支持多种媒体类型（音频、视频、文本）
     - 与RTCP配合使用，监控和优化传输质量
 
-### 2.2. RTP报文结构
+#### 2.2. RTP报文结构
 RTP数据包头部（固定部分）：
 
 | 字段 | 位数 | 说明 |
@@ -42,7 +42,7 @@ RTP数据包头部（固定部分）：
 + **SSRC**：在RTP会话中必须唯一，通常随机生成
 + **PT (Payload Type)**：标识媒体格式，如PT=96表示H.264视频，时钟频率90kHz
 
-### 2.3. RTP实现要点（C++角度）
+#### 2.3. RTP实现要点（C++角度）
 1. **序列号管理**：
 
 ```cpp
@@ -76,8 +76,8 @@ uint32_t generate_ssrc() {
 
 ---
 
-## 3. RTCP协议详解
-### 3.1. 基本概念
+### 3. RTCP协议详解
+#### 3.1. 基本概念
 + **RTCP**（实时传输控制协议）：与RTP配合使用，提供服务质量反馈
 + **主要功能**：
     - 收集和报告媒体传输质量统计信息（丢包率、延迟、抖动等）
@@ -85,7 +85,7 @@ uint32_t generate_ssrc() {
     - 会话控制功能
     - 动态控制报告传输频率，避免网络拥塞
 
-### 3.2. RTCP报文结构
+#### 3.2. RTCP报文结构
 RTCP报文头部：
 
 | 字段 | 位数 | 说明 |
@@ -106,7 +106,7 @@ RTCP报文头部：
 + **BYE**：结束流，宣布离开会议
 + **APP**：应用特定消息，用于扩展
 
-### 3.3. RTCP实现要点（C++角度）
+#### 3.3. RTCP实现要点（C++角度）
 1. **报告间隔控制**：
 
 ```cpp
@@ -161,8 +161,8 @@ void adjust_rtcp_bandwidth(uint32_t total_bandwidth) {
 
 ---
 
-## 4. RTSP协议详解
-### 4.1. 基本概念
+### 4. RTSP协议详解
+#### 4.1. 基本概念
 + **RTSP**（Real Time Streaming Protocol）：用于控制实时流媒体的传输
 + **工作方式**：客户端-服务器模型，使用TCP连接控制流媒体
 + **核心功能**：
@@ -171,7 +171,7 @@ void adjust_rtcp_bandwidth(uint32_t total_bandwidth) {
     - 控制媒体流（播放、暂停、停止）
     - 管理会话状态
 
-### 4.2. RTSP常用方法
+#### 4.2. RTSP常用方法
 | 方法 | 作用 | 请求格式 | 响应格式 |
 | --- | --- | --- | --- |
 | OPTIONS | 获取服务器支持的方法 | `OPTIONS rtsp://server:port/session RTSP/1.0` | `RTSP/1.0 200 OK` |
@@ -181,7 +181,7 @@ void adjust_rtcp_bandwidth(uint32_t total_bandwidth) {
 | TEARDOWN | 关闭连接 | `TEARDOWN rtsp://server:port/session RTSP/1.0` | `RTSP/1.0 200 OK` |
 
 
-### 4.3. SDP格式详解
+#### 4.3. SDP格式详解
 SDP（Session Description Protocol）格式：
 
 ```plain
@@ -211,7 +211,7 @@ b:AS:1048576
 + `rtpmap:96 H264/90000`：负载类型96对应H.264视频，时钟频率90kHz
 + `m=`：媒体描述（类型、端口、传输协议、负载类型）
 
-### 4.4. RTSP实现要点（C++角度）
+#### 4.4. RTSP实现要点（C++角度）
 1. **RTSP请求处理**：
 
 ```cpp
@@ -286,8 +286,8 @@ void handle_setup_request(const RtspRequest& request, RtspResponse& response) {
 
 ---
 
-## 5. RTP/RTCP与RTSP的协作关系
-### 5.1. 工作流程
+### 5. RTP/RTCP与RTSP的协作关系
+#### 5.1. 工作流程
 1. **RTSP建立连接**：
     - 客户端发送`OPTIONS`获取服务器支持的方法
     - 发送`DESCRIBE`获取SDP描述
@@ -300,7 +300,7 @@ void handle_setup_request(const RtspRequest& request, RtspResponse& response) {
     - 服务器开始发送RTP数据包
     - 客户端发送`TEARDOWN`结束会话
 
-### 5.2. C++实现架构
+#### 5.2. C++实现架构
 ```mermaid
 graph TD
     A[RTSP服务器] -->|OPTIONS| B[客户端]
@@ -323,8 +323,8 @@ graph TD
 
 ---
 
-## 6. 实际应用中的注意事项（C++开发者）
-### 6.1. 性能优化
+### 6. 实际应用中的注意事项（C++开发者）
+#### 6.1. 性能优化
 1. **零拷贝设计**：
     - 避免在RTP数据包处理中进行不必要的内存复制
     - 使用`mmap`或`iovec`进行高效数据传输
@@ -353,7 +353,7 @@ private:
     - RTCP报告发送线程
     - RTSP控制处理线程
 
-### 6.2. 错误处理
+#### 6.2. 错误处理
 1. **序列号检测**：
 
 ```cpp
@@ -391,7 +391,7 @@ bool parse_sdp(const std::string& sdp) {
 }
 ```
 
-### 6.3. 容性考虑
+#### 6.3. 容性考虑
 1. **RTP负载类型**：
     - 处理多种负载类型（PT=96 H.264, PT=110 H.265等）
     - 使用映射表动态解析负载类型
@@ -403,7 +403,7 @@ bool parse_sdp(const std::string& sdp) {
 
 ---
 
-## 7. 总结
+### 7. 总结
 RTP/RTCP和RTSP是实时多媒体传输的核心协议，C++开发者在实现相关功能时需要关注：
 
 1. **RTP**：关注时间戳、序列号处理，确保数据同步和顺序

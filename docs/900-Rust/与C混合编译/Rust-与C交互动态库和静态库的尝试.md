@@ -10,7 +10,7 @@ updated: '2024-12-27 23:05:51'
 slug: /Rust/与C混合编译/Rust-与C交互动态库和静态库的尝试
 rust调用C端的库函数，有很多方法，场景也有所不同。包括windows还是linux，内置库还是自定义库，还是三方库等等。
 
-### 1. rust调用其内置的C库
+#### 1. rust调用其内置的C库
 这个很简单，直接把extern "C"引入即可：  
 比如，在rust端main.rs中:
 
@@ -33,7 +33,7 @@ fn main() {
 
 不需要做其它的处理，直接cargo run 就可以运行。
 
-### 2. 自定义的C库-以windows平台为例
+#### 2. 自定义的C库-以windows平台为例
 如果rust要调用自建的C库中的函数，情况会较上面复杂一些。今天介绍通过cc库，通过build生成脚本的方式，实现rust调用c端库函数。
 
 1、相关准备：  
@@ -125,8 +125,8 @@ fn main() {
 ![](/img/posts/b9bc113925b0c6a3651f155e4fb04751.png)相关结果表明，rust端已经正确调用了ctools.c中几个库函数。  
 注意的是，因为已经是ffi调用，均需要加unsafe。
 
-### 3. rust调用C封装好的静态库
-#### 3.1. linux平台
+#### 3. rust调用C封装好的静态库
+##### 3.1. linux平台
 总体物料安排和上面windows平台自定义库类似，不再详述。  
 ![](/img/posts/b735f8e2ebd23ad6d267e43e994590c9.png)
 
@@ -217,13 +217,13 @@ add_value       : 5
 threetimes_value: 9
 ```
 
-#### 3.2. 在windows平台
+##### 3.2. 在windows平台
 
 静态文件需要在window上编译，编程结果为.lib文件，注意是X86还是X64。
 
 其它步骤同Linux，路径不对无法读取静态库时尝试绝对路径。
 
-### 4. C调rust:以linux平台为例
+#### 4. C调rust:以linux平台为例
 在windows平台操作，不如linux平台方便。  
 1、结构  
 建立两个平行目录，c_call下放.c文件；另一个就是rustoc工程(通过cargo new rustoc --lib建立) ，是一个rust lib文件。  
@@ -298,7 +298,7 @@ call from rust fn sqrt :6
 可见，在linux平台下，c调用rust中的库代码成功。  
 ![](/img/posts/d68b3b7cda152ccd10dfe1be3918c53d.png)
 
-### 5. 用cbindgen实现rust与c类型交互类型，并实现互调
+#### 5. 用cbindgen实现rust与c类型交互类型，并实现互调
 
 此外，还有一些场景，有待深入：  
 1、上面主要讲的rust调C，并没有涉及C如何调Rust。如何实现C和Rust之间的互调？  
@@ -308,7 +308,7 @@ call from rust fn sqrt :6
 
 
 
-### 6. 总结及提示
+#### 6. 总结及提示
   
 1、和linux相比，windows平台之间RUST与C调用不太友好；如果可以尽可能在linux平台下，windows for linux也是可以的。  
 2、build.rs在工程中的路径：如果程序入口在rust侧，build.rs则放在rust入口程序同一文件夹下；  

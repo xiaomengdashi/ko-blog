@@ -19,7 +19,7 @@ slug: /C++/基础知识/一分钟学C-std中的move与forward
 void f(Widget&& w);
 ```
 
-## 1. std::move**
+### 1. std::move**
 下面给出了 std::move 的一个大致实现。
 
 ```plain
@@ -93,7 +93,7 @@ public:                         //`std::`basic_string`<char>`的类型别名
 
 在类 Annotation 的构造函数的成员初始化列表中，std::move(text) 的结果是一个 const std::string 的右值。这个右值不能被传递给 std::string 的移动构造函数，因为移动构造函数只接受一个指向 non-const 的 std::string 的右值引用。然而，该右值却可以被传递给 std::string 的拷贝构造函数，因为 lvalue-reference-to-const 允许被绑定到一个 const 右值上。因此，std::string 在成员初始化的过程中调用了拷贝构造函数，即使 text 已经被转换成了右值。这样是为了确保维持 const 属性的正确性。从一个对象中移动出某个值通常代表着修改该对象，所以语言不允许 const 对象被传递给可以修改他们的函数（例如移动构造函数）。
 
-## 2. std::forward**
+### 2. std::forward**
 std::forward 目的是实现完美转发，当传入左值引用时，期望能够保留左值属性，当传入右值引用时，期望能够保留右值属性。大致实现如下：
 
 ```plain
@@ -119,7 +119,7 @@ namespace std {
 + 而当传递给 func 函数的实参类型为右值 Widget 时，T 被推导为 Widget。然后 forward 被实例化为 std::forward，并返回 Widget&&（注意，匿名的右值引用是个右值！）
 + std::forward 本质上也就是 static_cast。
 
-## 3. 比较**
+### 3. 比较**
 注意，第一，std::move 只需要一个函数实参，而 std::forward 不但需要一个函数实参，还需要一个模板类型实参 T。更重要的是，std::move 的使用代表着无条件向右值的转换，而使用 std::forward 只对绑定了右值的引用进行到右值转换。这是两种完全不同的动作。前者是典型地为了移动操作，而后者只是传递（亦为转发）一个对象到另外一个函数，保留它原有的左值属性或右值属性。
 
 请记住：

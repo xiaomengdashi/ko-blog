@@ -8,10 +8,10 @@ title: 'boost::interprocess 进程间通信之消息队列的实现_boost interp
 date: '2025-05-15 23:55:44'
 updated: '2025-05-16 00:49:56'
 slug: /C++/Boost深度剖析/boost-interprocess-进程间通信之消息队列的实现_boost-interproce
-## 1. boost::interprocess 进程间通信之消息队列的实现
-### 1.1. 首先需要建立两个工程，processA, ProcessB
-### 1.2. [](/img/posts/dae5255d27e3b9639698e479cd8d9396.png)
-### 1.3. 写一个消息队列的类，"Condition_shared_data.hpp"
+### 1. boost::interprocess 进程间通信之消息队列的实现
+#### 1.1. 首先需要建立两个工程，processA, ProcessB
+#### 1.2. [](/img/posts/dae5255d27e3b9639698e479cd8d9396.png)
+#### 1.3. 写一个消息队列的类，"Condition_shared_data.hpp"
 ```cpp
 #include `<boost/interprocess/detail/config_begin.hpp>`
 #include `<boost/interprocess/sync/interprocess_mutex.hpp>`
@@ -45,7 +45,7 @@ struct trace_queue
 
 ```
 
-### 1.4. 进程A的函数，"ProcessA.cpp"
+#### 1.4. 进程A的函数，"ProcessA.cpp"
 ```cpp
 #include"stdafx.h"
 #include `<boost/interprocess/shared_memory_object.hpp>`
@@ -132,7 +132,7 @@ int main()
 }
 ```
 
-### 1.5. 进程B的函数，"ProcessB.cpp"
+#### 1.5. 进程B的函数，"ProcessB.cpp"
 ```cpp
 #include"stdafx.h"
 #include <boost/interprocess/shared_memory_object.hpp>`
@@ -199,8 +199,8 @@ int main()
 }
 ```
 
-### 1.6. 同时运行两个进程
-### 1.7. [](/img/posts/df5a687765ce5d8750ad219524f9420a.png)
+#### 1.6. 同时运行两个进程
+#### 1.7. [](/img/posts/df5a687765ce5d8750ad219524f9420a.png)
 内容来源：csdn.net
 
 作者昵称：ZhongNanJingYun_Blog

@@ -16,8 +16,8 @@ slug: /Linux网络编程/IO多路复用/Linux-select内核源码剖析_linux-sel
 
 [Linux epoll内核源码剖析](https://blog.csdn.net/weixin_42462202/article/details/95377075)
 
-## 1. Linux select内核源码剖析
-#### 1.0.1. 文章目录
+### 1. Linux select内核源码剖析
+##### 1.0.1. 文章目录
 + [Linux select内核源码剖析](https://blog.csdn.net/weixin_42462202/article/details/95315926#Linux_select_8)
     - [select应用程序](https://blog.csdn.net/weixin_42462202/article/details/95315926#select_14)
     - [select机制内核源码剖析](https://blog.csdn.net/weixin_42462202/article/details/95315926#select_92)
@@ -27,7 +27,7 @@ select的原理其实是和poll是一样的，都是采用轮询的方式。sele
 
 本文先讲解一下如何在应用层使用select，然后再深入内核剖析select机制
 
-### 1.1. select应用程序
+#### 1.1. select应用程序
 select可以监听多个文件描述符，直到条件满足或者超时返回
 
 + select函数原型
@@ -104,7 +104,7 @@ int main(int argc, char* argv[])
 }
 ```
 
-### 1.2. select机制内核源码剖析
+#### 1.2. select机制内核源码剖析
 我们先来看看`fd_set`是什么东西
 
 ```cpp
@@ -325,7 +325,7 @@ static void __pollwait(struct file *filp, wait_queue_head_t *wait_address,
 
 至此，select也就分析完了
 
-### 1.3. 总结
+#### 1.3. 总结
 select和poll的实现原理是一样的，只是select采用[bitmap](https://so.csdn.net/so/search?q=bitmap&spm=1001.2101.3001.7020)的方式来标记文件描述符，然后select 最不能忍受的是一个进程所打开的FD是有一定限制的，由FD_SETSIZE设置，默认值是1024
 
 select会有两次遍历所有监听的文件描述符，第一次是将等待队列元素添加到对应驱动程序的等待队列中，然后调度，睡眠等待唤醒，第二次是当条件满足时，驱动程序会唤醒等待队列，然后select会进行第二次遍历，获取一个掩码，设置好每一个文件描述符的bitmap，然后再将结果拷贝回用户空间

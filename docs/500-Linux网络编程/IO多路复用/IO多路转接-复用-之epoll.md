@@ -10,7 +10,7 @@ updated: '2025-01-05 16:35:15'
 slug: /Linux网络编程/IO多路复用/IO多路转接-复用-之epoll
 [Linux](https://subingwen.cn/categories/Linux/)[C语言](https://subingwen.cn/tags/C%E8%AF%AD%E8%A8%80/)[套接字通信](https://subingwen.cn/tags/%E5%A5%97%E6%8E%A5%E5%AD%97%E9%80%9A%E4%BF%A1/)[并发](https://subingwen.cn/tags/%E5%B9%B6%E5%8F%91/)[TCP](https://subingwen.cn/tags/TCP/)[IO多路复用](https://subingwen.cn/tags/IO%E5%A4%9A%E8%B7%AF%E5%A4%8D%E7%94%A8/)2021-04-062023-04-06
 
-## 1. 概述
+### 1. 概述
 epoll 全称 eventpoll，是 linux 内核实现IO多路转接/复用（IO multiplexing）的一个实现。IO多路转接的意思是在一个操作里同时监听多个输入输出源，在其中一个或多个输入输出源可用的时候返回，然后对其的进行读写操作。epoll是select和poll的升级版，相较于这两个前辈，epoll改进了工作方式，因此它更加高效。
 
 + `对于待检测集合select和poll是基于线性方式处理的，epoll是基于红黑树来管理待检测集合的。`
@@ -21,7 +21,7 @@ epoll 全称 eventpoll，是 linux 内核实现IO多路转接/复用（IO multip
 
 当多路复用的文件数量庞大、IO流量频繁的时候，一般不太适合使用select()和poll()，这种情况下select()和poll()表现较差，推荐使用epoll()。
 
-## 2. 操作函数
+### 2. 操作函数
 在epoll中一共提供是三个API函数，分别处理不同的操作，函数原型如下：
 
 ```cpp
@@ -104,8 +104,8 @@ int epoll_wait(int epfd, struct epoll_event * events, int maxevents, int timeout
         * 大于0：检测到的已就绪的文件描述符的总个数
     - 失败：返回-1
 
-## 3. epoll的使用
-### 3.1. 操作步骤
+### 3. epoll的使用
+#### 3.1. 操作步骤
 在服务器端使用epoll进行IO多路转接的操作步骤如下：
 
 1. `创建监听的套接字`
@@ -182,7 +182,7 @@ else if(len > 0)
 
 8. 重复第7步的操作
 
-### 3.2. 示例代码
+#### 3.2. 示例代码
 ```cpp
 #include `<stdio.h>`
 #include `<ctype.h>`
@@ -334,8 +334,8 @@ int ret = epoll_ctl(epfd, EPOLL_CTL_ADD, lfd, &ev);
 
 在添加节点的时候，需要对这个`struct epoll_event`类型的节点进行初始化，当这个节点对应的文件描述符变为已就绪状态，这些被传入的初始化信息就会被原样传出，这个对应关系必须要搞清楚。
 
-## 4. epoll的工作模式
-### 4.1. 水平模式
+### 4. epoll的工作模式
+#### 4.1. 水平模式
 水平模式可以简称为LT模式，`LT（level triggered）是缺省的工作方式，并且同时支持block和no-block socket`。在这种做法中，内核通知使用者哪些文件描述符已经就绪，之后就可以对这些已就绪的文件描述符进行IO操作了。`如果我们不作任何操作，内核还是会继续通知使用者`。
 
 **水平模式的特点：**
@@ -352,7 +352,7 @@ int ret = epoll_ctl(epfd, EPOLL_CTL_ADD, lfd, &ev);
 
 [epoll水平模式示例代码](https://subingwen.cn/linux/epoll/#3-2-%E7%A4%BA%E4%BE%8B%E4%BB%A3%E7%A0%81)
 
-### 4.2. 边沿模式
+#### 4.2. 边沿模式
 边沿模式可以简称为ET模式，`ET（edge-triggered）是高速工作方式，只支持no-block socket`。在这种模式下，`当文件描述符从未就绪变为就绪时，内核会通过epoll通知使用者。然后它会假设使用者知道文件描述符已经就绪，并且不会再为那个文件描述符发送更多的就绪通知（only once）`。如果我们对这个文件描述符做IO操作，从而导致它再次变成未就绪，当这个未就绪的文件描述符再次变成就绪状态，内核会再次进行通知，并且还是只通知一次。`ET模式在很大程度上减少了epoll事件被重复触发的次数，因此效率要比LT模式高`。
 
 **边沿模式的特点:**	
@@ -370,7 +370,7 @@ int ret = epoll_ctl(epfd, EPOLL_CTL_ADD, lfd, &ev);
 
 综上所述：epoll的边沿模式下 epoll_wait()检测到文件描述符有新事件才会通知，如果不是新的事件就不通知，通知的次数比水平模式少，效率比水平模式要高。
 
-#### 4.2.1. ET模式的设置
+##### 4.2.1. ET模式的设置
 边沿模式不是默认的epoll模式，需要额外进行设置。epoll设置边沿模式是非常简单的，epoll管理的红黑树示例中每个节点都是`struct epoll_event`类型，只需要将`EPOLLET`添加到结构体的`events`成员中即可：
 
 ```cpp
@@ -406,7 +406,7 @@ for(int i=0; i`<num; ++i)
 }
 ```
 
-#### 4.2.2. 设置非阻塞
+##### 4.2.2. 设置非阻塞
 对于写事件的触发一般情况下是不需要进行检测的，因为写缓冲区大部分情况下都是有足够的空间可以进行数据的写入。对于读事件的触发就必须要检测了，因为服务器也不知道客户端什么时候发送数据，如果使用epoll的边沿模式进行读事件的检测，有新数据达到只会通知一次，那么必须要保证得到通知后将数据全部从读缓冲区中读出。那么，应该如何读这些数据呢？
 
 + 方式1：准备一块特别大的内存，用于存储从读缓冲区中读出的数据，但是这种方式有很大的弊端：
@@ -454,7 +454,7 @@ if(len == -1)
 }
 ```
 
-#### 4.2.3. 示例代码
+##### 4.2.3. 示例代码
 ```cpp
 #include `<stdio.h>`
 #include `<ctype.h>`

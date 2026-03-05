@@ -3,10 +3,10 @@ sidebar_position: 4
 slug: /C++/现代C-特性/现代C-返回值处理
 ---
 
-## 1. 统返回值处理的困境
+### 1. 统返回值处理的困境
 在传统的C++编程中，函数返回值处理存在以下问题：
 
-### 1.1. 多返回值处理复杂
+#### 1.1. 多返回值处理复杂
 ```cpp
 // 传统方式：使用指针或引用参数
 bool parseCoordinates(const std::string& input, int& x, int& y) {
@@ -20,7 +20,7 @@ bool parseCoordinates(const std::string& input, int& x, int& y) {
 }
 ```
 
-### 1.2. 空值处理不安全
+#### 1.2. 空值处理不安全
 ```cpp
 std::string* findUser(int id) {
     // 可能返回nullptr，调用者容易忘记检查
@@ -28,7 +28,7 @@ std::string* findUser(int id) {
 }
 ```
 
-### 1.3. 错误处理-语义不明确
+#### 1.3. 错误处理-语义不明确
 ```cpp
 int divide(int a, int b) {
     if (b == 0) {
@@ -47,8 +47,8 @@ int divide(int a, int b) {
 
 
 
-## 2. std::tuple - 解决多返回值的良药
-### 2.1. std::apply 函数详解
+### 2. std::tuple - 解决多返回值的良药
+#### 2.1. std::apply 函数详解
 `std::apply`（C++17）是处理tuple数据的核心函数，它将tuple的元素作为参数传递给可调用对象。
 
 **功能**：将tuple中的元素展开作为函数参数
@@ -96,19 +96,19 @@ int main() {
 }
 ```
 
-## 3. std::optional - 解决空/有效语义
-### 3.1. 概述
+### 3. std::optional - 解决空/有效语义
+#### 3.1. 概述
 `std::optional`（C++17）是一个模板类，用于表示可能存在也可能不存在的值。它提供了类型安全的空值处理机制，避免了传统指针的空指针解引用问题。
 
-### 3.2. 
+#### 3.2. 
 + **类型安全**：编译时检查，避免空指针解引用
 + **明确语义**：清楚表达值可能不存在的情况（std::nullopt）
 + **零开销抽象**：性能接近原生类型
 + **链式操作**：支持函数式编程风格（C++23）
 + **异常安全**：提供安全的值访问方式
 
-### 3.3. 常用API通用模板
-#### 3.3.1. 构造
+#### 3.3. 常用API通用模板
+##### 3.3.1. 构造
 ```cpp
 // 默认构造（空值）
 `std::optional<int>`opt1;                    // 创建空的optional
@@ -118,7 +118,7 @@ int main() {
 
 ```
 
-#### 3.3.2. 基本操作
+##### 3.3.2. 基本操作
 ```cpp
 ``std::`optional`<int>` opt = 42;
 
@@ -148,7 +148,7 @@ opt.swap(other);                            // 交换两个optional的内容
 std::swap(opt, other);                      // 使用std::swap
 ```
 
-#### 3.3.3. 数据处理-基于链式调用风格(C++23)
+##### 3.3.3. 数据处理-基于链式调用风格(C++23)
 **transform() 操作** -  返回有效值的时候调用
 
 + **函数声明**：
@@ -204,7 +204,7 @@ constexpr std::optional or_else(F&& f) &&;
 + **说明**：当 `empty_opt` 为空时，返回包含 42 的 `optional`
 
 
-### 3.4. 简单使用代码
+#### 3.4. 简单使用代码
 ```cpp
 #include `<iostream>`
 #include `<optional>`
@@ -269,19 +269,19 @@ int main() {
 }
 ```
 
-## 4. std::expected - 解决正确错误语义
-### 4.1. 概述
+### 4. std::expected - 解决正确错误语义
+#### 4.1. 概述
 `std::expected`（C++23）是一个模板类，用于表示可能成功（包含期望值）或失败（包含错误信息）的操作结果。模板参数为`std::expected&lt;T, E>`，其中T是成功值类型，E是错误类型。
 
-### 4.2. 
+#### 4.2. 
 + **明确的错误处理**：强制处理错误情况，编译时保证
 + **类型安全**：错误和成功值都有明确的类型
 + **性能优化**：避免异常的性能开销，零开销抽象
 + **函数式编程支持**：支持链式操作和组合
 + **丰富的错误信息**：可以携带详细的错误上下文
 
-### 4.3. 常用API通用模板
-#### 4.3.1. 构造
+#### 4.3. 常用API通用模板
+##### 4.3.1. 构造
 ```cpp
 #include `<expected>`
 #include `<string>`
@@ -298,7 +298,7 @@ int main() {
 `std::`expected`<std::string, int>` exp6{std::unexpect, 404};       // 就地构造错误值
 ```
 
-#### 4.3.2. 基本操作
+##### 4.3.2. 基本操作
 ```cpp
 `std::`expected`<int, std::string>` exp = 42;
 
@@ -322,7 +322,7 @@ exp = std::unexpected("New error");         // 赋新的错误值
 exp.emplace(200);                           // 就地构造新的成功值
 ```
 
-#### 4.3.3. 数据处理
+##### 4.3.3. 数据处理
 **transform() 操作**
 
 + **函数声明**：
@@ -404,7 +404,7 @@ constexpr auto transform_error(F&& f) && -> `std::`expected`<T,`std::invoke_resu
 + **调用案例**：`auto formatted = exp.transform_error([](const std::string& err) { return "Error: " + err; });`
 + **说明**：为错误信息添加前缀，成功值不受影响
 
-### 4.4. 简单使用代码
+#### 4.4. 简单使用代码
 ```cpp
 #include `<expected>`
 #include `<iostream>`

@@ -3,7 +3,7 @@ sidebar_position: 3
 slug: /C++/现代C++特性/现代C++的新容器
 ---
 
-## 1. 总述
+### 1. 总述
 + **std::tuple** : C++11引入。它是一个固定大小的异构容器，存储任意数量（编译时确定）的不同类型元素。
 + **std::variant**:C++17引入。 类型安全的联合体（union），可以存储预定义类型集合中的任意一种类型的值
 + **std::any**: C++17引入。可以存储任意类型的值的类型擦除容器
@@ -13,19 +13,19 @@ slug: /C++/现代C++特性/现代C++的新容器
 
 ---
 
-## 2. std::tuple
-### 2.1. 概述
+### 2. std::tuple
+#### 2.1. 概述
 `std::tuple`是C++11引入的一个模板类，用于存储固定数量的不同类型的元素。
 
-### 2.2. 
+#### 2.2. 
 + **类型安全**：编译时确定元素类型，避免运行时类型错误
 + **固定大小**：元素数量在编译时确定，不能动态改变
 + **异构存储**：可以存储不同类型的元素
 + **值语义**：支持拷贝和移动操作
 + **零开销抽象**：编译器优化后几乎没有性能损失
 
-### 2.3. 常用API通用使用模板
-#### 2.3.1. 创建
+#### 2.3. 常用API通用使用模板
+##### 2.3.1. 创建
 ```cpp
 // 直接构造
 `std::`tuple`<int, std::string, double>` t1(42, "hello", 3.14);
@@ -37,7 +37,7 @@ auto t2 = std::make_tuple(42, "hello", 3.14);
 `std::`tuple`<int, std::string, double>` t3{42, "hello", 3.14};
 ```
 
-#### 2.3.2. 查询
+##### 2.3.2. 查询
 ```cpp
 // 获取元素数量
 constexpr size_t size = `std::`tuple_size_v`<decltype(t1)>`;
@@ -46,7 +46,7 @@ constexpr size_t size = `std::`tuple_size_v`<decltype(t1)>`;
 using first_type = `std::`tuple_element_t`<0, decltype(t1)>`;
 ```
 
-#### 2.3.3. 访问
+##### 2.3.3. 访问
 ```cpp
 // 使用std::get按索引访问
 int value = `std::`get`<0>`(t1);
@@ -59,7 +59,7 @@ int value2 = `std::`get`<int>`(t1);
 auto [i, s, d] = t1;
 ```
 
-#### 2.3.4. 操作
+##### 2.3.4. 操作
 ```cpp
 // 修改元素
 `std::`get`<0>`(t1) = 100;
@@ -73,7 +73,7 @@ bool less = (t1 < t2);
 std::swap(t1, t2);
 ```
 
-### 2.4. 具体使用示例代码
+#### 2.4. 具体使用示例代码
 ```cpp
 #include `<iostream>`
 #include `<tuple>`
@@ -106,19 +106,19 @@ int main() {
 
 ---
 
-## 3. std::variant
-### 3.1. 概述
+### 3. std::variant
+#### 3.1. 概述
 `std::variant`是C++17引入的类型安全的联合体（union），它可以在运行时存储其模板参数中指定的任意一种类型的值。与传统的union不同，`std::variant`知道当前存储的是哪种类型。
 
-### 3.2. 
+#### 3.2. 
 + **类型安全**：运行时类型检查，避免未定义行为
 + **异常安全**：构造失败时保持有效状态
 + **值语义**：支持拷贝、移动和比较操作
 + **空间效率**：只占用最大类型的空间加上少量元数据
 + **访问者模式支持**：通过`std::visit`实现优雅的类型分发
 
-### 3.3. 常用API通用使用模板
-#### 3.3.1. 创建
+#### 3.3. 常用API通用使用模板
+##### 3.3.1. 创建
 ```cpp
 // 直接构造
 `std::variant<int, std::string, double>`v1(42);
@@ -129,7 +129,7 @@ int main() {
 v3.`emplace`<std::string>`("world");
 ```
 
-#### 3.3.2. 查询
+##### 3.3.2. 查询
 ```cpp
 // 检查当前存储的类型索引
 size_t index = v1.index();
@@ -141,7 +141,7 @@ bool is_int = `std::`holds_alternative`<int>`(v1);
 bool is_valid = !v1.valueless_by_exception();
 ```
 
-#### 3.3.3. 访问
+##### 3.3.3. 访问
 ```cpp
 // 使用std::get（可能抛出异常）
 int value = `std::`get`<int>`(v1);
@@ -158,7 +158,7 @@ std::visit([](auto&& arg) {
 }, v1);
 ```
 
-#### 3.3.4. 操作
+##### 3.3.4. 操作
 ```cpp
 // 赋值（改变存储的类型）
 v1 = std::string("new value");
@@ -171,18 +171,18 @@ bool equal = (v1 == v2);
 std::swap(v1, v2);
 ```
 
-### 3.4. std::visit详解
-#### 3.4.1. 什么是std::visit
+#### 3.4. std::visit详解
+##### 3.4.1. 什么是std::visit
 `std::visit`是访问`std::variant`内容的推荐方式。它接受一个"访问者"（可调用对象）和一个或多个`variant`对象，根据`variant`当前存储的类型自动调用相应的处理逻辑。
 
-#### 3.4.2. 为什么需要std::visit
+##### 3.4.2. 为什么需要std::visit
 由于`std::variant`可以存储多种不同类型，我们需要一种安全的方式来处理所有可能的类型。`std::visit`确保：
 
 + **类型安全**：编译器保证所有可能的类型都被处理
 + **性能优化**：编译时生成最优的分发代码
 + **代码简洁**：避免手动的类型检查和转换
 
-#### 3.4.3. std::visit的基本用法
+##### 3.4.3. std::visit的基本用法
 **1. 使用lambda表达式**
 
 ```cpp
@@ -212,7 +212,7 @@ struct Printer {
 std::visit(Printer{}, v);
 ```
 
-#### 3.4.4. 什么是overload技巧
+##### 3.4.4. 什么是overload技巧
 当我们需要为不同类型提供不同的处理逻辑时，可以使用"overload"技巧。这是一个辅助工具，让我们可以组合多个lambda表达式：
 
 ```cpp
@@ -228,7 +228,7 @@ std::visit(overload {
 }, v);
 ```
 
-##### 3.4.4.1. 代码分解
+###### 3.4.4.1. 代码分解
 ```cpp
 `template<class... Ts>` 
 struct overload : Ts... { 
@@ -246,12 +246,12 @@ struct overload : Ts... { 
 overload(Ts...) -> `overload`<Ts...>`;
 ```
 
-##### 3.4.4.2. 推导指引（Deduction Guide）
+###### 3.4.4.2. 推导指引（Deduction Guide）
 + 这是 C++17 引入的 类模板参数推导指引
 + 它告诉编译器：当你看到 overload(参数...) 这样的构造时，应该推导出 `overload` < 参数类型...>`
 + 这样就可以不用显式指定模板参数，让编译器自动推导
 
-##### 3.4.4.3. 工作原理
+###### 3.4.4.3. 工作原理
 当你传入多个 lambda 表达式时：
 
 ```cpp
@@ -270,7 +270,7 @@ auto visitor = overload {
 + 通过 using Ts::operator()... 将所有 lambda 的 operator() 都引入
 + 最终得到一个拥有多个重载 operator() 的对象
 
-#### 3.4.5. std::visit返回值
+##### 3.4.5. std::visit返回值
 ```cpp
 // visit可以返回值
 std::string result = std::visit(overload {
@@ -282,7 +282,7 @@ std::string result = std::visit(overload {
 std::cout `<< result << std::endl;
 ```
 
-### 3.5. 具体使用示例代码
+#### 3.5. 具体使用示例代码
 ```cpp
 #include <iostream>`
 #include `<variant>`
@@ -379,19 +379,19 @@ int main() {
 
 ---
 
-## 4. std::any
-### 4.1. 概述
+### 4. std::any
+#### 4.1. 概述
 `std::any`是C++17引入的类型擦除容器，可以存储任意类型的值。与`std::variant`不同，`std::any`不需要在编译时指定可能的类型，可以在运行时存储任何可拷贝构造的类型。
 
-### 4.2. 
+#### 4.2. 
 + **类型擦除**：可以存储任意类型，不需要预先声明
 + **运行时类型信息**：保存类型信息，支持安全的类型转换
 + **值语义**：存储对象的拷贝，不是引用或指针
 + **异常安全**：类型转换失败时抛出异常而不是未定义行为
 + **空状态支持**：可以不存储任何值
 
-### 4.3. 常用API通用使用模板
-#### 4.3.1. 创建
+#### 4.3. 常用API通用使用模板
+##### 4.3.1. 创建
 ```cpp
 // 默认构造（空状态）
 std::any a1;
@@ -408,7 +408,7 @@ std::any a5;
 a5.emplace`<`std::vector<int>`>(10, 42);
 ```
 
-#### 4.3.2. 查询
+##### 4.3.2. 查询
 ```cpp
 // 检查是否有值
 bool has_value = a2.has_value();
@@ -422,7 +422,7 @@ if (a2.type() == typeid(int)) {
 }
 ```
 
-#### 4.3.3. 访问
+##### 4.3.3. 访问
 ```cpp
 // 使用any_cast（可能抛出异常）
 int value = `std::`any_cast`<int>`(a2);
@@ -433,7 +433,7 @@ if (auto ptr = `std::`any_cast`<int>`(&a2)) {
 }
 ```
 
-#### 4.3.4. 操作
+##### 4.3.4. 操作
 ```cpp
 // 赋值（可以改变类型）
 a1 = 3.14;
@@ -447,7 +447,7 @@ a1.reset();
 std::swap(a1, a2);
 ```
 
-### 4.4. 具体使用示例代码
+#### 4.4. 具体使用示例代码
 ```cpp
 #include `<iostream>`
 #include `<any>`

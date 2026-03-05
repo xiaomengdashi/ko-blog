@@ -3,7 +3,7 @@ sidebar_position: 2
 slug: /C++/STL/入门级解读-C-STL-中迭代器的本质与实现-含侯捷STL源码剖析-
 ---
 
-## 1. 一、迭代器到底是什么？**
+### 1. 一、迭代器到底是什么？**
 通俗讲：**迭代器是一个用来遍历容器的“泛型指针”**。
 
 在 C 语言里我们操作数组靠指针，而 C++ STL 容器结构多样：`vector` 是动态数组，`list` 是双向链表，`map` 是红黑树。那么算法如 `sort`、`copy` 如何统一处理？——这就要靠迭代器。
@@ -18,7 +18,7 @@ slug: /C++/STL/入门级解读-C-STL-中迭代器的本质与实现-含侯捷STL
 
 ---
 
-## 2. 二、五种迭代器类型**
+### 2. 二、五种迭代器类型**
 STL 根据操作能力，把迭代器分为五大类，每种都是前一种的超集。
 
 | **类型** | **能力** | **举例容器** |
@@ -40,7 +40,7 @@ Input < Forward < Bidirectional < RandomAccess
 
 ---
 
-## 3. 三、Traits 技术：类型萃取的魔法**
+### 3. 三、Traits 技术：类型萃取的魔法**
 当我们写一个泛型算法时，并不知道传入的迭代器是啥类型。这时就靠 `iterator_traits` 这个结构体提取类型信息：
 
 ```cpp
@@ -65,10 +65,10 @@ typename `iterator_traits`<Iter>`::iterator_category()
 
 ---
 
-## 4. 四、标签分发：用“空类”实现重载策略**
+### 4. 四、标签分发：用“空类”实现重载策略**
 在 `advance` 和 `distance` 函数中，STL 利用标签分发实现了“为不同迭代器走不同逻辑”的技巧：
 
-### 4.1. 例：advance() 实现**
+#### 4.1. 例：advance() 实现**
 ```cpp
 template `<typename InputIterator, typename Distance>`
 void advance(InputIterator& it, Distance n) {
@@ -92,10 +92,10 @@ void _advance(RandomAccessIterator& it, Distance n, random_access_iterator_tag) 
 
 ---
 
-## 5. 五、常用适配器介绍（配合容器更强大）**
+### 5. 五、常用适配器介绍（配合容器更强大）**
 STL 提供了很多“迭代器适配器”，用于将普通容器包装为“具有特殊行为”的对象。
 
-### 5.1. 1）reverse_iterator：反向迭代器**
+#### 5.1. 1）reverse_iterator：反向迭代器**
 让你从容器尾部向前遍历。
 
 ```cpp
@@ -106,7 +106,7 @@ for (auto rit = v.rbegin(); rit != v.rend(); ++rit)
 
 它的 `base()` 实际指向正向迭代器的“后一位”，所以 `*rit` 实际是 `*(base() - 1)`。
 
-### 5.2. 2）back_insert_iterator：尾部插入器**
+#### 5.2. 2）back_insert_iterator：尾部插入器**
 把赋值操作转成容器的 `push_back`：
 
 ```cpp
@@ -121,7 +121,7 @@ auto it = back_inserter(v);
 copy(src.begin(), src.end(), back_inserter(dest));
 ```
 
-### 5.3. 3）insert_iterator：中间插入器**
+#### 5.3. 3）insert_iterator：中间插入器**
 让插入发生在指定位置上：
 
 ```cpp
@@ -131,7 +131,7 @@ insert_iterator it(v, v.begin() + 3);
 
 ---
 
-## 6. 六、源码中 __normal_iterator 的作用**
+### 6. 六、源码中 __normal_iterator 的作用**
 侯捷特别分析了 `__normal_iterator`：STL 的 vector、string 的迭代器其实就是对原生指针加壳。
 
 ```cpp
@@ -149,7 +149,7 @@ public:
 
 ---
 
-## 7. 七、侯捷源码剖析特色总结**
+### 7. 七、侯捷源码剖析特色总结**
 侯捷老师在书中对迭代器实现做了大量细节还原，比如：
 
 + 自己写 `__type_traits` 结构体
@@ -160,7 +160,7 @@ public:
 
 ---
 
-## 8. 八、结语：学习迭代器的意义**
+### 8. 八、结语：学习迭代器的意义**
 理解 STL 迭代器，不只是为了写 `for (auto it = ...)` 而已，更重要的是：
 
 1. 看懂源码 / 编写泛型库

@@ -11,7 +11,7 @@ slug: /Rust/黑客编程之道/静态变量lazy_static
 
 你是否曾为Rust中静态变量的初始化而烦恼？今天让我们一起探索lazy_static这个强大的工具，从此告别静态初始化的困扰！
 
-## 1. 基础概念：为什么需要lazy_static？
+### 1. 基础概念：为什么需要lazy_static？
 在Rust中，普通的静态变量有这些限制：
 
 + 必须在编译时就能确定值
@@ -40,8 +40,8 @@ lazy_static! {
 }
 ```
 
-## 2. 进阶应用
-### 2.1. 配置管理
+### 2. 进阶应用
+#### 2.1. 配置管理
 ```rust
 use lazy_static::lazy_static;
 use std::sync::Mutex;
@@ -71,7 +71,7 @@ fn get_config(key: &str) -> `Option`<String>` {
 }
 ```
 
-### 2.2. 正则表达式缓存
+#### 2.2. 正则表达式缓存
 ```rust
 use lazy_static::lazy_static;
 use regex::Regex;
@@ -99,8 +99,8 @@ fn validate_phone(phone: &str) -> bool {
 }
 ```
 
-## 3. 高级特性
-### 3.1. 线程安全的单例模式
+### 3. 高级特性
+#### 3.1. 线程安全的单例模式
 ```rust
 use lazy_static::lazy_static;
 use std::sync::Mutex;
@@ -134,7 +134,7 @@ fn execute_query(sql: &str) -> `Vec`<String>` {
 }
 ```
 
-### 3.2. 复杂初始化逻辑
+#### 3.2. 复杂初始化逻辑
 ```rust
 use lazy_static::lazy_static;
 use std::collections::HashMap;
@@ -170,8 +170,8 @@ lazy_static! {
 }
 ```
 
-## 4. 性能优化技巧
-### 4.1. 读写锁的使用
+### 4. 性能优化技巧
+#### 4.1. 读写锁的使用
 ```rust
 use lazy_static::lazy_static;
 use std::sync::RwLock;
@@ -191,7 +191,7 @@ fn write_cache(key: &str, value: `Vec`<u8>`) {
 }
 ```
 
-### 4.2. 免过度使用
+#### 4.2. 免过度使用
 ```rust
 // ❌ 不推荐
 lazy_static! {
@@ -201,8 +201,8 @@ lazy_static! {
 const SMALL_VALUE: i32 = 42;
 ```
 
-## 5. 实战应用
-### 5.1. 全局日志器
+### 5. 实战应用
+#### 5.1. 全局日志器
 ```rust
 use lazy_static::lazy_static;
 use std::sync::Mutex;
@@ -239,7 +239,7 @@ fn log_message(msg: &str) {
 }
 ```
 
-### 5.2. 配置管理系统
+#### 5.2. 配置管理系统
 ```rust
 use lazy_static::lazy_static;
 use std::sync::RwLock;
@@ -273,22 +273,22 @@ fn get_database_url() -> String {
 }
 ```
 
-## 6. 最佳实践
-## 7. 合理使用场景
+### 6. 最佳实践
+### 7. 合理使用场景
 + 复杂的初始化逻辑
 + 需要线程安全的全局状态
 + 耗时的初始化操作
 
 
 
-## 8. 免滥用
+### 8. 免滥用
 + 简单常量使用const
 + 考虑内存占用
 + 注意死锁风险
 
 
 
-## 9. 性能考虑
+### 9. 性能考虑
 + 使用适当的锁类型
 + 最小化锁的作用域
 + 避免频繁的锁操作
@@ -297,7 +297,7 @@ fn get_database_url() -> String {
 
 ---
 
-## 10. 总结
+### 10. 总结
 lazy_static是Rust中处理静态初始化的利器，它能够：
 
 + 简化复杂初始化逻辑

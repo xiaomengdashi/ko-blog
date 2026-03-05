@@ -3,7 +3,7 @@ sidebar_position: 6
 slug: /C++/Boost深度剖析/Boost.Asio-异步事件驱动原理与机制详解
 ---
 
-## 1. work_guard 机制防止事件循环提前退出
+### 1. work_guard 机制防止事件循环提前退出
 + work_guard 的核心作用是：只要有“未完成的工作”，`io_context.run()` 就不会提前退出，即使没有异步事件或任务在队列中。
 + io_context 内部有一个“未完成工作计数器”（通常是 atomic 类型）。
 + 每创建一个 work_guard，计数器加一；销毁时计数器减一。
@@ -55,7 +55,7 @@ io.run();
 
 ---
 
-## 2. async_accept 实现原理
+### 2. async_accept 实现原理
 + 调用 `acceptor_.async_accept(handler)`，将 handler 注册到 io_context 的事件队列。
 + handler 通常是 lambda 或函数对象，参数为 error_code 和新 socket。
 + Boost.Asio 内部会将 accept 操作包装为一个“异步任务”，并将其挂到操作系统的事件通知机制（如 epoll/kqueue/IOCP）。
@@ -92,7 +92,7 @@ acceptor.async_accept([self](error_code ec, tcp::socket socket){
 
 ---
 
-## 3. async_xxx 方法注册回调到 io_context（伪代码）
+### 3. async_xxx 方法注册回调到 io_context（伪代码）
 ```cpp
 class io_context {
     std::deque`<`std::function<void()>`> queue_;
@@ -151,7 +151,7 @@ ctx.run();
 
 ---
 
-## 4. 为什么是非阻塞的？
+### 4. 为什么是非阻塞的？
 + 调用 `async_accept` 或 `async_read` 时，函数不会等待操作完成，而是立刻返回，程序可以继续执行后续代码。
 + 这些方法底层会把 socket 设置为非阻塞模式，并注册到操作系统的事件通知机制（如 epoll、kqueue、IOCP）。
 + 用户传入的 handler（回调函数）只有在事件真正发生时才会被 io_context 的事件循环线程调用。
@@ -164,7 +164,7 @@ ctx.run();
 
 ---
 
-## 5. 事件驱动是什么？
+### 5. 事件驱动是什么？
 事件驱动指的是程序的主要执行流程由“事件”的发生来推动，而不是由顺序代码主动控制。
 
 + 程序通过 `async_accept`、`async_read` 等方法注册感兴趣的事件和回调函数（handler）。
@@ -186,7 +186,7 @@ acceptor.async_accept([](error_code ec, tcp::socket socket){
 
 ---
 
-## 6. 总结与典型用法
+### 6. 总结与典型用法
 + Boost.Asio 的异步 IO 是事件驱动、非阻塞的，极大提升了并发能力和资源利用率。
 + async_xxx 方法注册回调，事件发生时由 io_context 线程异步触发。
 + work_guard 机制保证事件循环不会因队列空而提前退出，适合后台线程、长连接服务等场景。

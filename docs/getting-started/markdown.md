@@ -3,9 +3,9 @@ sidebar_position: 3
 slug: /getting-started/markdown
 ---
 
-# 1. Markdown 语法
+## 1. Markdown 语法
 
-## 1.1. 标题
+### 1.1. 标题
 
 ```markdown
 # 一级标题
@@ -13,7 +13,7 @@ slug: /getting-started/markdown
 ### 三级标题
 ```
 
-## 1.2. 代码块
+### 1.2. 代码块
 
 ````markdown
 ```python
@@ -24,14 +24,14 @@ def hello():
 
 支持的语言：`javascript`, `typescript`, `python`, `cpp`, `java`, `go`, `rust`, `bash` 等
 
-## 1.3. 链接和图片
+### 1.3. 链接和图片
 
 ```markdown
 [链接文字](https://example.com)
 ![图片描述](./path/to/image.png)
 ```
 
-## 1.4. 表格
+### 1.4. 表格
 
 ```markdown
 | 列1 | 列2 | 列3 |
@@ -40,7 +40,7 @@ def hello():
 | D   | E   | F   |
 ```
 
-## 1.5. 列表
+### 1.5. 列表
 
 ```markdown
 - 无序列表项1
@@ -50,13 +50,13 @@ def hello():
 2. 有序列表项2
 ```
 
-## 1.6. 用
+### 1.6. 用
 
 ```markdown
 > 这是一段引用文字
 ```
 
-## 1.7. 提示框
+### 1.7. 提示框
 
 ```markdown
 :::note
@@ -76,13 +76,13 @@ def hello():
 :::
 ```
 
-## 1.8. 标签
+### 1.8. 标签
 
 ```markdown
 `<!-- truncate -->`  `<!-- 摘要分割线 -->`
 ```
 
-## 1.9. Tabs 选项卡
+### 1.9. Tabs 选项卡
 
 ```markdown
 import Tabs from '@theme/Tabs';
