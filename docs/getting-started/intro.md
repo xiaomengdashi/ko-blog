@@ -1,33 +1,33 @@
 ---
-sidebar_position: 1
+sidebar_position: 2
 slug: /getting-started/intro
 ---
 
-# 入门指南
+# 1. 入门指南
 
 欢迎使用 ko-blog 文档！
 
-## 快速开始
+## 1.1. 开始
 
-### 安装依赖
+### 1.1.1. 安装依赖
 
 ```bash
 npm install
 ```
 
-### 启动开发服务器
+### 1.1.2. 启动开发服务器
 
 ```bash
 npm start
 ```
 
-### 构建生产版本
+### 1.1.3. 构建生产版本
 
 ```bash
 npm run build
 ```
 
-## 目录结构说明
+## 1.2. 目录结构说明
 
 | 目录 | 说明 |
 |------|------|

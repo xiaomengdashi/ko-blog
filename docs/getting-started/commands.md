@@ -3,9 +3,9 @@ sidebar_position: 1
 slug: /getting-started/commands
 ---
 
-# 常用命令
+# 1. 常用命令
 
-## 开发命令
+## 1.1. 发命令
 
 | 命令 | 说明 |
 |------|------|
@@ -14,9 +14,9 @@ slug: /getting-started/commands
 | `npm run serve` | 本地预览构建结果 |
 | `npm run deploy` | 部署到 GitHub Pages |
 
-## 创建新内容
+## 1.2. 创建新内容
 
-### 创建博客文章
+### 1.2.1. 创建博客文章
 
 在 `blog/` 目录下创建文件，命名格式：`YYYY-MM-DD-title.md`
 
@@ -30,12 +30,12 @@ tags: [标签1, 标签2]
 
 文章内容...
 
-<!-- truncate -->
+`<!-- truncate -->`
 
 更多内容...
 ```
 
-### 创建文档
+### 1.2.2. 创建文档
 
 在 `docs/` 目录下创建 `.md` 或 `.mdx` 文件：
 
@@ -49,7 +49,7 @@ sidebar_position: 1
 内容...
 ```
 
-### 创建自定义页面
+### 1.2.3. 创建自定义页面
 
 在 `src/pages/` 目录下创建：
 
@@ -57,6 +57,6 @@ sidebar_position: 1
 import React from 'react';
 
 export default function MyPage() {
-  return <h1>自定义页面</h1>;
+  return `<h1>`自定义页面</h1>`;
 }
 ```
