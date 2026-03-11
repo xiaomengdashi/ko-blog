@@ -27,7 +27,7 @@ PI 是一个用于构建 AI Agent 的 TypeScript 工具包。它是一个 monore
 
 ### [安装](#安装)
 
-```
+```bash
 mkdir pi-agent && cd pi-agent
 npm init -y
 npm install @mariozechner/pi-ai @mariozechner/pi-agent-core @mariozechner/pi-coding-agent @mariozechner/pi-tui chalk
@@ -36,7 +36,7 @@ npm install -D typescript @types/node tsx
 
 ### [设置 API Key](#设置-api-key)
 
-```
+```bash
 export ANTHROPIC_API_KEY=sk-ant-...
 # 或
 export OPENAI_API_KEY=sk-...
@@ -46,7 +46,7 @@ export OPENAI_API_KEY=sk-...
 
 ### [基础调用](#基础调用)
 
-```
+```typescript
 import { getModel, completeSimple } from "@mariozechner/pi-ai";
 
 async function main() {
@@ -74,7 +74,7 @@ main();
 
 ### [流式输出](#流式输出)
 
-```
+```typescript
 import { getModel, streamSimple } from "@mariozechner/pi-ai";
 
 async function main() {
@@ -109,7 +109,7 @@ main();
 
 只需更改 `getModel` 调用，其他代码保持不变：
 
-```
+```typescript
 const model = getModel("anthropic", "claude-opus-4-5");
 // const model = getModel("openai", "gpt-4o");
 // const model = getModel("google", "gemini-2.5-pro");
@@ -118,7 +118,7 @@ const model = getModel("anthropic", "claude-opus-4-5");
 
 ### [自定义本地模型](#自定义本地模型)
 
-```
+```typescript
 import type { Model } from "@mariozechner/pi-ai";
 
 const localModel: Model<"openai-completions"> = {
@@ -141,7 +141,7 @@ const localModel: Model<"openai-completions"> = {
 
 工具使用 [TypeBox](https://github.com/sinclairzx81/typebox) schema 进行类型安全的参数定义：
 
-```
+```typescript
 import { Type } from "@mariozechner/pi-ai";
 import type { AgentTool } from "@mariozechner/pi-agent-core";
 
@@ -166,7 +166,7 @@ const weatherTool: AgentTool<typeof weatherParams> = {
 
 ### [创建 Agent](#创建-agent)
 
-```
+```typescript
 import { Agent } from "@mariozechner/pi-agent-core";
 import { getModel, streamSimple } from "@mariozechner/pi-ai";
 
@@ -185,7 +185,7 @@ const agent = new Agent({
 
 ### [订阅事件](#订阅事件)
 
-```
+```typescript
 agent.subscribe((event) => {
   switch (event.type) {
     case "agent_start":
@@ -215,7 +215,7 @@ agent.subscribe((event) => {
 
 ### [运行 Agent](#运行-agent)
 
-```
+```typescript
 await agent.prompt("What's the weather in Tokyo and London?");
 ```
 
@@ -240,7 +240,7 @@ await agent.prompt("What's the weather in Tokyo and London?");
 | `find` | 按 glob 模式搜索文件 |
 | `ls` | 列出目录内容 |
 
-```
+```typescript
 import { codingTools, readOnlyTools } from "@mariozechner/pi-coding-agent";
 
 codingTools;    // [read, bash, edit, write]  - 默认
@@ -249,7 +249,7 @@ readOnlyTools;  // [read, grep, find, ls]     - 只读探索
 
 ### [创建会话](#创建会话)
 
-```
+```typescript
 import { createAgentSession, SessionManager } from "@mariozechner/pi-coding-agent";
 import { getModel, streamSimple } from "@mariozechner/pi-ai";
 
@@ -284,7 +284,7 @@ main();
 
 ### [会话持久化](#会话持久化)
 
-```
+```typescript
 import * as path from "path";
 
 // 选项 1: 内存中（临时）
@@ -302,7 +302,7 @@ const sessionManager = SessionManager.continueRecent(process.cwd());
 
 ### [上下文压缩](#上下文压缩)
 
-```
+```typescript
 import { estimateTokens } from "@mariozechner/pi-coding-agent";
 
 // 检查 token 数量
@@ -319,7 +319,7 @@ if (totalTokens > 100_000) {
 
 ### [扩展系统](#扩展系统)
 
-```
+```typescript
 import type { ExtensionAPI } from "@mariozechner/pi-coding-agent";
 
 export default function myExtension(api: ExtensionAPI): void {
@@ -349,7 +349,7 @@ export default function myExtension(api: ExtensionAPI): void {
 
 * * *
 
-```
+```typescript
 import {
   TUI,
   ProcessTerminal,
@@ -414,7 +414,7 @@ OpenClaw 在此基础上添加了更多生产级功能：
 
 ### [多供应商认证](#多供应商认证)
 
-```
+```typescript
 import { AuthStorage, ModelRegistry } from "@mariozechner/pi-coding-agent";
 
 const authStorage = AuthStorage.create(path.join(agentDir, "auth.json"));
@@ -429,7 +429,7 @@ const { session } = await createAgentSession({
 
 ### [工作区范围工具](#工作区范围工具)
 
-```
+```typescript
 import {
   codingTools,
   createReadTool,
@@ -449,7 +449,7 @@ function buildTools(workspace: string): AgentTool[] {
 
 ### [事件路由](#事件路由)
 
-```
+```typescript
 session.subscribe((event) => {
   switch (event.type) {
     case "message_update":
@@ -479,13 +479,13 @@ session.subscribe((event) => {
 
 运行方式：
 
-```
+```bash
 npx tsx assistant.ts
 ```
 
 示例会话：
 
-```
+```typescript
 PI Assistant
   Model: claude-opus-4-5
   Session: /your/project/.sessions/assistant.jsonl
