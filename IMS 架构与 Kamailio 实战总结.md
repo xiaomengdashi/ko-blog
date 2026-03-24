@@ -1,5 +1,3 @@
-````md
-
 ## 📌 1. IMS 基本概念
 
 IMS（IP Multimedia Subsystem）是运营商用于提供语音、视频、消息等多媒体通信服务的核心架构。
@@ -292,30 +290,131 @@ sequenceDiagram
 
 ---
 
-## 🏗️ 11. 运营商级 IMS 架构
+下面给你一张 **运营商级 IMS 架构图（Kamailio + HSS + PCRF + RTPengine）** 的 Mermaid 示意，尽量贴近真实部署（接入层 / 控制层 / 媒体层 / 数据层分离）👇
 
-```mermaid
-flowchart TB
-    UE[用户终端]
+---
 
-    P[P-CSCF]
-    I[I-CSCF]
-    S[S-CSCF]
+## 🏗️ 11. IMS 架构图（运营商级）
 
-    AS[应用服务器]
-    HSS[(HSS)]
-    PCRF[(PCRF)]
-    DB[(数据库)]
+<img width="2388" height="1380" alt="mermaid-diagram" src="https://github.com/user-attachments/assets/23d0b3c3-216c-4f73-9f9d-f14d4d2f245f" />
 
-    RTP[RTPengine]
 
-    UE --> P --> I --> S --> AS
-    S --> HSS
-    S --> PCRF
-    S --> DB
+---
 
-    UE --> RTP --> UE
+### 🔍 架构分层解读
+
+#### 🟢 1️⃣ 接入层（P-CSCF）
+
+* 基于 Kamailio
+* 处理：
+
+  * SIP 注册入口
+  * NAT 穿透
+  * TLS/IPSec 安全
+* 通常部署在边缘（靠近用户）
+
+---
+
+#### 🟡 2️⃣ 核心控制层（I/S-CSCF）
+
+##### I-CSCF
+
+* 查询用户归属（HSS）
+* 路由到正确 S-CSCF
+
+##### S-CSCF（核心）
+
+* 注册处理
+* 呼叫控制（INVITE）
+* 触发业务（AS）
+
+👉 多实例 + 负载均衡 = **高可用**
+
+---
+
+#### 🔵 3️⃣ 数据层
+
+##### HSS（核心数据库）
+
+* 用户身份
+* 认证信息
+* 归属路由
+
+##### PCRF
+
+* QoS 策略控制（带宽、优先级）
+* VoLTE 关键组件
+
+##### DB（MySQL / Cassandra）
+
+* Kamailio 自身数据：
+
+  * 注册信息（location）
+  * 用户表
+
+---
+
+#### 🔴 4️⃣ 媒体层（关键点）
+
+👉 **RTP 不经过 Kamailio！**
+
+* 由 RTPengine 处理：
+
+  * NAT 穿透
+  * 媒体转发
+  * 可选转码
+
+---
+
+### 🔄 关键数据流总结
+
+#### 信令流（SIP）
+
 ```
+UE → P-CSCF → I-CSCF → S-CSCF → (AS)
+```
+
+#### 数据查询（Diameter）
+
+```
+S-CSCF / I-CSCF → HSS
+S-CSCF → PCRF
+```
+
+#### 媒体流（RTP）
+
+```
+UE ↔ RTPengine ↔ UE
+```
+
+---
+
+### 🧠 运营商级关键设计点
+
+✅ **横向扩展**
+
+* P-CSCF / S-CSCF / RTPengine 都是集群
+
+✅ **解耦**
+
+* 信令 ≠ 媒体 ≠ 数据
+
+✅ **高可用**
+
+* 多节点 + 负载均衡 + 数据冗余
+
+✅ **低延迟**
+
+* RTP 就近转发
+
+---
+
+### 💡 一句话总结
+
+👉 Kamailio（CSCF）= **大脑（信令控制）**
+👉 HSS / PCRF = **记忆 + 策略**
+👉 RTPengine = **血管（媒体流）**
+
 
 ---
 
@@ -353,19 +452,8 @@ flowchart TB
 + 数据存储（HSS/PCRF）
 + 媒体转发（RTP）
 + 业务逻辑（AS）
-```
-
 = 完整通信系统
-
 ```
 
----
 
-如果你需要，我可以再帮你升级这个文档为：
-
-- 📘 **带注释版本（适合学习）**
-- 🧪 **实战部署版（含 Kamailio 配置示例）**
-- 🏢 **运营商级优化方案（高可用/容灾设计）**
-
-直接说你想要哪一版 👍
 ```
