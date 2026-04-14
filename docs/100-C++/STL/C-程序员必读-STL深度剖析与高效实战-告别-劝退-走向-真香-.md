@@ -43,16 +43,16 @@ STL的灵魂在于泛型编程。它通过C++的模板（Templates）机制，�
 代码示例：泛型函数与Lambda
 
 ```cpp
-#include `<iostream>`
-#include `<vector>`
-#include `<list>`
-#include `<string>`
-#include `<algorithm>` // For std::for_each
+#include <iostream>
+#include <vector>
+#include <list>
+#include <string>
+#include <algorithm> // For std::for_each
 
 // 泛型函数：打印任何支持范围for循环的容器
-template `<typename Container>`
+template <typename Container>
 void print_container(const std::string& name, const Container& cont) {
-    std::cout `<< name << ": [ ";
+    std::cout << name << ": [ ";
     for (constauto& elem : cont) {
         std::cout << elem << " ";
     }
@@ -60,14 +60,14 @@ void print_container(const std::string& name, const Container& cont) {
 }
 
 int main() {
-`std::vector<int>`vec = {1, 2, 3, 4, 5};
+std::vector<int>vec = {1, 2, 3, 4, 5};
     print_container("Vector", vec);
 
-    `std::`list`<std::string>` lst = {"apple", "banana", "cherry"};
+    std::list<std::string> lst = {"apple", "banana", "cherry"};
     print_container("List", lst);
 
     // 结合Lambda表达式，实现更灵活的泛型操作
-    std::cout `<< "Squared elements of vector: ";
+    std::cout << "Squared elements of vector: ";
     std::for_each(vec.begin(), vec.end(), [](int n) {
         std::cout << n * n << " ";
     });
@@ -76,7 +76,6 @@ int main() {
     return0;
 }
 ```
-
 ##### 1.0.2. 高效性：性能优化的追求
 STL的设计者对性能有着近乎偏执的追求。每一个STL组件的实现都经过了严苛的性能考量，旨在达到理论上的最优时间复杂度。
 
@@ -146,13 +145,13 @@ STL容器是STL的基石，它们提供了各种数据结构来存储和组织�
 代码示例：
 
 ```cpp
-#include <iostream>`
-#include `<vector>`
-#include `<algorithm>`
+#include <iostream>
+#include <vector>
+#include <algorithm>
 
 int main_vector_example() {
-    ``std::`vector`<int>` nums = {10, 20, 30};
-    std::cout `<< "Initial vector: ";
+    std::vector<int> nums = {10, 20, 30};
+    std::cout << "Initial vector: ";
     for (int n : nums) std::cout << n << " ";
     std::cout << "\n";
 
@@ -166,7 +165,6 @@ int main_vector_example() {
     return0;
 }
 ```
-
 ###### 2.0.1.2. `std::deque`：双端队列的灵活舞者
 `std::deque`（double-ended queue）是一个双端队列，支持在两端快速插入和删除元素，同时也能进行随机访问。
 
@@ -192,14 +190,14 @@ int main_vector_example() {
 代码示例：
 
 ```cpp
-#include <iostream>`
-#include `<deque>`
+#include <iostream>
+#include <deque>
 
 int main_deque_example() {
-    `std::`deque`<int>` dq = {10, 20, 30};
+    std::deque<int> dq = {10, 20, 30};
     dq.push_front(5);  // 前端添加，O(1)
     dq.push_back(35);  // 后端添加，O(1)
-    std::cout `<< "Deque: ";
+    std::cout << "Deque: ";
     for (int n : dq) std::cout << n << " ";
     std::cout << "\n";
 
@@ -207,7 +205,6 @@ int main_deque_example() {
     return 0;
 }
 ```
-
 ###### 2.0.1.3. `std::list`：双向链表的自由灵魂
 `std::list`是一个双向链表，它在任意位置进行插入和删除操作都非常高效，但不支持随机访问。
 
@@ -232,23 +229,22 @@ int main_deque_example() {
 代码示例：
 
 ```cpp
-#include <iostream>`
-#include `<list>`
-#include `<algorithm>`
+#include <iostream>
+#include <list>
+#include <algorithm>
 
 int main_list_example() {
-    `std::`list`<int>` my_list = {10, 30, 50};
+    std::list<int> my_list = {10, 30, 50};
     auto it = my_list.begin();
     std::advance(it, 1); // 移动迭代器到第二个元素 (30)
     my_list.insert(it, 20); // 在30前插入20，O(1)
     my_list.erase(it);      // 删除30，O(1)
-    std::cout `<< "List: ";
+    std::cout << "List: ";
     for (int n : my_list) std::cout << n << " ";
     std::cout << "\n";
     return0;
 }
 ```
-
 ###### 2.0.1.4. `std::array`：固定大小的“安全C数组”
 `std::array`（C++11引入）是一个固定大小的数组，它提供了C风格数组的性能优势和STL容器的接口便利性。
 
@@ -273,17 +269,16 @@ int main_list_example() {
 代码示例：
 
 ```cpp
-#include <iostream>`
-#include `<array>`
+#include <iostream>
+#include <array>
 
 int main_array_example() {
-    `std::`array`<int, 5>` arr = {1, 2, 3, 4, 5};
-    std::cout `<< "Array size: " << arr.size() << "\n";
+    std::array<int, 5> arr = {1, 2, 3, 4, 5};
+    std::cout << "Array size: " << arr.size() << "\n";
     std::cout << "Element at index 2: " << arr[2] << "\n";
     return 0;
 }
 ```
-
 ###### 2.0.1.5. `std::forward_list`：单向链表的极致精简
 `std::forward_list`（C++11引入）是一个单向链表，只支持向前遍历，比`std::list`更节省内存，但功能更少。
 
@@ -308,19 +303,18 @@ int main_array_example() {
 代码示例：
 
 ```cpp
-#include <iostream>`
-#include `<forward_list>`
+#include <iostream>
+#include <forward_list>
 
 int main_forward_list_example() {
-    `std::`forward_list`<int>` fl = {10, 20, 30};
+    std::forward_list<int> fl = {10, 20, 30};
     fl.push_front(5); // 前端添加，O(1)
-    std::cout `<< "Forward List: ";
+    std::cout << "Forward List: ";
     for (int n : fl) std::cout << n << " ";
     std::cout << "\n";
     return 0;
 }
 ```
-
 ##### 2.0.2. 关联容器：有序世界的秩序
 关联容器根据元素的键（key）进行排序和组织，提供了高效的查找、插入和删除操作。所有关联容器的元素都自动保持有序。
 
@@ -347,12 +341,12 @@ int main_forward_list_example() {
 代码示例：
 
 ```cpp
-#include <iostream>`
-#include `<set>`
+#include <iostream>
+#include <set>
 
 int main_set_example() {
-    ``std::`set`<int>` s = {30, 10, 50, 20, 40};
-    std::cout `<< "Set (sorted): ";
+    std::set<int> s = {30, 10, 50, 20, 40};
+    std::cout << "Set (sorted): ";
     for (int n : s) std::cout << n << " ";
     std::cout << "\n"; // Output: 10 20 30 40 50
 
@@ -362,7 +356,6 @@ int main_set_example() {
     return 0;
 }
 ```
-
 ###### 2.0.2.2. `std::multiset`：有序可重复的“多重集合”
 `std::multiset`与`std::set`类似，但允许存储重复元素。
 
@@ -379,12 +372,12 @@ int main_set_example() {
 代码示例：
 
 ```cpp
-#include <iostream>`
-#include `<set>`
+#include <iostream>
+#include <set>
 
 int main_multiset_example() {
-    `std::`multiset`<int>` ms = {30, 10, 50, 20, 40, 30, 10};
-    std::cout `<< "Multiset (sorted): ";
+    std::multiset<int> ms = {30, 10, 50, 20, 40, 30, 10};
+    std::cout << "Multiset (sorted): ";
     for (int n : ms) std::cout << n << " ";
     std::cout << "\n"; // Output: 10 10 20 30 30 40 50
 
@@ -393,7 +386,6 @@ int main_multiset_example() {
     return 0;
 }
 ```
-
 ###### 2.0.2.3. `std::map`：有序键值对的“字典”
 `std::map`是一个存储键值对（key-value pair）的容器，键是唯一的，并按照特定顺序排列。
 
@@ -411,17 +403,17 @@ int main_multiset_example() {
 代码示例：
 
 ```cpp
-#include <iostream>`
-#include `<map>`
-#include `<string>`
+#include <iostream>
+#include <map>
+#include <string>
 
 int main_map_example() {
-    ``std::`map`<std::string, int>` ages;
+    std::map<std::string, int> ages;
     ages["Alice"] = 30;
     ages["Bob"] = 25;
     ages["Charlie"] = 35;
 
-    std::cout `<< "Map (sorted by key): \n";
+    std::cout << "Map (sorted by key): \n";
     for (constauto& pair : ages) {
         std::cout << pair.first << ": " << pair.second << "\n";
     }
@@ -432,7 +424,6 @@ int main_map_example() {
     return0;
 }
 ```
-
 ###### 2.0.2.4. `std::multimap`：有序可重复键值对的“多重字典”
 `std::multimap`与`std::map`类似，但允许存储重复的键。
 
@@ -449,17 +440,17 @@ int main_map_example() {
 代码示例：
 
 ```cpp
-#include <iostream>`
-#include `<map>`
-#include `<string>`
+#include <iostream>
+#include <map>
+#include <string>
 
 int main_multimap_example() {
-    `std::`multimap`<std::string, int>` scores;
+    std::multimap<std::string, int> scores;
     scores.insert({"Alice", 90});
     scores.insert({"Bob", 85});
     scores.insert({"Alice", 95}); // 允许重复键
 
-    std::cout `<< "Multimap (sorted by key): \n";
+    std::cout << "Multimap (sorted by key): \n";
     for (constauto& pair : scores) {
         std::cout << pair.first << ": " << pair.second << "\n";
     }
@@ -467,13 +458,12 @@ int main_multimap_example() {
     auto range = scores.equal_range("Alice");
     std::cout << "Alice's scores: ";
     for (auto it = range.first; it != range.second; ++it) {
-        std::cout << it->`second `<< " ";
+        std::cout << it->second << " ";
     }
     std::cout << "\n";
     return0;
 }
 ```
-
 ##### 2.0.3. 无序关联容器：哈希表的狂野力量
 无序关联容器（C++11引入）使用哈希表（Hash Table）来组织元素，提供了平均O(1)的查找、插入和删除操作。它们不保证元素的顺序，但速度极快。
 
@@ -500,12 +490,12 @@ int main_multimap_example() {
 代码示例：
 
 ```cpp
-#include <iostream>`
-#include `<unordered_set>`
+#include <iostream>
+#include <unordered_set>
 
 int main_unordered_set_example() {
-    `std::`unordered_set`<int>` us = {30, 10, 50, 20, 40};
-    std::cout `<< "Unordered Set (order unpredictable): ";
+    std::unordered_set<int> us = {30, 10, 50, 20, 40};
+    std::cout << "Unordered Set (order unpredictable): ";
     for (int n : us) std::cout << n << " ";
     std::cout << "\n";
 
@@ -514,7 +504,6 @@ int main_unordered_set_example() {
     return 0;
 }
 ```
-
 ###### 2.0.3.2. `std::unordered_multiset`：无序可重复的“哈希多重集合”
 `std::unordered_multiset`与`std::unordered_set`类似，但允许存储重复元素。
 
@@ -531,12 +520,12 @@ int main_unordered_set_example() {
 代码示例：
 
 ```cpp
-#include <iostream>`
-#include `<unordered_set>`
+#include <iostream>
+#include <unordered_set>
 
 int main_unordered_multiset_example() {
-    `std::`unordered_multiset`<int>` ums = {30, 10, 50, 20, 40, 30, 10};
-    std::cout `<< "Unordered Multiset (order unpredictable): ";
+    std::unordered_multiset<int> ums = {30, 10, 50, 20, 40, 30, 10};
+    std::cout << "Unordered Multiset (order unpredictable): ";
     for (int n : ums) std::cout << n << " ";
     std::cout << "\n";
 
@@ -545,7 +534,6 @@ int main_unordered_multiset_example() {
     return 0;
 }
 ```
-
 ###### 2.0.3.3. `std::unordered_map`：无序键值对的“哈希字典”
 `std::unordered_map`是一个存储键值对的容器，键是唯一的，元素没有特定顺序。
 
@@ -563,17 +551,17 @@ int main_unordered_multiset_example() {
 代码示例：
 
 ```cpp
-#include <iostream>`
-#include `<unordered_map>`
-#include `<string>`
+#include <iostream>
+#include <unordered_map>
+#include <string>
 
 int main_unordered_map_example() {
-    `std::`unordered_map`<std::string, int>` ages;
+    std::unordered_map<std::string, int> ages;
     ages["Alice"] = 30;
     ages["Bob"] = 25;
     ages["Charlie"] = 35;
 
-    std::cout `<< "Unordered Map (order unpredictable): \n";
+    std::cout << "Unordered Map (order unpredictable): \n";
     for (constauto& pair : ages) {
         std::cout << pair.first << ": " << pair.second << "\n";
     }
@@ -584,7 +572,6 @@ int main_unordered_map_example() {
     return0;
 }
 ```
-
 ###### 2.0.3.4. `std::unordered_multimap`：无序可重复键值对的“哈希多重字典”
 `std::unordered_multimap`与`std::unordered_map`类似，但允许存储重复的键。
 
@@ -601,17 +588,17 @@ int main_unordered_map_example() {
 代码示例：
 
 ```cpp
-#include <iostream>`
-#include `<unordered_map>`
-#include `<string>`
+#include <iostream>
+#include <unordered_map>
+#include <string>
 
 int main_unordered_multimap_example() {
-    `std::`unordered_multimap`<std::string, int>` scores;
+    std::unordered_multimap<std::string, int> scores;
     scores.insert({"Alice", 90});
     scores.insert({"Bob", 85});
     scores.insert({"Alice", 95}); // 允许重复键
 
-    std::cout `<< "Unordered Multimap (order unpredictable): \n";
+    std::cout << "Unordered Multimap (order unpredictable): \n";
     for (constauto& pair : scores) {
         std::cout << pair.first << ": " << pair.second << "\n";
     }
@@ -619,13 +606,12 @@ int main_unordered_multimap_example() {
     auto range = scores.equal_range("Alice");
     std::cout << "Alice's scores: ";
     for (auto it = range.first; it != range.second; ++it) {
-        std::cout << it->`second `<< " ";
+        std::cout << it->second << " ";
     }
     std::cout << "\n";
     return0;
 }
 ```
-
 ##### 2.0.4. 容器适配器：特定接口的封装艺术
 容器适配器不是独立的容器，而是将现有容器（如`std::deque`、`std::list`、`std::vector`）封装起来，提供特定的接口，以实现栈、队列和优先队列的功能。它们就像给普通容器套上了一层“马甲”，只暴露特定的操作。
 
@@ -651,16 +637,16 @@ int main_unordered_multimap_example() {
 代码示例：
 
 ```cpp
-#include <iostream>`
-#include `<stack>`
-#include `<vector>`
+#include <iostream>
+#include <stack>
+#include <vector>
 
 int main_stack_example() {
-    `std::`stack`<int>` s; // 默认使用std::deque
-    // std::stack`<int,`std::vector<int>`> s_vec; // 显式使用vector作为底层容器
+    std::stack<int> s; // 默认使用std::deque
+    // std::stack<int,std::vector<int>> s_vec; // 显式使用vector作为底层容器
 
     s.push(10); s.push(20); s.push(30);
-    std::cout `<< "Stack elements (top to bottom):\n";
+    std::cout << "Stack elements (top to bottom):\n";
     while (!s.empty()) {
         std::cout << s.top() << "\n";
         s.pop();
@@ -668,7 +654,6 @@ int main_stack_example() {
     return0;
 }
 ```
-
 ###### 2.0.4.2. `std::queue`：先进先出（FIFO）的“排队”
 `std::queue`是一个先进先出（FIFO）的容器适配器，就像现实生活中的排队，先来者先服务。
 
@@ -690,13 +675,13 @@ int main_stack_example() {
 代码示例：
 
 ```cpp
-#include <iostream>`
-#include `<queue>`
+#include <iostream>
+#include <queue>
 
 int main_queue_example() {
-    `std::`queue`<int>` q;
+    std::queue<int> q;
     q.push(10); q.push(20); q.push(30);
-    std::cout `<< "Queue elements (front to back):\n";
+    std::cout << "Queue elements (front to back):\n";
     while (!q.empty()) {
         std::cout << q.front() << "\n";
         q.pop();
@@ -704,7 +689,6 @@ int main_queue_example() {
     return 0;
 }
 ```
-
 ###### 2.0.4.3. `std::priority_queue`：优先级至上的“VIP通道”
 `std::priority_queue`是一个容器适配器，它允许用户根据元素的优先级进行插入和删除，优先级最高的元素总是位于队头。
 
@@ -726,16 +710,16 @@ int main_queue_example() {
 代码示例：
 
 ```cpp
-#include `<iostream>`
-#include `<queue>`
-#include `<vector>`
-#include `<functional>` // For std::greater
+#include <iostream>
+#include <queue>
+#include <vector>
+#include <functional> // For std::greater
 
 int main_priority_queue_example() {
     // 默认是最大堆
-    `std::`priority_queue`<int>` max_pq;
+    std::priority_queue<int> max_pq;
     max_pq.push(30); max_pq.push(10); max_pq.push(50); max_pq.push(20);
-    std::cout `<< "Max Priority Queue (top to bottom):\n";
+    std::cout << "Max Priority Queue (top to bottom):\n";
     while (!max_pq.empty()) {
         std::cout << max_pq.top() << "\n";
         max_pq.pop();
@@ -743,10 +727,10 @@ int main_priority_queue_example() {
 
     std::cout << "\n";
 
-    // 最小堆：通过指定比较器`std::greater<int>`
-    std::priority_queue`<int,`std::vector<int>`, `std::`greater`<int>`> min_pq;
+    // 最小堆：通过指定比较器std::greater<int>
+    std::priority_queue<int,std::vector<int>, std::greater<int>> min_pq;
     min_pq.push(30); min_pq.push(10); min_pq.push(50); min_pq.push(20);
-    std::cout `<< "Min Priority Queue (top to bottom):\n";
+    std::cout << "Min Priority Queue (top to bottom):\n";
     while (!min_pq.empty()) {
         std::cout << min_pq.top() << "\n";
         min_pq.pop();
@@ -754,7 +738,6 @@ int main_priority_queue_example() {
     return0;
 }
 ```
-
 ### 3. 三、STL算法：操作数据的“魔法棒”**
 STL算法是独立于容器的函数模板，它们通过迭代器操作容器中的元素。这种设计使得算法具有极高的通用性，可以应用于任何提供符合要求的迭代器的数据结构。它们是STL“分离”思想的完美体现。
 
@@ -771,31 +754,30 @@ STL算法数量庞大，这里我们只挑选一些最常用、最具代表性�
 + `std::for_each`：对指定范围内的每个元素应用一个函数对象。如果你只是想遍历并对每个元素执行一个操作，它比手动`for`循环更具表达力。
 
 ```cpp
-#include <iostream>`
-#include `<vector>`
-#include `<algorithm>`
+#include <iostream>
+#include <vector>
+#include <algorithm>
 
 int main_for_each_example() {
-    ``std::`vector`<int>` v = {1, 2, 3, 4, 5};
-    std::cout `<< "Elements: ";
+    std::vector<int> v = {1, 2, 3, 4, 5};
+    std::cout << "Elements: ";
     std::for_each(v.begin(), v.end(), [](int n){ std::cout << n << " "; });
     std::cout << "\n";
     return 0;
 }
 ```
-
 + `std::find` / `std::find_if`：在指定范围内查找第一个匹配给定值或满足某个条件的元素。告别手动循环查找！
 
 ```cpp
-#include <iostream>`
-#include `<vector>`
-#include `<algorithm>`
+#include <iostream>
+#include <vector>
+#include <algorithm>
 
 int main_find_example() {
-    ``std::`vector`<int>` v = {10, 20, 30, 40, 50};
+    std::vector<int> v = {10, 20, 30, 40, 50};
     auto it = std::find(v.begin(), v.end(), 30);
     if (it != v.end()) {
-        std::cout `<< "Found 30 at index: " << std::distance(v.begin(), it) << "\n";
+        std::cout << "Found 30 at index: " << std::distance(v.begin(), it) << "\n";
     }
     // 查找第一个偶数
     auto it_even = std::find_if(v.begin(), v.end(), [](int n){ return n % 2 == 0; });
@@ -805,124 +787,117 @@ int main_find_example() {
     return0;
 }
 ```
-
 + `std::count` / `std::count_if`：统计指定范围内匹配给定值或满足某个条件的元素数量。
 
 ```cpp
-#include <iostream>`
-#include `<vector>`
-#include `<algorithm>`
+#include <iostream>
+#include <vector>
+#include <algorithm>
 
 int main_count_example() {
-    ``std::`vector`<int>` v = {1, 2, 2, 3, 2, 4, 5};
+    std::vector<int> v = {1, 2, 2, 3, 2, 4, 5};
     int num_twos = std::count(v.begin(), v.end(), 2);
-    std::cout `<< "Number of 2s: " << num_twos << "\n"; // Output: 3
+    std::cout << "Number of 2s: " << num_twos << "\n"; // Output: 3
     int num_odd = std::count_if(v.begin(), v.end(), [](int n){ return n % 2 != 0; });
     std::cout << "Number of odd numbers: " << num_odd << "\n"; // Output: 3
     return 0;
 }
 ```
-
 + `std::all_of`, `std::any_of`, `std::none_of` (C++11)：检查范围内所有/任意/没有元素满足某个条件。代码更具可读性。
 
 ```cpp
-#include <iostream>`
-#include `<vector>`
-#include `<algorithm>`
+#include <iostream>
+#include <vector>
+#include <algorithm>
 
 int main_all_any_none_of_example() {
-    ``std::`vector`<int>` v = {2, 4, 6, 8, 10};
+    std::vector<int> v = {2, 4, 6, 8, 10};
     bool all_even = std::all_of(v.begin(), v.end(), [](int i){ return i % 2 == 0; });
-    std::cout `<< "All even? " << (all_even ? "Yes" : "No") << "\n"; // Yes
+    std::cout << "All even? " << (all_even ? "Yes" : "No") << "\n"; // Yes
     return 0;
 }
 ```
-
 ##### 3.0.2. 修改序列操作：改变数据的面貌
 这类算法会改变容器中元素的顺序或值。
 
 + `std::copy` / `std::copy_if`：将一个范围的元素拷贝到另一个范围，或根据条件拷贝。高效且安全。
 
 ```cpp
-#include <iostream>`
-#include `<vector>`
-#include `<algorithm>`
+#include <iostream>
+#include <vector>
+#include <algorithm>
 
 int main_copy_example() {
-    ``std::`vector`<int>` source = {1, 2, 3, 4, 5};
-    ``std::`vector`<int>` destination(source.size());
+    std::vector<int> source = {1, 2, 3, 4, 5};
+    std::vector<int> destination(source.size());
     std::copy(source.begin(), source.end(), destination.begin());
-    std::cout `<< "Copied vector: ";
+    std::cout << "Copied vector: ";
     for (int n : destination) std::cout << n << " ";
     std::cout << "\n";
 
-`std::vector<int>`evens;
+std::vector<int>evens;
     std::copy_if(source.begin(), source.end(), std::back_inserter(evens), [](int n){ return n % 2 == 0; });
-    std::cout `<< "Even numbers: ";
+    std::cout << "Even numbers: ";
     for (int n : evens) std::cout << n << " ";
     std::cout << "\n";
     return0;
 }
 ```
-
 + `std::remove` / `std::remove_if`：移除指定值或满足某个条件的所有元素（注意：这是逻辑移除，不改变容器大小！）。它会将“不被移除”的元素移动到序列的前部，并返回一个指向新逻辑尾部的迭代器。要真正删除元素，需要结合容器的`erase`方法。
 
 ```cpp
-#include <iostream>`
-#include `<vector>`
-#include `<algorithm>`
+#include <iostream>
+#include <vector>
+#include <algorithm>
 
 int main_remove_example() {
-    ``std::`vector`<int>` v = {1, 2, 3, 2, 4, 2, 5};
+    std::vector<int> v = {1, 2, 3, 2, 4, 2, 5};
     // remove 返回一个迭代器，指向新的逻辑尾部
     auto new_end = std::remove(v.begin(), v.end(), 2);
     // 实际删除元素并调整容器大小
     v.erase(new_end, v.end());
-    std::cout `<< "Vector after removing 2s: ";
+    std::cout << "Vector after removing 2s: ";
     for (int n : v) std::cout << n << " ";
     std::cout << "\n";
     return0;
 }
 ```
-
 + `std::transform`：对指定范围内的每个元素应用一个函数，并将结果存储到另一个范围。实现“一对一”的转换。
 
 ```cpp
-#include <iostream>`
-#include `<vector>`
-#include `<algorithm>`
+#include <iostream>
+#include <vector>
+#include <algorithm>
 
 int main_transform_example() {
-    ``std::`vector`<int>` v = {1, 2, 3, 4, 5};
-    ``std::`vector`<int>` result(v.size());
+    std::vector<int> v = {1, 2, 3, 4, 5};
+    std::vector<int> result(v.size());
     std::transform(v.begin(), v.end(), result.begin(), [](int n){ return n * n; });
-    std::cout `<< "Squared elements: ";
+    std::cout << "Squared elements: ";
     for (int n : result) std::cout << n << " ";
     std::cout << "\n";
     return 0;
 }
 ```
-
 ##### 3.0.3. 排序与相关操作：让数据井然有序
 这类算法用于对序列进行排序或查找有序序列中的元素，是数据处理的核心。
 
 + `std::sort`：对指定范围内的元素进行排序。通常采用Introsort，性能卓越。
 
 ```cpp
-#include <iostream>`
-#include `<vector>`
-#include `<algorithm>`
+#include <iostream>
+#include <vector>
+#include <algorithm>
 
 int main_sort_example() {
-    ``std::`vector`<int>` v = {5, 2, 8, 1, 9};
+    std::vector<int> v = {5, 2, 8, 1, 9};
     std::sort(v.begin(), v.end());
-    std::cout `<< "Sorted vector: ";
+    std::cout << "Sorted vector: ";
     for (int n : v) std::cout << n << " ";
     std::cout << "\n";
     return 0;
 }
 ```
-
 + `std::stable_sort`：稳定排序，保持相等元素的相对顺序。
 + `std::partial_sort`：部分排序，只对序列的前N个元素进行排序。
 + `std::nth_element`：将第n个元素放到正确的位置，并保证其左边的元素都小于它，右边的元素都大于它（常用于查找中位数或Top K问题）。
@@ -935,14 +910,14 @@ int main_sort_example() {
 + `std::accumulate`：计算指定范围内元素的累加和，或执行其他累积操作。灵活的“求和机”。
 
 ```cpp
-#include `<iostream>`
-#include `<vector>`
-#include `<numeric>`
+#include <iostream>
+#include <vector>
+#include <numeric>
 
 int main_accumulate_example() {
-    ``std::`vector`<int>` v = {1, 2, 3, 4, 5};
+    std::vector<int> v = {1, 2, 3, 4, 5};
     int sum = std::accumulate(v.begin(), v.end(), 0); // 初始值为0
-    std::cout `<< "Sum of elements: " << sum << "\n"; // Output: 15
+    std::cout << "Sum of elements: " << sum << "\n"; // Output: 15
 
     // 也可以用于其他操作，例如乘积
     int product = std::accumulate(v.begin(), v.end(), 1, [](int total, int n){ return total * n; });
@@ -950,24 +925,22 @@ int main_accumulate_example() {
     return 0;
 }
 ```
-
 + `std::iota` (C++11)：用递增序列填充范围。快速初始化序列。
 
 ```cpp
-#include <iostream>`
-#include `<vector>`
-#include `<numeric>`
+#include <iostream>
+#include <vector>
+#include <numeric>
 
 int main_iota_example() {
-    ``std::`vector`<int>` v(5);
+    std::vector<int> v(5);
     std::iota(v.begin(), v.end(), 10); // 从10开始填充，v = {10, 11, 12, 13, 14}
-    std::cout `<< "Vector after iota: ";
+    std::cout << "Vector after iota: ";
     for (int n : v) std::cout << n << " ";
     std::cout << "\n";
     return 0;
 }
 ```
-
 ##### 3.0.5. 其他常用算法：锦上添花的功能
 + `std::min_element`, `std::max_element`：查找范围内最小/最大元素。
 + `std::unique`：移除有序范围内所有连续重复的元素（逻辑移除，需配合`erase`）。
@@ -1010,22 +983,22 @@ C++定义了五种主要的迭代器类别，它们形成一个层次结构，�
 代码示例：
 
 ```cpp
-#include `<iostream>`
-#include `<vector>`
-#include `<list>`
-#include `<iterator>` // For std::distance, std::advance
+#include <iostream>
+#include <vector>
+#include <list>
+#include <iterator> // For std::distance, std::advance
 
 int main_iterators_example() {
-    ``std::`vector`<int>` vec = {10, 20, 30, 40, 50};
+    std::vector<int> vec = {10, 20, 30, 40, 50};
     // 随机访问迭代器支持算术运算
-    std::cout `<< "Element at vec.begin() + 2: " << *(vec.begin() + 2) << "\n"; // Output: 30
+    std::cout << "Element at vec.begin() + 2: " << *(vec.begin() + 2) << "\n"; // Output: 30
     std::cout << "Distance from begin to end: " << std::distance(vec.begin(), vec.end()) << "\n"; // Output: 5
 
-`std::list<std::string>`lst = {"apple", "banana", "cherry"};
+std::list<std::string>lst = {"apple", "banana", "cherry"};
     // 双向迭代器支持 --
     auto it_lst_rev = lst.end();
     --it_lst_rev; // 指向最后一个元素
-    std::cout `<< "Last element of list: " << *it_lst_rev << "\n";
+    std::cout << "Last element of list: " << *it_lst_rev << "\n";
 
     // std::advance 适用于所有迭代器类型
     auto it_adv = lst.begin();
@@ -1035,7 +1008,6 @@ int main_iterators_example() {
     return0;
 }
 ```
-
 ### 5. 五、函数对象与分配器：STL的幕后英雄与高级定制**
 除了容器、算法和迭代器，STL还有两个重要的辅助组件：函数对象和分配器，它们在幕后默默地为STL的灵活性和高效性贡献力量。
 
@@ -1057,10 +1029,10 @@ int main_iterators_example() {
 
 
 ```cpp
-#include `<iostream>`
-#include `<vector>`
-#include `<algorithm>`
-#include `<functional>` // For std::plus, std::greater
+#include <iostream>
+#include <vector>
+#include <algorithm>
+#include <functional> // For std::plus, std::greater
 
 // 自定义函数对象：判断一个数是否大于某个阈值
 class IsGreaterThan {
@@ -1088,11 +1060,11 @@ int sum_;
 };
 
 int main_functors_example() {
-    ``std::`vector`<int>` v = {10, 25, 5, 30, 15};
+    std::vector<int> v = {10, 25, 5, 30, 15};
 
-    // 使用标准库函数对象：std::sort 默认使用 `std::`less`<T>`
-    std::sort(v.begin(), v.end(), `std::`greater`<int>`()); // 降序排序
-    std::cout `<< "Sorted (descending): ";
+    // 使用标准库函数对象：std::sort 默认使用 std::less<T>
+    std::sort(v.begin(), v.end(), std::greater<int>()); // 降序排序
+    std::cout << "Sorted (descending): ";
     for (int n : v) std::cout << n << " ";
     std::cout << "\n";
 
@@ -1108,20 +1080,18 @@ int main_functors_example() {
     return0;
 }
 ```
-
 Lambda表达式：现代C++的“语法糖”
 
 C++11引入的Lambda表达式是创建匿名函数对象的便捷方式，它在很多情况下可以替代简单的函数对象，使代码更简洁、更具可读性。它们本质上就是编译器为你生成的函数对象。
 
 ```cpp
 // 使用Lambda表达式实现 IsGreaterThan 的功能
-int count_gt_20_lambda = std::count_if(v.begin(), v.end(), [](int n){ return n >` 20; });
+int count_gt_20_lambda = std::count_if(v.begin(), v.end(), [](int n){ return n > 20; });
 
 // Lambda捕获外部变量，实现状态保持
 int threshold = 20;
 int count_gt_threshold = std::count_if(v.begin(), v.end(), [threshold](int n){ return n > threshold; });
 ```
-
 ##### 5.0.2. 分配器：内存管理的“私人管家”
 分配器（Allocators）是STL中用于管理内存分配和释放的类模板。每个STL容器都接受一个可选的分配器模板参数，允许用户自定义内存管理策略。它们是STL实现高度可定制性的关键之一。
 
@@ -1132,7 +1102,7 @@ int count_gt_threshold = std::count_if(v.begin(), v.end(), [threshold](int n){ r
 
 默认分配器：
 
-STL容器默认使用``std::`allocator`&lt;T>`，它通过全局的`new`和`delete`运算符进行内存分配和释放。这对于大多数应用来说已经足够高效。
+STL 容器默认使用 `std::allocator<T>`，它通过全局的 `new` 和 `delete` 运算符进行内存分配和释放。这对于大多数应用来说已经足够高效。
 
 自定义分配器：
 
@@ -1145,26 +1115,26 @@ STL容器默认使用``std::`allocator`&lt;T>`，它通过全局的`new`和`dele
 如何实现一个简单的自定义分配器（概念性代码）：
 
 ```cpp
-#include `<iostream>`
-#include `<vector>`
-#include `<memory>` // For std::allocator_traits
+#include <iostream>
+#include <vector>
+#include <memory> // For std::allocator_traits
 
 // 极简的自定义分配器示例，仅用于演示概念
-template `<typename T>`
+template <typename T>
 struct MyCustomAllocator {
 using value_type = T;
 
 MyCustomAllocator() = default;
-template `<typename U>` MyCustomAllocator(const `MyCustomAllocator`<U>`&) {}
+template <typename U> MyCustomAllocator(const MyCustomAllocator<U>&) {}
 
 T* allocate(std::size_t n) {
     // 实际应用中这里会是内存池、共享内存等复杂逻辑
-    std::cout `<< "Allocating " << n * sizeof(T) << " bytes.\n";
-    `returnstatic_cast<T*>`(::operatornew(n * sizeof(T)));
+    std::cout << "Allocating " << n * sizeof(T) << " bytes.\n";
+    returnstatic_cast<T*>(::operatornew(n * sizeof(T)));
 }
 
 void deallocate(T* p, std::size_t n) {
-    std::cout `<< "Deallocating " << n * sizeof(T) << " bytes.\n";
+    std::cout << "Deallocating " << n * sizeof(T) << " bytes.\n";
     ::operator delete(p);
 }
 
@@ -1175,12 +1145,12 @@ booloperator!=(const MyCustomAllocator&) const { returnfalse; }
 
 int main_allocator_example() {
     // 使用自定义分配器创建vector
-`std::vector<int, MyCustomAllocator<int>`> my_vec;
+std::vector<int, MyCustomAllocator<int>> my_vec;
     my_vec.push_back(10);
     my_vec.push_back(20);
     my_vec.push_back(30);
 
-    std::cout `<< "Vector elements: ";
+    std::cout << "Vector elements: ";
     for (int n : my_vec) {
         std::cout << n << " ";
     }
@@ -1220,7 +1190,7 @@ C++ STL是一个设计精巧、功能强大且高度优化的库，它为现代C
 + 容器选择：给定一个场景，让你选择最合适的STL容器，并解释理由（考察对容器内部机制和性能的理解）。
 + 迭代器失效：给出一段代码，让你找出迭代器失效的问题并改正（考察对迭代器生命周期的理解）。
 + 算法应用：使用STL算法解决实际问题，如去重、排序、查找等（考察对STL算法的熟练程度）。
-+ 自定义类型与STL：如何将自定义类作为`map`的键或`set`的元素（考察对`operator&lt;`、`operator==`、`std::hash`的理解）。
++ 自定义类型与STL：如何将自定义类作为`map`的键或`set`的元素（考察对`operator<`、`operator==`、`std::hash`的理解）。
 + 实现原理：`vector`扩容机制、`map`和`set`的红黑树原理、`unordered_map`的哈希表原理（考察对底层数据结构的掌握）。
 + 线程安全：STL容器是否线程安全？如何保证线程安全？（考察并发编程知识）。
 
@@ -1257,7 +1227,6 @@ Gitee：https://gitee.com/aqjsp
 
 >` 来自: [C++程序员必读：STL深度剖析与高效实战，告别“劝退”走向“真香”！！！](https://mp.weixin.qq.com/s?__biz=MzU5MTgxNzI5Nw==&mid=2247492370&idx=1&sn=c5963be03c21cdb3ccd94ebdb860c011&scene=21&poc_token=HAxoo2ijYzpcGvTQ2e0Q-_reeJ4S90_CbuRW6bqR)
 >
-
 
 
 

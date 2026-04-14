@@ -46,7 +46,6 @@ slug: /C++/面试题/秋招面经字节-抖音C-开发面经-超详细解读-建
 
 #endif // MY_HEADER_H
 ```
-
 工作原理：
 
 + 当预处理器第一次遇到 `#ifndef MY_HEADER_H` 时，如果宏 `MY_HEADER_H` 尚未定义，则条件为真。预处理器会继续处理 `#define MY_HEADER_H`，定义该宏，然后处理头文件中的所有内容，直到 `#endif`。
@@ -65,7 +64,6 @@ slug: /C++/面试题/秋招面经字节-抖音C-开发面经-超详细解读-建
 // 头文件内容
 // 类声明、函数声明、宏定义等
 ```
-
 工作原理：
 
 + 当编译器第一次遇到 `#pragma once` 指令时，它会记录下当前头文件的路径。如果后续再次尝试包含同一个路径的头文件，编译器会直接跳过其内容，不再进行处理。
@@ -118,7 +116,6 @@ int main() {
     return0;
 }
 ```
-
 1. `main` 函数的栈帧：
     - `main` 函数开始执行，其栈帧被创建。
     - `main` 函数调用 `func_a(10)`。
@@ -355,7 +352,7 @@ C++中的多态可以分为两种：静态多态和动态多态。
 class Animal {
 public:
 virtual void speak() {
-    std::cout `<< "Animal makes a sound" << std::endl;
+    std::cout << "Animal makes a sound" << std::endl;
 }
 virtual ~Animal() {} // 虚析构函数，防止内存泄漏
 };
@@ -379,7 +376,7 @@ int main() {
     Animal* myAnimal2 = new Cat();
     Animal* myAnimal3 = new Animal();
 
-    myAnimal1->`speak(); // 运行时调用 Dog::speak()
+    myAnimal1->speak(); // 运行时调用 Dog::speak()
     myAnimal2->speak(); // 运行时调用 Cat::speak()
     myAnimal3->speak(); // 运行时调用 Animal::speak()
 
@@ -389,7 +386,6 @@ int main() {
     return0;
 }
 ```
-
 这个例子中，尽管 `myAnimal1` 和 `myAnimal2` 都是 `Animal` 类型的指针，但它们在运行时调用了各自派生类中的 `speak()` 方法，这就是动态多态。
 
 ###### 6.0.0.3. 虚函数表
@@ -416,7 +412,7 @@ int main() {
 ```cpp
 对象实例内存布局：
 +-------------------+
-    | vptr              |  `<-- 指向虚函数表
+    | vptr              |  <-- 指向虚函数表
     +-------------------+
     | 其他成员变量        |
     +-------------------+
@@ -440,7 +436,6 @@ int main() {
     | &Animal::~Animal  |
     +-------------------+
 ```
-
 虚析构函数：
 
 基类的析构函数通常也应该声明为虚函数（`virtual ~BaseClass()`）。
@@ -467,30 +462,29 @@ int main() {
 
 ```cpp
 // 递归模板定义：计算N的阶乘
-template <int N>`
+template <int N>
 struct Factorial {
-staticconstint value = N * `Factorial`<N - 1>`::value;
+staticconstint value = N * Factorial<N - 1>::value;
 };
 
 // 模板特化：递归终止条件，0的阶乘是1
 template <>
-struct `Factorial`<0>` {
+struct Factorial<0> {
 staticconstint value = 1;
 };
 
 int main() {
     // 在编译时计算 5! = 120
-    std::cout `<< "Factorial of 5 is: " << `Factorial<5>`::value `<< std::endl; // 输出 120
+    std::cout << "Factorial of 5 is: " << Factorial<5>::value << std::endl; // 输出 120
 
     // 在编译时计算 0! = 1
-    std::cout << "Factorial of 0 is: " << `Factorial<0>`::value `<< std::endl; // 输出 1
+    std::cout << "Factorial of 0 is: " << Factorial<0>::value << std::endl; // 输出 1
 
     // 编译时错误：负数阶乘
-    // std::cout << `Factorial<-1>`::value `<< std::endl; // 会导致编译错误，因为没有 `Factorial<-1>` 的特化或递归终止条件
+    // std::cout << Factorial<-1>::value << std::endl; // 会导致编译错误，因为没有 Factorial<-1> 的特化或递归终止条件
     return0;
 }
 ```
-
 例子中，``Factorial`<N>`::value` 的计算是在编译时完成的。编译器会根据模板参数 `N` 的值，递归地实例化 `Factorial` 模板，直到遇到 ``Factorial`<0>` 的特化版本，从而得到最终的编译时常量。
 
 模板元编程的优势：
@@ -732,7 +726,6 @@ int main() {
 const int MAX_VALUE = 100; // 常量，必须初始化
 // MAX_VALUE = 200; // 错误：不能修改常量
 ```
-
     - `const` 变量必须在声明时或构造函数初始化列表中初始化。
 2. 修饰指针：`const` 修饰指针时，位置不同，含义也不同，这常常是面试的考点。
     - 指向常量的指针：指针指向的内容是常量，不能通过该指针修改其指向的值，但指针本身可以修改，指向其他地方。
@@ -748,7 +741,6 @@ value = 15;                 // 可以通过非const方式修改value
 
 ptr_to_const = &const_value; // 可以指向const变量
 ```
-
 可以读作“`const` 在 `*` 左边，修饰的是 `*ptr_to_const`，即指针指向的值是常量”。
 
     - 常量指针：指针本身是常量，一旦初始化后，不能再指向其他地方，但可以通过该指针修改其指向的值（如果指向的值不是常量）。
@@ -758,7 +750,6 @@ int* const const_ptr = &value; // 指针本身是常量
 *const_ptr = 25;               // 可以通过const_ptr修改value
 // const_ptr = &const_value; // 错误：不能修改const_ptr的指向
 ```
-
 可以读作“`const` 在 `*` 右边，修饰的是 `const_ptr`，即指针本身是常量”。
 
     - 指向常量的常量指针：指针本身和指针指向的内容都是常量，都不能修改。
@@ -768,7 +759,6 @@ const int* const const_ptr_to_const = &value; // 两者都是常量
 // *const_ptr_to_const = 30; // 错误
 // const_ptr_to_const = &const_value; // 错误
 ```
-
 3. 修饰引用：
     - 常量引用：引用本身是常量，不能通过该引用修改其引用的值。常量引用可以绑定到非 `const` 对象、`const` 对象、临时对象或字面量。
 
@@ -783,7 +773,6 @@ const int& ref_b = b; // 常量引用绑定到const变量
 
 const int& ref_temp = 100; // 常量引用可以绑定到临时对象或字面量
 ```
-
     - 常量引用在函数参数传递中非常有用，可以避免不必要的对象复制，同时保证函数不会修改传入的参数。
 4. 修饰函数参数：
     - 使用 `const` 修饰函数参数，表示函数内部不会修改该参数的值。这对于指针和引用参数尤其重要。
@@ -791,7 +780,7 @@ const int& ref_temp = 100; // 常量引用可以绑定到临时对象或字面�
 ```cpp
 void print_value(const int& val) {
     // val = 10; // 错误：不能修改const引用
-    std::cout `<< val << std::endl;
+    std::cout << val << std::endl;
 }
 
 void print_array(const int* arr, int size) {
@@ -802,7 +791,6 @@ void print_array(const int* arr, int size) {
     std::cout << std::endl;
 }
 ```
-
     - 这提高了函数的安全性，并向调用者表明该函数是“只读”的，不会产生副作用。
 5. 修饰函数返回值：
     - 返回 `const` 值：对于基本类型，返回 `const` 值没有太大意义，因为返回值会被复制，复制后的副本不再是 `const`。但对于类类型，返回 `const` 引用或 `const` 对象可以防止修改返回值。
@@ -827,7 +815,6 @@ int main() {
     return0;
 }
 ```
-
     - 通常用于返回引用或指针，以防止通过返回值修改对象状态。
 6. 修饰成员函数（`const` 成员函数）：
     - 在成员函数声明的末尾加上 `const` 关键字，表示该成员函数不会修改对象的状态（即不会修改类的非静态成员变量）。
@@ -853,7 +840,6 @@ void MyClass::print_data() const {
     std::cout << "Data: " << data << std::endl;
 }
 ```
-
     - `const` 对象的限制：`const` 对象只能调用 `const` 成员函数。
 
 ```cpp
@@ -861,7 +847,6 @@ const MyClass obj_c;
 // obj_c.set_data(10); // 错误：const对象不能调用非const成员函数
 obj_c.get_data();     // 正确：const对象可以调用const成员函数
 ```
-
     - `mutable` 关键字：如果需要在 `const` 成员函数中修改某个非静态成员变量，可以使用 `mutable` 关键字修饰该成员变量。这通常用于那些不影响对象逻辑状态的内部缓存或计数器。
 
 ```cpp

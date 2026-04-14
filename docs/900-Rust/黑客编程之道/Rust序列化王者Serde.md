@@ -44,11 +44,11 @@ use serde_json;
 struct User {
     name: String,
     age: u32,
-    tags: `Vec`<String>`,
+    tags: Vec<String>,
 }
 
 
-fn main() -> `Result`<(), `Box<dyn std::error::Error>`> {
+fn main() -> Result<(), Box<dyn std::error::Error>> {
     // 创建数据
     let user = User {
         name: "张三".to_string(),
@@ -70,7 +70,6 @@ fn main() -> `Result`<(), `Box<dyn std::error::Error>`> {
     Ok(())
 }
 ```
-
 这个例子展示了最基本的JSON序列化和反序列化操作。
 
 #### 3.2. YAML配置文件处理
@@ -116,7 +115,6 @@ fn main() {
     println!("YAML输出:\n{}", yaml);
 }
 ```
-
 这个例子展示了如何处理YAML格式的配置文件。
 
 #### 3.3. 自定义字段序列化
@@ -130,7 +128,7 @@ struct User {
     #[serde(rename = "user_name")]
     name: String,
     #[serde(skip_serializing_if = "Option::is_none")]
-    email: `Option`<String>`,
+    email: Option<String>,
     #[serde(default)]
     age: u32,
 }
@@ -154,7 +152,6 @@ fn main() {
     println!("解析结果: {:?}", parsed);
 }
 ```
-
 这个例子展示了Serde的高级特性，如字段重命名、条件序列化等。
 
 #### 3.4. 枚举序列化
@@ -188,11 +185,10 @@ fn main() {
 
 
     // 反序列化
-    let parsed: `Vec`<Message>` = serde_json::from_str(&json).unwrap();
+    let parsed: Vec<Message> = serde_json::from_str(&json).unwrap();
     println!("解析结果: {:?}", parsed);
 }
 ```
-
 这个例子展示了如何序列化复杂的枚举类型。
 
 #### 3.5. 处理网络API响应
@@ -202,10 +198,10 @@ use serde_json;
 
 
 #[derive(Serialize, Deserialize, Debug)]
-struct `ApiResponse`<T>` {
+struct ApiResponse<T> {
     code: u16,
     message: String,
-    data: `Option`<T>`,
+    data: Option<T>,
 }
 
 
@@ -231,7 +227,7 @@ fn main() {
 
 
     // 解析响应
-    let response: `ApiResponse`<UserInfo>` = serde_json::from_str(response_str).unwrap();
+    let response: ApiResponse<UserInfo> = serde_json::from_str(response_str).unwrap();
     println!("API响应: {:?}", response);
 
 
@@ -241,7 +237,6 @@ fn main() {
     }
 }
 ```
-
 这个例子展示了如何处理常见的API响应格式。
 
 #### 3.6. 配置文件转换器

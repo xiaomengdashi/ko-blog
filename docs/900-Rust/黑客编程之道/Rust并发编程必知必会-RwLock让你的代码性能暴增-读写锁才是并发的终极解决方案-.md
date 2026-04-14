@@ -24,7 +24,6 @@ let rwlock_data = RwLock::new(vec![1, 2, 3]);
 // 多个读取可以同时进行
 let data = rwlock_data.read().unwrap();
 ```
-
 ### 2. 基础应用示例
 #### 2.1. 基本读写操作
 ```rust
@@ -32,7 +31,7 @@ use std::sync::RwLock;
 
 
 struct Database {
-    data: `RwLock`<`Vec<String>`>,
+    data: RwLock<Vec<String>>,
 }
 impl Database {
     fn new() -> Self {
@@ -48,13 +47,12 @@ impl Database {
     }
 
 
-    fn get_items(&self) -> `Vec`<String>` {
+    fn get_items(&self) -> Vec<String> {
         let data = self.data.read().unwrap();
         data.clone()
     }
 }
 ```
-
 #### 2.2. 并发读取示例
 ```rust
 use std::sync::Arc;
@@ -89,7 +87,6 @@ fn concurrent_reads() {
     }
 }
 ```
-
 ### 3. 进阶应用
 #### 3.1. 存系统实现
 ```rust
@@ -99,7 +96,7 @@ use std::time::{Duration, Instant};
 
 
 struct Cache {
-    data: `RwLock`<`HashMap<String, (String, Instant)>`>,
+    data: RwLock<HashMap<String, (String, Instant)>>,
     ttl: Duration,
 }
 impl Cache {
@@ -117,7 +114,7 @@ impl Cache {
     }
 
 
-    fn get(&self, key: &str) -> `Option`<String>` {
+    fn get(&self, key: &str) -> Option<String> {
         let data = self.data.read().unwrap();
         if let Some((value, timestamp)) = data.get(key) {
             if timestamp.elapsed() < self.ttl {
@@ -134,7 +131,6 @@ impl Cache {
     }
 }
 ```
-
 #### 3.2. 配置管理系统
 ```rust
 use std::sync::RwLock;
@@ -148,7 +144,7 @@ struct Config {
     timeout_seconds: u64,
 }
 struct ConfigManager {
-    config: `RwLock`<Config>`,
+    config: RwLock<Config>,
 }
 impl ConfigManager {
     fn new(initial_config: Config) -> Self {
@@ -158,7 +154,7 @@ impl ConfigManager {
     }
 
 
-    fn update_config(&self, new_config: Config) -> `Result`<(), String>` {
+    fn update_config(&self, new_config: Config) -> Result<(), String> {
         let mut config = self.config.write().unwrap();
         *config = new_config;
         Ok(())
@@ -170,23 +166,22 @@ impl ConfigManager {
     }
 
 
-    fn update_timeout(&self, timeout: u64) -> `Result`<(), String>` {
+    fn update_timeout(&self, timeout: u64) -> Result<(), String> {
         let mut config = self.config.write().unwrap();
         config.timeout_seconds = timeout;
         Ok(())
     }
 }
 ```
-
 ### 4. 性能优化技巧
 #### 4.1. 最小化锁的持有时间
 ```rust
-struct `OptimizedCache`<T>` {
-    data: `RwLock`<`HashMap<String, T>`>,
+struct OptimizedCache<T> {
+    data: RwLock<HashMap<String, T>>,
 }
-`impl`<T: Clone>` `OptimizedCache`<T>` {
+impl<T: Clone> OptimizedCache<T> {
     // ❌ 不推荐：长时间持有锁
-    fn process_data_bad(&self, key: &str) -> `Option`<T>` {
+    fn process_data_bad(&self, key: &str) -> Option<T> {
         let data = self.data.read().unwrap();
         if let Some(value) = data.get(key) {
             // 假设这里有耗时操作
@@ -199,7 +194,7 @@ struct `OptimizedCache`<T>` {
 
 
     // ✅ 推荐：最小化锁的持有时间
-    fn process_data_good(&self, key: &str) -> `Option`<T>` {
+    fn process_data_good(&self, key: &str) -> Option<T> {
         let value = {
             let data = self.data.read().unwrap();
             data.get(key).cloned()
@@ -216,16 +211,15 @@ struct `OptimizedCache`<T>` {
     }
 }
 ```
-
 #### 4.2. 读写锁升级模式
 ```rust
 struct UpgradeExample {
-    data: `RwLock`<`Vec<String>`>,
+    data: RwLock<Vec<String>>,
 }
 
 
 impl UpgradeExample {
-    fn process_data(&self) -> `Result`<(), String>` {
+    fn process_data(&self) -> Result<(), String> {
         // 首先尝试读取
         {
             let data = self.data.read().unwrap();
@@ -242,14 +236,13 @@ impl UpgradeExample {
     }
 }
 ```
-
 ### 5. 实战应用场景
 #### 5.1. 统计系统
 ```rust
 use std::sync::RwLock;
 use std::collections::HashMap;
 struct MetricsCollector {
-    metrics: `RwLock`<`HashMap<String, u64>`>,
+    metrics: RwLock<HashMap<String, u64>>,
 }
 impl MetricsCollector {
     fn new() -> Self {
@@ -265,18 +258,17 @@ impl MetricsCollector {
     }
 
 
-    fn get_metric(&self, metric: &str) -> `Option`<u64>` {
+    fn get_metric(&self, metric: &str) -> Option<u64> {
         let metrics = self.metrics.read().unwrap();
         metrics.get(metric).copied()
     }
 
 
-    fn get_all_metrics(&self) -> `HashMap`<String, u64>` {
+    fn get_all_metrics(&self) -> HashMap<String, u64> {
         self.metrics.read().unwrap().clone()
     }
 }
 ```
-
 #### 5.2. 连接池管理
 ```rust
 use std::sync::{Arc, RwLock};
@@ -288,7 +280,7 @@ struct Connection {
     is_active: bool,
 }
 struct ConnectionPool {
-    connections: `RwLock`<`VecDeque<Connection>`>,
+    connections: RwLock<VecDeque<Connection>>,
     max_size: usize,
 }
 impl ConnectionPool {
@@ -309,7 +301,7 @@ impl ConnectionPool {
     }
 
 
-    fn get_connection(&self) -> `Option`<Connection>` {
+    fn get_connection(&self) -> Option<Connection> {
         let mut pool = self.connections.write().unwrap();
         pool.pop_front()
     }

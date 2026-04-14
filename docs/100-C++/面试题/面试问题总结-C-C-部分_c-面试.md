@@ -181,7 +181,6 @@ Linux下默认为8M，可以调整
 map: #include < map >
 unordered_map: #include < unordered_map >
 ```
-
 （2）内部实现机理
 
 + map： map内部实现了一个红黑树，该结构具有自动排序的功能，因此map内部的所有元素都是有序的，红黑树的每一个节点都代表着map的一个元素，因此，对于map进行的查找，删除，添加等一系列的操作都相当于是对红黑树进行这样的操作，故红黑树的效率决定了map的效率。
@@ -235,7 +234,6 @@ unordered_map: #include < unordered_map >
 进程 是系统分配资源的最小单位。
   线程 是系统调度的最小单位。
 ```
-
 线程是程序最基本的运行单位，而进程是不能运行的，运行的是进程中的线程。创建进程时，系统会自动创建一个主线程来运行进程中的数据信息。
 
 我们运行`main()`函数的时候，就会创建一个主进程和一个主线程，当我们在主线程中创建更多的子线程后：  
@@ -286,7 +284,6 @@ C++ 11 中的 Lambda 表达式用于定义并创建匿名的函数对象，以�
 ```cpp
 [&](){return (a+b);}
 ```
-
 定义了一个匿名函数，入参列表为空，函数里执行的操作是返回a+b；
 
 + [] 不捕获任何变量。
@@ -314,19 +311,17 @@ C++ 11 中的 Lambda 表达式用于定义并创建匿名的函数对象，以�
 所以无论元素初始时为何种状态，sort()的平均排序复杂度为均为`O(N*log2(N))` ，具有不错的的性能，在刷算法题时，可以直接使用`sort()`来对数据进行排序，而不需手动编写排序函数。
 
 ##### 1.24.2. sort函数对数组升序和降序排序
-``vector`<int>` arr`是要排序的目标数组；  
+`vector<int> arr` 是要排序的目标数组。  
 升序：
 
 ```cpp
 sort(arr.begin(), arr.end())
 ```
-
 降序：
 
 ```cpp
-sort(arr.begin(), arr.end(), `greater`<int>`())
+sort(arr.begin(), arr.end(), greater<int>())
 ```
-
 #### 1.25. C++中的extern关键字extern
 1）声明外部变量
 
@@ -405,7 +400,7 @@ push_back() 在底层实现时，先调用构造函数创建元素，然后调�
 
 #### 1.38. 39、shared_ptr在多线程里是线程安全的嘛？
 #### 1.39. 40、原子量和加锁有什么区别？
-原子量atomic来实现无锁并发，``std::`atomic`&lt;int>` variable;`  
+原子量 `atomic` 可以实现无锁并发，例如：`std::atomic<int> variable;`  
 原子量的原理：一旦我们`用atomic来修饰某个变量`，那么这个变量的操作就不可被打断。即使有很多个线程都可以访问操作这个变量，但由于这个变量的原子性，不可中断的特性，就不会出现某个线程刚操作了一半，却被另一个线程篡改的情况，因此也就实现了并发的安全保证。并且`无锁并发的效率，理论上要高于有锁`。
 
 原子量和锁的区别是，`基本上原子量能做的，通过加锁也都能做到`。但`反之则不行`，原子量只能保证自己是不被中断的，但无法对代码段的执行提供保护。
@@ -511,40 +506,39 @@ vector类型和数组类型的基本功能都是一样的，就是存储同类�
 3、代码示例：
 
 ```cpp
-#include `<iostream>`
+#include <iostream>
 using namespace std;
 
 // #1 模板定义
-`template`<class T>`
+template<class T>
 struct TemplateStruct
 {
 TemplateStruct()
 {
-    cout `<< sizeof(T) << endl;
+    cout << sizeof(T) << endl;
 }
 };
 
 // #2 模板显示实例化
-template struct `TemplateStruct<int>`;
+template struct TemplateStruct<int>;
 
 // #3 模板具体化
-template<> struct `TemplateStruct`<double>`
+template<> struct TemplateStruct<double>
 {
 TemplateStruct() {
-    cout `<< "--8--" << endl;
+    cout << "--8--" << endl;
 }
 };
 
 int main()
 {
-    `TemplateStruct<int>` intStruct;
-    `TemplateStruct`<double>` doubleStruct;
+    TemplateStruct<int> intStruct;
+    TemplateStruct<double> doubleStruct;
 
     // #4 模板隐式实例化
-    `TemplateStruct`<char>` llStruct;
+    TemplateStruct<char> llStruct;
 }
 ```
-
 ### 2. 题
 #### 2.1. 写一个单链表，实现插入和删除，用class来封装
 #### 2.2. 获取一个32位整数中，出现次数最多的数字
@@ -584,7 +578,7 @@ int NumberStat(int Target)
                 index_max = i;
             }            
         }
-    cout `<< "最大的次数是" << Max << "次"<<endl;
+    cout << "最大的次数是" << Max << "次"<<endl;
     cout << "最大的次数对应的数字是" << index_max <<endl;
 
     return 0;
@@ -596,4 +590,3 @@ int NumberStat(int Target)
 
 >` 来自: [面试问题总结----C/C++部分_c++ 面试-CSDN博客](https://blog.csdn.net/AnChenliang_1002/article/details/131197674)
 >
-

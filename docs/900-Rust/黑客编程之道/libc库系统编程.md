@@ -15,7 +15,7 @@ libc库是Rust与C标准库的接口。它允许Rust代码直接调用底层系�
 use std::io;
 use libc::{c_void, size_t, ssize_t, c_int};
 
-fn main() -> io::`Result`<()>` {
+fn main() -> io::Result<()> {
     let message = "Hello, libc!";
     unsafe {
         let fd: c_int = 1;  // stdout的文件描述符
@@ -30,7 +30,6 @@ fn main() -> io::`Result`<()>` {
     Ok(())
 }
 ```
-
 这个例子展示了如何使用libc直接写入标准输出。它绕过了Rust的标准库，直接调用系统的write函数。
 
 #### 1.2. 进程控制：创造你的小精灵
@@ -38,7 +37,7 @@ fn main() -> io::`Result`<()>` {
 use libc::{c_int, pid_t};
 use std::io;
 
-fn main() -> io::`Result`<()>` {
+fn main() -> io::Result<()> {
     unsafe {
         let pid: pid_t = libc::fork();
 
@@ -58,7 +57,6 @@ fn main() -> io::`Result`<()>` {
     }
 }
 ```
-
 这个例子展示了如何使用libc创建一个新的进程。fork函数复制当前进程，创建一个子进程。
 
 #### 1.3. 内存管理：自己动手，丰衣足食
@@ -88,7 +86,6 @@ fn main() {
     }
 }
 ```
-
 这个例子展示了如何使用libc直接管理内存。我们分配了一块内存，使用它，然后释放它。**观看**
 
 #### 1.4. 系统时间：时间魔法师
@@ -107,7 +104,6 @@ fn main() {
     }
 }
 ```
-
 这个例子展示了如何使用libc获取和格式化系统时间。我们直接调用了C库的time和localtime函数。
 
 #### 1.5. 信号处理：捕获系统的呼唤
@@ -137,7 +133,6 @@ fn main() {
     println!("程序正常退出");
 }
 ```
-
 这个例子展示了如何使用libc处理系统信号。我们设置了一个处理函数来捕获SIGINT信号（通常由Ctrl+C触发）。
 
 6. 网络编程：跨越虚拟的海洋
@@ -146,7 +141,7 @@ fn main() {
 use libc::{c_int, sockaddr_in, socket, AF_INET, SOCK_STREAM, socklen_t, connect};
 use std::mem;
 
-fn main() -> std::io::`Result`<()>` {
+fn main() -> std::io::Result<()> {
     unsafe {
         let sock = socket(AF_INET, SOCK_STREAM, 0);
         if sock < 0 {
@@ -160,7 +155,7 @@ fn main() -> std::io::`Result`<()>` {
 
         let connect_result = connect(sock, 
                                      &addr as *const sockaddr_in as *const _,
-                                     mem::size_of::`<sockaddr_in>`() as socklen_t);
+                                     mem::size_of::<sockaddr_in>() as socklen_t);
 
         if connect_result < 0 {
             return Err(std::io::Error::last_os_error());

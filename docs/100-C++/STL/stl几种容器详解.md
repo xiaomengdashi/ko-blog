@@ -34,12 +34,12 @@ slug: /C++/STL/stl几种容器详解
 
 #### 1.5. 代码示例
 ```cpp
-#include `<iostream>`
-#include `<vector>`
+#include <iostream>
+#include <vector>
 
 int main() {
     // 创建一个空的整数vector
-    ``std::`vector`<int>` numbers;
+    std::vector<int> numbers;
 
     // 向vector末尾添加元素
     numbers.push_back(10);
@@ -47,7 +47,7 @@ int main() {
     numbers.push_back(30);
 
     // 通过索引访问元素
-    std::cout `<< "第一个元素: " << numbers[0] << std::endl;
+    std::cout << "第一个元素: " << numbers[0] << std::endl;
 
     // 遍历vector
     std::cout << "所有元素: ";
@@ -69,20 +69,12 @@ int main() {
     return 0;
 }
 ```
-
-  
-
-
 #### 1.6. 输出
 ```makefile
 第一个元素: 10
 所有元素: 10 20 30 
 删除最后一个元素后: 10 20
 ```
-
-  
-
-
 ---
 
 ### 2. `list`：双向链表
@@ -116,12 +108,12 @@ int main() {
 
 #### 2.5. 代码示例
 ```cpp
-#include <iostream>`
-#include `<list>`
+#include <iostream>
+#include <list>
 
 int main() {
     // 创建一个空的整数list
-    `std::`list`<int>` numbers;
+    std::list<int> numbers;
 
     // 向list末尾添加元素
     numbers.push_back(100);
@@ -132,7 +124,7 @@ int main() {
     numbers.push_front(50);
 
     // 遍历list
-    std::cout `<< "所有元素: ";
+    std::cout << "所有元素: ";
     for(auto it = numbers.begin(); it != numbers.end(); ++it) {
         std::cout << *it << " ";
     }
@@ -163,17 +155,12 @@ int main() {
     return 0;
 }
 ```
-
-  
-
-
 #### 2.6. 输出
 ```makefile
 所有元素: 50 100 200 300 
 插入元素后: 50 150 100 200 300 
 删除元素后: 50 150 100 300
 ```
-
 ### 3. 模拟实现一个简化版的 `List`
 为了更好地理解 `std::list` 的内部工作原理，我们可以尝试模拟实现一个简化版的双向链表。下面将逐步介绍如何设计和实现这个 `List` 类。
 
@@ -200,7 +187,7 @@ int main() {
 
 
 ```cpp
-`template<typename T>`
+template<typename T>
 struct Node {
     T data;
     Node* prev;
@@ -209,10 +196,6 @@ struct Node {
     Node(const T& value = T()) : data(value), prev(nullptr), next(nullptr) {}
 };
 ```
-
-  
-
-
 #### 3.3. 迭代器实现
 为了实现双向迭代器，我们需要定义一个 `Iterator` 类，支持 `++` 和 `--` 操作。
 
@@ -220,20 +203,20 @@ struct Node {
 
 
 ```cpp
-`template`<typename T>`
+template<typename T>
 class List;
 
-`template`<typename T>`
+template<typename T>
 class Iterator {
 public:
-    using self_type = `Iterator`<T>`;
+    using self_type = Iterator<T>;
     using value_type = T;
     using reference = T&;
     using pointer = T*;
     using iterator_category = std::bidirectional_iterator_tag;
     using difference_type = std::ptrdiff_t;
 
-    Iterator(`Node`<T>`* ptr = nullptr) : node_ptr(ptr) {}
+    Iterator(Node<T>* ptr = nullptr) : node_ptr(ptr) {}
 
     // Dereference operator
     reference operator*() const { return node_ptr->data; }
@@ -278,15 +261,11 @@ public:
     }
 
 private:
-    `Node`<T>`* node_ptr;
+    Node<T>* node_ptr;
 
-    friend class `List`<T>`;
+    friend class List<T>;
 };
 ```
-
-  
-
-
 #### 3.4. `List` 类
 `List` 类提供链表的基本功能。
 
@@ -294,18 +273,18 @@ private:
 
 
 ```cpp
-#include `<iostream>`
+#include <iostream>
 
-`template`<typename T>`
+template<typename T>
 class List {
 public:
-    using iterator = `Iterator`<T>`;
-    using const_iterator = `Iterator`<T>`;
+    using iterator = Iterator<T>;
+    using const_iterator = Iterator<T>;
 
     // 构造函数
     List() {
-        head = new `Node`<T>`(); // 哨兵节点
-        tail = new `Node`<T>`(); // 哨兵节点
+        head = new Node<T>(); // 哨兵节点
+        tail = new Node<T>(); // 哨兵节点
         head->next = tail;
         tail->prev = head;
     }
@@ -323,10 +302,10 @@ public:
 
     // 插入元素到迭代器位置之前
     iterator insert(iterator pos, const T& value) {
-        `Node`<T>`* current = pos.node_ptr;
-        `Node`<T>`* new_node = new `Node`<T>`(value);
+        Node<T>* current = pos.node_ptr;
+        Node<T>* new_node = new Node<T>(value);
 
-        `Node`<T>`* prev_node = current->prev;
+        Node<T>* prev_node = current->prev;
 
         new_node->next = current;
         new_node->prev = prev_node;
@@ -339,14 +318,14 @@ public:
 
     // 删除迭代器指向的元素
     iterator erase(iterator pos) {
-        `Node`<T>`* current = pos.node_ptr;
+        Node<T>* current = pos.node_ptr;
         if (current == head || current == tail) {
             // 不能删除哨兵节点
             return pos;
         }
 
-        `Node`<T>`* prev_node = current->prev;
-        `Node`<T>`* next_node = current->next;
+        Node<T>* prev_node = current->prev;
+        Node<T>* next_node = current->next;
 
         prev_node->next = next_node;
         next_node->prev = prev_node;
@@ -408,9 +387,9 @@ public:
 
     // 清空链表
     void clear() {
-        `Node`<T>`* current = head->next;
+        Node<T>* current = head->next;
         while(current != tail) {
-            `Node`<T>`* temp = current;
+            Node<T>* temp = current;
             current = current->next;
             delete temp;
         }
@@ -430,23 +409,19 @@ public:
 
     // 打印链表（辅助函数）
     void print() const {
-        `Node`<T>`* current = head->next;
+        Node<T>* current = head->next;
         while(current != tail) {
-            std::cout `<< current->`data `<< " ";
-            current = current->`next;
+            std::cout << current->data << " ";
+            current = current->next;
         }
-        std::cout `<< std::endl;
+        std::cout << std::endl;
     }
 
 private:
-    `Node<T>`* head; // 头哨兵
-    `Node`<T>`* tail; // 尾哨兵
+    Node<T>* head; // 头哨兵
+    Node<T>* tail; // 尾哨兵
 };
 ```
-
-  
-
-
 #### 3.5. 完整代码示例
 下面是一个完整的示例，包括创建 `List` 对象，进行各种操作，并打印结果。
 
@@ -454,10 +429,10 @@ private:
 
 
 ```cpp
-#include `<iostream>`
+#include <iostream>
 
 // 节点结构体
-`template`<typename T>`
+template<typename T>
 struct Node {
     T data;
     Node* prev;
@@ -467,17 +442,17 @@ struct Node {
 };
 
 // 迭代器类
-`template`<typename T>`
+template<typename T>
 class Iterator {
 public:
-    using self_type = `Iterator`<T>`;
+    using self_type = Iterator<T>;
     using value_type = T;
     using reference = T&;
     using pointer = T*;
     using iterator_category = std::bidirectional_iterator_tag;
     using difference_type = std::ptrdiff_t;
 
-    Iterator(`Node`<T>`* ptr = nullptr) : node_ptr(ptr) {}
+    Iterator(Node<T>* ptr = nullptr) : node_ptr(ptr) {}
 
     // Dereference operator
     reference operator*() const { return node_ptr->data; }
@@ -522,22 +497,22 @@ public:
     }
 
 private:
-    `Node`<T>`* node_ptr;
+    Node<T>* node_ptr;
 
-    friend class `List`<T>`;
+    friend class List<T>;
 };
 
 // List 类
-`template`<typename T>`
+template<typename T>
 class List {
 public:
-    using iterator = `Iterator`<T>`;
-    using const_iterator = `Iterator`<T>`;
+    using iterator = Iterator<T>;
+    using const_iterator = Iterator<T>;
 
     // 构造函数
     List() {
-        head = new `Node`<T>`(); // 头哨兵
-        tail = new `Node`<T>`(); // 尾哨兵
+        head = new Node<T>(); // 头哨兵
+        tail = new Node<T>(); // 尾哨兵
         head->next = tail;
         tail->prev = head;
     }
@@ -555,10 +530,10 @@ public:
 
     // 插入元素到迭代器位置之前
     iterator insert(iterator pos, const T& value) {
-        `Node`<T>`* current = pos.node_ptr;
-        `Node`<T>`* new_node = new `Node`<T>`(value);
+        Node<T>* current = pos.node_ptr;
+        Node<T>* new_node = new Node<T>(value);
 
-        `Node`<T>`* prev_node = current->prev;
+        Node<T>* prev_node = current->prev;
 
         new_node->next = current;
         new_node->prev = prev_node;
@@ -571,14 +546,14 @@ public:
 
     // 删除迭代器指向的元素
     iterator erase(iterator pos) {
-        `Node`<T>`* current = pos.node_ptr;
+        Node<T>* current = pos.node_ptr;
         if (current == head || current == tail) {
             // 不能删除哨兵节点
             return pos;
         }
 
-        `Node`<T>`* prev_node = current->prev;
-        `Node`<T>`* next_node = current->next;
+        Node<T>* prev_node = current->prev;
+        Node<T>* next_node = current->next;
 
         prev_node->next = next_node;
         next_node->prev = prev_node;
@@ -640,9 +615,9 @@ public:
 
     // 清空链表
     void clear() {
-        `Node`<T>`* current = head->next;
+        Node<T>* current = head->next;
         while(current != tail) {
-            `Node`<T>`* temp = current;
+            Node<T>* temp = current;
             current = current->next;
             delete temp;
         }
@@ -662,22 +637,22 @@ public:
 
     // 打印链表（辅助函数）
     void print() const {
-        `Node`<T>`* current = head->next;
+        Node<T>* current = head->next;
         while(current != tail) {
-            std::cout `<< current->`data `<< " ";
-            current = current->`next;
+            std::cout << current->data << " ";
+            current = current->next;
         }
-        std::cout `<< std::endl;
+        std::cout << std::endl;
     }
 
 private:
-    `Node<T>`* head; // 头哨兵
-    `Node`<T>`* tail; // 尾哨兵
+    Node<T>* head; // 头哨兵
+    Node<T>* tail; // 尾哨兵
 };
 
 // 测试代码
 int main() {
-    `List`<int>` lst;
+    List<int> lst;
 
     // 插入元素
     lst.push_back(10);    // 链表: 10
@@ -686,7 +661,7 @@ int main() {
     lst.insert(++lst.begin(), 7); // 链表: 5, 7, 10, 15
 
     // 打印链表
-    std::cout `<< "链表内容: ";
+    std::cout << "链表内容: ";
     lst.print(); // 输出: 5 7 10 15
 
     // 删除元素
@@ -713,10 +688,6 @@ int main() {
     return 0;
 }
 ```
-
-  
-
-
 #### 3.6. 代码解释
 1. **节点结构体 **`Node`：包含数据域 `data`，前驱指针 `prev` 和后继指针 `next`。
 2. **迭代器类 **`Iterator`：
@@ -739,7 +710,7 @@ int main() {
     - `clear`：清空链表。
     - `begin`** 和 **`end`：返回开始和结束迭代器。
     - `print`：辅助函数，用于打印链表内容。
-1. **测试代码**：创建 ``List`&lt;int>` 对象，并执行一系列的插入、删除和遍历操作，验证 `List` 类的功能。
+1. **测试代码**：创建 `List<int>` 对象，并执行一系列的插入、删除和遍历操作，验证 `List` 类的功能。
 
   
 
@@ -754,10 +725,6 @@ int main() {
 g++ -std=c++11 -o List List.cpp
 ./List
 ```
-
-  
-
-
 **输出结果：**
 
   
@@ -769,7 +736,6 @@ g++ -std=c++11 -o List List.cpp
 插入和删除后链表内容: 3 10 
 清空后，链表是否为空: 是
 ```
-
 ### 4. 迭代器分类
 #### 4.1. 迭代器（Iterator）简介
 在 C++ 中，**迭代器** 是一种用于遍历容器（如 `std::vector`、`std::list` 等）元素的对象。它们提供了类似指针的接口，使得算法可以独立于具体的容器而工作。迭代器的设计允许算法以统一的方式处理不同类型的容器。
@@ -850,10 +816,6 @@ g++ -std=c++11 -o List List.cpp
 ```cpp
 using iterator_category = std::bidirectional_iterator_tag;
 ```
-
-  
-
-
 这表示该迭代器是一个 **双向迭代器**，支持向前和向后遍历。
 
   
@@ -931,7 +893,7 @@ C++ 提供了 **迭代器特性（Iterator Traits）**，通过模板类 `std::i
 
 
 ```cpp
-`template`<typename T>`
+template<typename T>
 class Iterator {
 public:
     using iterator_category = std::bidirectional_iterator_tag;
@@ -943,10 +905,6 @@ public:
     // 其他成员函数...
 };
 ```
-
-  
-
-
 这样，使用 `std::iterator_traits<Iterator<T>>` 时，就能正确获取迭代器的特性。
 
   
@@ -1163,12 +1121,12 @@ public:
 
 #### 7.1. 代码示例
 ```cpp
-#include `<iostream>`
-#include `<deque>`
+#include <iostream>
+#include <deque>
 
 int main() {
     // 创建一个空的deque
-    `std::`deque`<std::string>` dq;
+    std::deque<std::string> dq;
 
     // 在末尾添加元素
     dq.push_back("End1");
@@ -1179,7 +1137,7 @@ int main() {
     dq.push_front("Front2");
 
     // 遍历deque
-    std::cout `<< "deque中的元素: ";
+    std::cout << "deque中的元素: ";
     for(auto it = dq.begin(); it != dq.end(); ++it) {
         std::cout << *it << " ";
     }
@@ -1205,10 +1163,6 @@ int main() {
     return 0;
 }
 ```
-
-  
-
-
 #### 7.2. 输出
 ```makefile
 deque中的元素: Front2 Front1 End1 End2 
@@ -1216,10 +1170,6 @@ deque中的元素: Front2 Front1 End1 End2
 尾元素: End2
 删除首尾元素后: Front1 End1
 ```
-
-  
-
-
 ---
 
 ### 8. `map`和`unordered_map`：关联数组
@@ -1275,13 +1225,13 @@ deque中的元素: Front2 Front1 End1 End2
 #### 8.5. 代码示例
 ##### 8.5.1. `map`示例
 ```cpp
-#include <iostream>`
-#include `<map>`
-#include `<string>`
+#include <iostream>
+#include <map>
+#include <string>
 
 int main() {
     // 创建一个空的map，键为string，值为int
-    ``std::`map`<std::string, int>` ageMap;
+    std::map<std::string, int> ageMap;
 
     // 插入键值对
     ageMap["Alice"] = 30;
@@ -1291,7 +1241,7 @@ int main() {
     // 查找元素
     std::string name = "Bob";
     if(ageMap.find(name) != ageMap.end()) {
-        std::cout `<< name << " 的年龄是 " << ageMap[name] << std::endl;
+        std::cout << name << " 的年龄是 " << ageMap[name] << std::endl;
     } else {
         std::cout << "未找到 " << name << std::endl;
     }
@@ -1299,7 +1249,7 @@ int main() {
     // 遍历map
     std::cout << "所有人员和年龄: " << std::endl;
     for(auto it = ageMap.begin(); it != ageMap.end(); ++it) {
-        std::cout << it->`first `<< " : " << it->`second `<< std::endl;
+        std::cout << it->first << " : " << it->second << std::endl;
     }
 
     // 删除元素
@@ -1314,19 +1264,15 @@ int main() {
     return 0;
 }
 ```
-
-  
-
-
 ##### 8.5.2. `unordered_map`示例
 ```cpp
-#include <iostream>`
-#include `<unordered_map>`
-#include `<string>`
+#include <iostream>
+#include <unordered_map>
+#include <string>
 
 int main() {
     // 创建一个空的unordered_map，键为string，值为double
-    `std::`unordered_map`<std::string, double>` priceMap;
+    std::unordered_map<std::string, double> priceMap;
 
     // 插入键值对
     priceMap["Apple"] = 1.2;
@@ -1336,7 +1282,7 @@ int main() {
     // 查找元素
     std::string fruit = "Banana";
     if(priceMap.find(fruit) != priceMap.end()) {
-        std::cout `<< fruit << " 的价格是 $" << priceMap[fruit] << std::endl;
+        std::cout << fruit << " 的价格是 $" << priceMap[fruit] << std::endl;
     } else {
         std::cout << "未找到 " << fruit << std::endl;
     }
@@ -1359,10 +1305,6 @@ int main() {
     return 0;
 }
 ```
-
-  
-
-
 #### 8.6. 输出
 ##### 8.6.1. `map`输出
 ```yaml
@@ -1375,10 +1317,6 @@ Charlie : 35
 Bob : 25
 Charlie : 35
 ```
-
-  
-
-
 ##### 8.6.2. `unordered_map`输出
 ```bash
 Banana 的价格是 $0.5
@@ -1390,10 +1328,6 @@ Orange : $0.8
 Banana : $0.5
 Orange : $0.8
 ```
-
-  
-
-
 ---
 
 ### 9. `set`和`unordered_set`：集合
@@ -1449,12 +1383,12 @@ Orange : $0.8
 #### 9.5. 代码示例
 ##### 9.5.1. `set`示例
 ```cpp
-#include <iostream>`
-#include `<set>`
+#include <iostream>
+#include <set>
 
 int main() {
     // 创建一个空的整数set
-    ``std::`set`<int>` numbers;
+    std::set<int> numbers;
 
     // 插入元素
     numbers.insert(10);
@@ -1463,7 +1397,7 @@ int main() {
     numbers.insert(20); // 重复元素，不会被插入
 
     // 遍历set
-    std::cout `<< "set中的元素: ";
+    std::cout << "set中的元素: ";
     for(auto it = numbers.begin(); it != numbers.end(); ++it) {
         std::cout << *it << " ";
     }
@@ -1490,18 +1424,14 @@ int main() {
     return 0;
 }
 ```
-
-  
-
-
 ##### 9.5.2. `unordered_set`示例
 ```cpp
-#include <iostream>`
-#include `<unordered_set>`
+#include <iostream>
+#include <unordered_set>
 
 int main() {
     // 创建一个空的unordered_set
-    `std::`unordered_set`<int>` numbers;
+    std::unordered_set<int> numbers;
 
     // 插入元素
     numbers.insert(10);
@@ -1510,7 +1440,7 @@ int main() {
     numbers.insert(20); // 重复元素，不会被插入
 
     // 遍历unordered_set
-    std::cout `<< "unordered_set中的元素: ";
+    std::cout << "unordered_set中的元素: ";
     for(auto it = numbers.begin(); it != numbers.end(); ++it) {
         std::cout << *it << " ";
     }
@@ -1537,10 +1467,6 @@ int main() {
     return 0;
 }
 ```
-
-  
-
-
 #### 9.6. 输出
 ##### 9.6.1. `set`输出
 ```bash
@@ -1548,20 +1474,12 @@ set中的元素: 10 20 30
 20 在set中存在。
 删除10后set中的元素: 20 30
 ```
-
-  
-
-
 ##### 9.6.2. `unordered_set`输出（注意元素顺序可能不同）
 ```cpp
 unordered_set中的元素: 10 20 30 
 20 在unordered_set中存在。
 删除10后unordered_set中的元素: 20 30
 ```
-
-  
-
-
 ---
 
 ### 10. `stack`、`queue`和`priority_queue`：容器适配器
@@ -1613,12 +1531,12 @@ STL中的容器适配器（`stack`、`queue`、`priority_queue`）提供了特�
 #### 10.5. 代码示例
 ##### 10.5.1. `stack`示例
 ```cpp
-#include <iostream>`
-#include `<stack>`
+#include <iostream>
+#include <stack>
 
 int main() {
     // 创建一个空的stack，底层使用vector
-    `std::`stack`<int>` s;
+    std::stack<int> s;
 
     // 压入元素
     s.push(1);
@@ -1626,7 +1544,7 @@ int main() {
     s.push(3);
 
     // 访问栈顶元素
-    std::cout `<< "栈顶元素: " << s.top() << std::endl;
+    std::cout << "栈顶元素: " << s.top() << std::endl;
 
     // 弹出元素
     s.pop();
@@ -1640,18 +1558,14 @@ int main() {
     return 0;
 }
 ```
-
-  
-
-
 ##### 10.5.2. `queue`示例
 ```cpp
-#include <iostream>`
-#include `<queue>`
+#include <iostream>
+#include <queue>
 
 int main() {
     // 创建一个空的queue，底层使用deque
-    `std::`queue`<std::string>` q;
+    std::queue<std::string> q;
 
     // 入队元素
     q.push("First");
@@ -1659,7 +1573,7 @@ int main() {
     q.push("Third");
 
     // 访问队首元素
-    std::cout `<< "队首元素: " << q.front() << std::endl;
+    std::cout << "队首元素: " << q.front() << std::endl;
 
     // 访问队尾元素
     std::cout << "队尾元素: " << q.back() << std::endl;
@@ -1676,19 +1590,15 @@ int main() {
     return 0;
 }
 ```
-
-  
-
-
 ##### 10.5.3. `priority_queue`示例
 ```cpp
-#include <iostream>`
-#include `<queue>`
-#include `<vector>`
+#include <iostream>
+#include <queue>
+#include <vector>
 
 int main() {
     // 创建一个空的priority_queue，默认是最大堆
-    `std::`priority_queue`<int>` pq;
+    std::priority_queue<int> pq;
 
     // 插入元素
     pq.push(30);
@@ -1697,15 +1607,15 @@ int main() {
     pq.push(40);
 
     // 访问堆顶元素
-    std::cout `<< "优先级最高的元素: " << pq.top() << std::endl;
+    std::cout << "优先级最高的元素: " << pq.top() << std::endl;
 
     // 弹出元素
     pq.pop();
     std::cout << "弹出一个元素后，新的堆顶: " << pq.top() << std::endl;
 
     // 遍历priority_queue（需要复制，因为无法直接遍历）
-`std::priority_queue<int>`copy = pq;
-    std::cout `<< "剩余的元素: ";
+std::priority_queue<int>copy = pq;
+    std::cout << "剩余的元素: ";
     while(!copy.empty()) {
         std::cout << copy.top() << " ";
         copy.pop();
@@ -1715,10 +1625,6 @@ int main() {
     return 0;
 }
 ```
-
-  
-
-
 #### 10.6. 输出
 ##### 10.6.1. `stack`输出
 ```makefile
@@ -1726,10 +1632,6 @@ int main() {
 弹出一个元素后，新的栈顶: 2
 栈不为空，元素数量: 2
 ```
-
-  
-
-
 ##### 10.6.2. `queue`输出
 ```makefile
 队首元素: First
@@ -1737,10 +1639,6 @@ int main() {
 出队后新的队首: Second
 队列不为空，元素数量: 2
 ```
-
-  
-
-
 ##### 10.6.3. `priority_queue`输出
 ```makefile
 优先级最高的元素: 40

@@ -14,13 +14,11 @@ slug: /getting-started/intro
 ```bash
 npm install
 ```
-
 #### 1.1.2. 启动开发服务器
 
 ```bash
 npm start
 ```
-
 #### 1.1.3. 构建生产版本
 
 ```bash

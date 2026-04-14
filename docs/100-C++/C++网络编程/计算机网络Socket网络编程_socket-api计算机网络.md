@@ -39,14 +39,13 @@ Socket 的中文名可以译为[套接字](https://so.csdn.net/so/search?q=%E5%A
 socket函数是系统用于创建套接字描述符的接口，该函数会返回一个文件描述符，之后网络的通信便围绕着这个文件描述符进行。
 
 ```cpp
-#include `<sys/socket.h>`
+#include <sys/socket.h>
 
 //函数原型	
 int socket(int domain, int type, int protocol);
 // 返回值为文件描述符
 int fd = socket(AF_INET, SOCK_STREAM, 0);
 ```
-
 + 参数选项 
     - **domain:** 用于指定通信域，常用的选项为`AF_INET`(指定使用IPV4通信)，`AF_INET6`(指定IPV6通信)，`AF_UNIX`(指定本地进程间通信)。
     - **type:** 用于指定socket的类型。常用的选项为`SOCK_STREAM`(提供可靠的流传输服务，也就是TCP)，`SOCK_DGRAM`(提供不可靠的数据报服务，也就是UDP)。
@@ -56,7 +55,7 @@ int fd = socket(AF_INET, SOCK_STREAM, 0);
 **bind 函数用于让程序绑定一个固定的端口号，使套接字只从该端口号接受/发送数据**，一般用于服务器显示绑定地址，客户端通过系统自动分配。**listen 函数用于监听端口号，等待客户端的连接。**
 
 ```cpp
-#include `<sys/socket.h>`
+#include <sys/socket.h>
 
 int listen(int sockfd, int backlog);	//成功返回0
 
@@ -83,7 +82,6 @@ char            sin_zero[8];
 
 //socket_in6  用于IPV6设置。
 ```
-
 + **bind 参数选项**
     - **sockfd**: socket 文件描述符。
     - **addr:** 绑定socket_addr。
@@ -100,8 +98,8 @@ accept 函数用于接受一个TCP连接，并返回它的套接字描述符，�
 connect 函数用于连接一个远端的服务器，成功则返回0.
 
 ```cpp
-#include `<sys/types.h>`
-#include `<sys/socket.h>`
+#include <sys/types.h>
+#include <sys/socket.h>
 
 int
 accept(int socket, struct sockaddr *address, socklen_t *address_len);
@@ -111,7 +109,6 @@ int	//connect函数用于连接服务器
 connect(int socket, const struct sockaddr *address, socklen_t address_len);
 //UDP连接也可以使用connect函数，一般用于为UDP的套接字绑定一个固定的远端地址，从此该套接字就只能接受该地址的数据（过滤）。
 ```
-
 + **accept 的参数选项**
     - **socket:** 指定需要接受数据的套接字接口
     - **address:** 该结构用于接收连接方的协议地址。如果不想要远端的信息，可以设null。
@@ -127,7 +124,7 @@ unix like 系统中，UDP与TCP协议数据的收发所使用的函数有些许�
 **TCP协议所使用的接发函数：**
 
 ```cpp
-#include `<sys/socket.h>`
+#include <sys/socket.h>
 
 // recv send 参数都是一致的。
 ssize_t recv(int sockfd, void buf, size_t len,
@@ -135,7 +132,6 @@ int flags);
 
 ssize_t send(int sockfd, const void buf, size_t len, int flags);
 ```
-
 + **参数选项：**
     - **sockfd:** 指定远端的套接字接口
     - **buf:** 需要接受/发送的数据
@@ -160,7 +156,6 @@ htons(uint16_t hostshort);	//将主机序列转为网络序列，网络数据使
 unsigned long 
 inet_addr(const char *cp);	//用于将字符串ip地址转为网络字节序的二进制形式
 ```
-
 + **参数选项：**
     - **sockfd:** 指定需要接收/发送数据的套接字。
     - **buf:** 数据所存放的内存
@@ -177,9 +172,9 @@ inet_addr(const char *cp);	//用于将字符串ip地址转为网络字节序的�
 Socket 基类是TcpSocket、UdpSocket的抽象基类，用于提高代码的复用性。
 
 ```cpp
-#include `<iostream>`
-#include `<utility>`
-#include `<arpa/inet.h>`
+#include <iostream>
+#include <utility>
+#include <arpa/inet.h>
 
 #define MAX_BUFFER_SIZE 1024
 
@@ -213,7 +208,7 @@ public:
         bool bindSocket = BindSocket();
         if(!(socket && bindSocket))
         {
-            std::cerr `<< "socket build failed\n";
+            std::cerr << "socket build failed\n";
             return;
         }
         std::cout << "socket build success\n";
@@ -244,11 +239,11 @@ protected:
     virtual bool Accept(RemoteData* data)   // 用于接受套接字
     {
         socklen_t len = sizeof (sockaddr_in);
-        sockaddr_in* addr =  &data->`_addr;
+        sockaddr_in* addr =  &data->_addr;
         data->_socket = accept(_socket, (sockaddr*)addr, &len);
         if(data->_socket < 0)
         {
-            std::cerr `<< "accept failed " << strerror(errno) << std::endl;
+            std::cerr << "accept failed " << strerror(errno) << std::endl;
             return false;
         }
         return true;
@@ -273,7 +268,6 @@ protected:
     sockaddr_in _addr{};
 };
 ```
-
 **TcpSocket 和 UdpSocket**
 
 TcpSocket 与 UdpSocket 就如其名，对应了TCP与UDP的socket编程设计。
@@ -303,19 +297,19 @@ protected:
 
     bool RecvData(RemoteData* remoteData) override
     {
-        char* buffer = remoteData->`_data.data();
+        char* buffer = remoteData->_data.data();
         socklen_t len = sizeof(sockaddr_in);
         sockaddr_in* client = &remoteData->_addr;
         ssize_t n = recvfrom(_socket, buffer, MAX_BUFFER_SIZE-1, 0, (struct sockaddr*)client, &len);
         if(n == 0)
         {	
-            std::cout `<< "client close\n";
+            std::cout << "client close\n";
             return false;
         }
-        else if(n >` 0)
+        else if(n > 0)
         {
             buffer[n] = '\0';
-            std::cout `<< "recv data : " << buffer << std::endl;
+            std::cout << "recv data : " << buffer << std::endl;
             return true;
         }
         else
@@ -332,12 +326,12 @@ protected:
 
     bool SendData(RemoteData* data) override
     {
-        char* buffer = data->`_data.data();
+        char* buffer = data->_data.data();
         sockaddr_in* client = &data->_addr;
         ssize_t n = sendto(_socket, buffer, strlen(buffer), 0, (struct sockaddr*)client, sizeof(*client));
         if(n < 0)
         {
-            std::cerr `<< "sendto error: " << strerror(errno) << std::endl;
+            std::cerr << "sendto error: " << strerror(errno) << std::endl;
             return false;
         }
         return true;
@@ -379,18 +373,18 @@ public:
 
     bool RecvData(RemoteData* remoteData) override
     {
-        int socket = remoteData->`_socket;
+        int socket = remoteData->_socket;
         char* buffer = remoteData->_data.data();
         ssize_t n = recv(socket, buffer, MAX_BUFFER_SIZE-1, 0);
         if(n == 0)
         {
-            std::cout `<< "client close\n";
+            std::cout << "client close\n";
             return false;
         }
-        else if(n >` 0)
+        else if(n > 0)
         {
             buffer[n] = '\0';
-            std::cout `<< "recv data : " << buffer << std::endl;
+            std::cout << "recv data : " << buffer << std::endl;
             return true;
         }
         else
@@ -402,32 +396,31 @@ public:
 
     bool SendData(RemoteData* data) override
     {
-        int socket = data->`_socket;
+        int socket = data->_socket;
         char* buffer = data->_data.data();
         ssize_t n = send(socket, buffer, strlen(buffer), 0);
         if(n < 0)
         {
-            std::cerr `<< "send error\n";
+            std::cerr << "send error\n";
             return false;
         }
         return true;
     }
 };
 ```
-
 #### 4.2. 服务器与客户端的设计
 **服务器设计**
 
 ```cpp
-#include <memory>`
-#include `<print>`
+#include <memory>
+#include <print>
 #include "Socket.hpp"
 //#include "ThreadPool.hpp"	//不懂线程池的可以去看看我写的线程池博客
 
 class UdpServer : protected UdpSocket
 {
 public:
-    UdpServer(int port, ``std::`function`<void(RemoteData*)>` handler)
+    UdpServer(int port, std::function<void(RemoteData*)> handler)
             : UdpSocket("0.0.0.0", port), _handle(std::move(handler))
     {
         BuildServer();	//构建Socket
@@ -445,7 +438,7 @@ public:
         while (true)
         {
             sockaddr_in client{};
-            ``std::`shared_ptr`<RemoteData>` data = `std::`make_shared`<RemoteData>`(RemoteData(client));
+            std::shared_ptr<RemoteData> data = std::make_shared<RemoteData>(RemoteData(client));
             if(!RecvData(data.get()))
                 continue;
 //            ThreadPool::GetInstance()->enqueue([this, data]{ Run(data.get());});
@@ -454,13 +447,13 @@ public:
     }
 
 private:
-    ``std::`function`<void(RemoteData*)>` _handle;	//业务处理函数
+    std::function<void(RemoteData*)> _handle;	//业务处理函数
 };
 
 class TcpServer : TcpSocket	// 注意：这个TCP协议需要进行粘包处理。
 {
 public:
-    TcpServer(int port, ``std::`function`<void(RemoteData*)>` handler)
+    TcpServer(int port, std::function<void(RemoteData*)> handler)
         : TcpSocket("0.0.0.0", port), _handle(std::move(handler))
     {
         BuildServer();
@@ -483,7 +476,7 @@ public:
         while (true)
         {
             sockaddr_in client{};
-            ``std::`shared_ptr`<RemoteData>` data = `std::`make_shared`<RemoteData>`(RemoteData(client));
+            std::shared_ptr<RemoteData> data = std::make_shared<RemoteData>(RemoteData(client));
             if(!Accept(data.get()))
                 break;
 //            ThreadPool::GetInstance()->enqueue([this, data]{ ThreadRun(data.get());});	//最好使用多线程进行业务处理，否则将只能处理一条连接
@@ -491,17 +484,16 @@ public:
         }
     }
 private:
-    ``std::`function`<void(RemoteData*)>` _handle;
+    std::function<void(RemoteData*)> _handle;
 };
 ```
-
 **客户端设计**
 
 ```cpp
 class UdpClient : public UdpSocket
 {
 public:
-    UdpClient(std::string ip, int port, ``std::`function`<void(RemoteData*)>` func)
+    UdpClient(std::string ip, int port, std::function<void(RemoteData*)> func)
         : UdpSocket(std::move(ip), port), _func(std::move(func))
     {
         BuildClient();	//
@@ -511,7 +503,7 @@ public:
     {
         while (true)
         {
-            ``std::`shared_ptr`<RemoteData>` data = `std::`make_shared`<RemoteData>`(RemoteData(_addr));
+            std::shared_ptr<RemoteData> data = std::make_shared<RemoteData>(RemoteData(_addr));
             _func(data.get());
             SendData(data.get());
             RecvData(data.get());
@@ -519,13 +511,13 @@ public:
     }
 
 private:
-    ``std::`function`<void(RemoteData*)>` _func;
+    std::function<void(RemoteData*)> _func;
 };
 
 class TcpClient : public TcpSocket
 {
 public:
-    TcpClient(std::string ip, int port, ``std::`function`<void(RemoteData*)>` func)
+    TcpClient(std::string ip, int port, std::function<void(RemoteData*)> func)
         : TcpSocket(std::move(ip), port), _func(std::move(func))
         {
             BuildClient();
@@ -535,7 +527,7 @@ public:
     {
         while (true)
         {
-            ``std::`shared_ptr`<RemoteData>` data = `std::`make_shared`<RemoteData>`(RemoteData(_addr, _socket));
+            std::shared_ptr<RemoteData> data = std::make_shared<RemoteData>(RemoteData(_addr, _socket));
             _func(data.get());
             SendData(data.get());
             RecvData(data.get());
@@ -543,10 +535,9 @@ public:
     }
 
 private:
-    ``std::`function`<void(RemoteData*)>` _func;
+    std::function<void(RemoteData*)> _func;
 };
 ```
-
 #### 4.3. 使用
 ```cpp
 //client.cpp
@@ -554,8 +545,8 @@ private:
 
 void handler(RemoteData* data)
 {
-    std::cout `<< "client: ";
-    std::cin >`> data->_data;
+    std::cout << "client: ";
+    std::cin >> data->_data;
 }
 
 int main()
@@ -573,7 +564,7 @@ void handler(RemoteData* data)
 
 int main() {
     ThreadPool* pool = ThreadPool::GetInstance(5);
-    UdpServer server(8888, ``std::`function`<void(RemoteData*)>`(handler));
+    UdpServer server(8888, std::function<void(RemoteData*)>(handler));
     server.start();
     return 0;
 }

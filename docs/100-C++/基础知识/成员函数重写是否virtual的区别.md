@@ -9,12 +9,12 @@ slug: /C++/基础知识/成员函数重写是否virtual的区别
 这种行为是由于C++的**静态绑定**机制决定的。对于非虚函数，编译器在编译时就已经确定了要调用哪个函数，基于指针或引用的类型（而不是实际对象的类型）。
 
 ```cpp
-#include `<iostream>`
+#include <iostream>
 
 class Parent {
     public:
     void show() {
-        std::cout `<< "Parent's show" << std::endl;
+        std::cout << "Parent's show" << std::endl;
     }
 };
 
@@ -27,25 +27,24 @@ void show() {
 
 int main() {
     Parent* ptr = new Child();
-    ptr->`show();  // 输出: Parent's show
+    ptr->show();  // 输出: Parent's show
 
     delete ptr;
     return 0;
 }
 ```
-
 在这个例子中，`ptr->show()` 调用的是 `Parent` 类中的 `show()` 函数，而不是 `Child` 类中的 `show()` 函数，因为 `show()` 在 `Parent` 类中没有被声明为 `virtual`。
 
 #### 2. 使用 `virtual` 关键字
 如果你希望实现**动态绑定**（即在运行时根据对象的实际类型来确定调用哪个函数），你需要在父类中将函数声明为 `virtual`：
 
 ```cpp
-#include `<iostream>`
+#include <iostream>
 
 class Parent {
 public:
 virtual void show() {
-    std::cout `<< "Parent's show" << std::endl;
+    std::cout << "Parent's show" << std::endl;
 }
 };
 
@@ -58,13 +57,12 @@ void show() override {
 
 int main() {
     Parent* ptr = new Child();
-    ptr->`show();  // 输出: Child's show
+    ptr->show();  // 输出: Child's show
 
     delete ptr;
     return 0;
 }
 ```
-
 在这个例子中，`ptr->show()` 调用的是 `Child` 类中的 `show()` 函数，因为 `show()` 在 `Parent` 类中被声明为 `virtual`，实现了多态。
 
 #### 3. 总结
@@ -81,12 +79,12 @@ C++ 的设计目标之一是提供高效性和灵活性。为了兼顾性能，�
 静态绑定确保了代码的行为是可预测的。如果函数是非虚的，那么无论你如何传递对象，调用哪个函数只取决于指针或引用的类型。这种明确性可以帮助开发者更好地理解代码的行为。
 
 ```cpp
-#include `<iostream>`
+#include <iostream>
 
 class Parent {
 public:
     void show() {
-        std::cout `<< "Parent's show" << std::endl;
+        std::cout << "Parent's show" << std::endl;
     }
 };
 
@@ -99,13 +97,12 @@ public:
 
 int main() {
     Parent* ptr = new Child(); // ptr 的类型是 Parent*
-    ptr->`show(); // 调用 Parent::show，因为 show 是非虚函数
+    ptr->show(); // 调用 Parent::show，因为 show 是非虚函数
 
     delete ptr;
     return 0;
 }
 ```
-
 ##### 4.1. 解释：
 + 在编译时，编译器看到 `ptr` 的类型是 `Parent*`，而 `show()` 是一个非虚函数，因此直接生成调用 `Parent::show()` 的代码。
 + 即使 `ptr` 实际指向的是一个 `Child` 对象，但由于 `show()` 是非虚函数，编译器不会去检查对象的实际类型。
@@ -117,7 +114,7 @@ int main() {
 class Parent {
     public:
     virtual void show() {
-        std::cout `<< "Parent's show" << std::endl;
+        std::cout << "Parent's show" << std::endl;
     }
 };
 
@@ -130,7 +127,7 @@ void show() override {
 
 int main() {
     Parent* ptr = new Child(); // ptr 的类型是 Parent*
-    ptr->`show(); // 调用 Child::show，因为 show 是虚函数
+    ptr->show(); // 调用 Child::show，因为 show 是虚函数
 
     delete ptr;
     return 0;

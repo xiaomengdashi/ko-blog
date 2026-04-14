@@ -33,8 +33,8 @@ std::string_view是C++17引入的一个轻量级字符串视图类，它提供�
 #### 2.4. 实现原理
 基于libcxx源码分析，string_view的核心实现非常简洁：
 
-```plain
-template `<class _CharT, class _Traits = `char_traits<_CharT>`>
+```cpp
+template <class _CharT, class _Traits = char_traits<_CharT>>
 class basic_string_view {
 public:
     // 类型定义
@@ -47,7 +47,7 @@ public:
     
     // 构造函数 - 从C字符串构造
     _LIBCPP_CONSTEXPR _LIBCPP_HIDE_FROM_ABI basic_string_view(const _CharT* __s)
-        : __data_(__s), __size_(`std::`__char_traits_length_checked`<_Traits>`(__s)) {}
+        : __data_(__s), __size_(std::__char_traits_length_checked<_Traits>(__s)) {}
     
     // 构造函数 - 从指针和长度构造
     _LIBCPP_CONSTEXPR _LIBCPP_HIDE_FROM_ABI basic_string_view(const _CharT* __s, size_type __len) _NOEXCEPT
@@ -67,7 +67,6 @@ private:
     size_type __size_;          // 字符串长度
 };
 ```
-
 **核心设计要点：**
 
 1. **双成员设计**：只包含数据指针和大小，确保轻量级
@@ -91,7 +90,6 @@ std::string_view sv3("hello world", 5);  // "hello"
 std::string str = "example";
 std::string_view sv4(str);
 ```
-
 ##### 2.5.2. 访问操作
 ```cpp
 std::string_view sv("hello");
@@ -104,7 +102,6 @@ const char* ptr = sv.data(); // 获取原始指针
 size_t len = sv.size();    // 5
 bool empty = sv.empty();   // false
 ```
-
 ##### 2.5.3. 子串操作
 ```cpp
 std::string_view sv("hello world");
@@ -117,7 +114,6 @@ auto sub2 = sv.substr(6);       // "world"
 sv.remove_prefix(6);  // sv现在是"world"
 sv.remove_suffix(2);  // sv现在是"wor"
 ```
-
 ##### 2.5.4. 查找操作
 ```cpp
 std::string_view sv("hello world");
@@ -134,7 +130,6 @@ bool ends = sv.ends_with("world");     // true
 // C++23新增功能
 bool contains = sv.contains("lo");     // true
 ```
-
 ##### 2.5.5. 比较操作
 ```cpp
 std::string_view sv1("abc");
@@ -145,28 +140,27 @@ int cmp = sv1.compare(sv2);  // < 0
 bool equal = (sv1 == sv2);   // false
 bool less = (sv1 < sv2);     // true
 ```
-
 #### 2.6. 代码示例
 ```cpp
-#include `<iostream>`
-#include `<string_view>`
-#include `<string>`
-#include `<vector>`
+#include <iostream>
+#include <string_view>
+#include <string>
+#include <vector>
 
 // 零拷贝字符串处理函数
 void processString(std::string_view sv) {
-    std::cout `<< "Processing: " << sv << " (length: " << sv.size() << ")\n";
+    std::cout << "Processing: " << sv << " (length: " << sv.size() << ")\n";
     
     // 高效的子串操作
-    if (sv.size() >` 5) {
+    if (sv.size() > 5) {
         auto prefix = sv.substr(0, 5);
-        std::cout `<< "Prefix: " << prefix << "\n";
+        std::cout << "Prefix: " << prefix << "\n";
     }
 }
 
 // 字符串分割示例
-`std::vector<std::string_view>`split(std::string_view str, char delimiter) {
-    ``std::`vector`<std::string_view>` result;
+std::vector<std::string_view>split(std::string_view str, char delimiter) {
+    std::vector<std::string_view> result;
     size_t start = 0;
     
     while (start < str.size()) {
@@ -197,7 +191,7 @@ int main() {
     std::string data = "apple,banana,cherry,date";
     auto parts = split(data, ',');
     
-    std::cout `<< "Split result:\n";
+    std::cout << "Split result:\n";
     for (const auto& part : parts) {
         std::cout << "  '" << part << "'\n";
     }
@@ -205,7 +199,6 @@ int main() {
     return 0;
 }
 ```
-
 ### 3. std::span详解
 #### 3.1. 概念
 std::span是C++20引入的一个模板类，提供对连续内存序列的非拥有性访问。它可以看作是数组、vector、array等连续容器的统一视图接口。
@@ -227,28 +220,28 @@ std::span是C++20引入的一个模板类，提供对连续内存序列的非拥
 基于libcxx源码分析，span有两个特化版本：
 
 ##### 3.4.1. 静态大小版本（固定extent）
-```plain
-template <typename _Tp, size_t _Extent>`
+```cpp
+template <typename _Tp, size_t _Extent>
 class span {
 public:
     // 类型定义
     using element_type = _Tp;
-    using value_type = `remove_cv_t`<_Tp>`;
+    using value_type = remove_cv_t<_Tp>;
     using size_type = size_t;
     using difference_type = ptrdiff_t;
     using pointer = _Tp*;
     using reference = _Tp&;
-    using iterator = `__wrap_iter`<pointer>`;
+    using iterator = __wrap_iter<pointer>;
     
     static constexpr size_type extent = _Extent;
     
     // 构造函数
-    template `<size_t _Sz = _Extent>`
+    template <size_t _Sz = _Extent>
         requires(_Sz == 0)
     _LIBCPP_HIDE_FROM_ABI constexpr span() noexcept : __data_{nullptr} {}
     
     // 从数组构造
-    _LIBCPP_HIDE_FROM_ABI constexpr span(`type_identity_t`<element_type>` (&__arr)[_Extent]) noexcept 
+    _LIBCPP_HIDE_FROM_ABI constexpr span(type_identity_t<element_type> (&__arr)[_Extent]) noexcept 
         : __data_{__arr} {}
     
     // 访问函数
@@ -264,11 +257,10 @@ private:
     pointer __data_;  // 只需要存储指针，大小在编译期确定
 };
 ```
-
 ##### 3.4.2. 动态大小版本（dynamic_extent）
-```plain
-template `<typename _Tp>`
-class `span`<_Tp, dynamic_extent>` {
+```cpp
+template <typename _Tp>
+class span<_Tp, dynamic_extent> {
 public:
     static constexpr size_type extent = dynamic_extent;
     
@@ -276,7 +268,7 @@ public:
     _LIBCPP_HIDE_FROM_ABI constexpr span() noexcept 
         : __data_{nullptr}, __size_{0} {}
     
-    template `<`__span_compatible_iterator<element_type>` _It>
+    template <__span_compatible_iterator<element_type> _It>
     _LIBCPP_HIDE_FROM_ABI constexpr span(_It __first, size_type __count)
         : __data_{std::to_address(__first)}, __size_{__count} {}
     
@@ -294,7 +286,6 @@ private:
     size_type __size_;   // 运行时大小
 };
 ```
-
 **核心设计要点：**
 
 1. **模板特化**：静态大小版本只存储指针，动态版本存储指针和大小
@@ -307,24 +298,23 @@ private:
 ```cpp
 // 从数组构造
 int arr[] = {1, 2, 3, 4, 5};
-`std::`span`<int>` sp1(arr);  // 自动推导大小
-`std::`span`<int, 5>` sp2(arr);  // 静态大小
+std::span<int> sp1(arr);  // 自动推导大小
+std::span<int, 5> sp2(arr);  // 静态大小
 
 // 从vector构造
-``std::`vector`<int>` vec = {1, 2, 3, 4, 5};
-`std::`span`<int>` sp3(vec);
+std::vector<int> vec = {1, 2, 3, 4, 5};
+std::span<int> sp3(vec);
 
 // 从指针和大小构造
-`std::`span`<int>` sp4(arr, 3);  // 前3个元素
+std::span<int> sp4(arr, 3);  // 前3个元素
 
 // 从迭代器构造
-`std::`span`<int>` sp5(vec.begin(), vec.begin() + 3);
+std::span<int> sp5(vec.begin(), vec.begin() + 3);
 ```
-
 ##### 3.5.2. 访问操作
 ```cpp
-``std::`vector`<int>` vec = {1, 2, 3, 4, 5};
-`std::`span`<int>` sp(vec);
+std::vector<int> vec = {1, 2, 3, 4, 5};
+std::span<int> sp(vec);
 
 // 基本访问
 int first = sp[0];           // 1
@@ -335,34 +325,32 @@ size_t len = sp.size();      // 5
 bool empty = sp.empty();     // false
 size_t bytes = sp.size_bytes(); // 5 * sizeof(int)
 ```
-
 ##### 3.5.3. 子视图操作
 ```cpp
-``std::`vector`<int>` vec = {1, 2, 3, 4, 5};
-`std::`span`<int>` sp(vec);
+std::vector<int> vec = {1, 2, 3, 4, 5};
+std::span<int> sp(vec);
 
 // 获取前N个元素
-auto first3 = sp.`first`<3>`();    // {1, 2, 3}
+auto first3 = sp.first<3>();    // {1, 2, 3}
 auto firstN = sp.first(3);      // {1, 2, 3}
 
 // 获取后N个元素
-auto last2 = sp.`last`<2>`();      // {4, 5}
+auto last2 = sp.last<2>();      // {4, 5}
 auto lastN = sp.last(2);        // {4, 5}
 
 // 获取子span
-auto sub1 = sp.`subspan`<1, 3>`(); // {2, 3, 4}
+auto sub1 = sp.subspan<1, 3>(); // {2, 3, 4}
 auto sub2 = sp.subspan(1, 3);   // {2, 3, 4}
 auto sub3 = sp.subspan(2);      // {3, 4, 5}
 ```
-
 ##### 3.5.4. 迭代器支持
 ```cpp
-``std::`vector`<int>` vec = {1, 2, 3, 4, 5};
-`std::`span`<int>` sp(vec);
+std::vector<int> vec = {1, 2, 3, 4, 5};
+std::span<int> sp(vec);
 
 // 正向迭代
 for (auto it = sp.begin(); it != sp.end(); ++it) {
-    std::cout `<< *it << " ";
+    std::cout << *it << " ";
 }
 
 // 范围for循环
@@ -375,33 +363,31 @@ for (auto it = sp.rbegin(); it != sp.rend(); ++it) {
     std::cout << *it << " ";
 }
 ```
-
 ##### 3.5.5. 字节视图
 ```cpp
-`std::vector<int>`vec = {0x12345678, 0x9ABCDEF0};
-`std::`span`<int>` sp(vec);
+std::vector<int>vec = {0x12345678, 0x9ABCDEF0};
+std::span<int> sp(vec);
 
 // 获取字节视图
 auto bytes = std::as_bytes(sp);
-std::cout `<< "Size in bytes: " << bytes.size() << "\n";
+std::cout << "Size in bytes: " << bytes.size() << "\n";
 
 // 可写字节视图（非const元素）
 auto writable_bytes = std::as_writable_bytes(sp);
 ```
-
 #### 3.6. 代码示例
 ```cpp
-#include <iostream>`
+#include <iostream>
 #include <span>
-#include `<vector>`
-#include `<array>`
-#include `<algorithm>`
-#include `<numeric>`
+#include <vector>
+#include <array>
+#include <algorithm>
+#include <numeric>
 
 // 零拷贝处理不同容器的统一函数
-`template`<typename T>`
-void processData(`std::`span`<T>` data) {
-    std::cout `<< "Processing " << data.size() << " elements:\n";
+template<typename T>
+void processData(std::span<T> data) {
+    std::cout << "Processing " << data.size() << " elements:\n";
     
     // 计算统计信息
     if (!data.empty()) {
@@ -416,23 +402,23 @@ void processData(`std::`span`<T>` data) {
 }
 
 // 矩阵操作示例
-`template<typename T>`
+template<typename T>
 class Matrix {
 private:
-    ``std::`vector`<T>` data_;
+    std::vector<T> data_;
     size_t rows_, cols_;
     
 public:
     Matrix(size_t rows, size_t cols) : data_(rows * cols), rows_(rows), cols_(cols) {}
     
     // 获取行的span视图
-    `std::`span`<T>` getRow(size_t row) {
-        return `std::`span`<T>`(data_.data() + row * cols_, cols_);
+    std::span<T> getRow(size_t row) {
+        return std::span<T>(data_.data() + row * cols_, cols_);
     }
     
     // 获取整个矩阵的span视图
-    `std::`span`<T>` getData() {
-        return `std::`span`<T>`(data_);
+    std::span<T> getData() {
+        return std::span<T>(data_);
     }
     
     void fill(T value) {
@@ -441,8 +427,8 @@ public:
 };
 
 // 安全的数组处理函数
-`template`<typename T>`
-void safeArrayProcess(`std::`span`<T>` arr) {
+template<typename T>
+void safeArrayProcess(std::span<T> arr) {
     // 边界安全的访问
     for (size_t i = 0; i < arr.size(); ++i) {
         arr[i] *= 2;
@@ -451,7 +437,7 @@ void safeArrayProcess(`std::`span`<T>` arr) {
     // 子数组处理
     if (arr.size() > 2) {
         auto middle = arr.subspan(1, arr.size() - 2);
-        std::cout `<< "Middle elements: ";
+        std::cout << "Middle elements: ";
         for (const auto& val : middle) {
             std::cout << val << " ";
         }
@@ -461,24 +447,24 @@ void safeArrayProcess(`std::`span`<T>` arr) {
 
 int main() {
     // 处理不同类型的容器
-`std::vector<int>`vec = {1, 2, 3, 4, 5};
-    `std::`array`<int, 5>` arr = {6, 7, 8, 9, 10};
+std::vector<int>vec = {1, 2, 3, 4, 5};
+    std::array<int, 5> arr = {6, 7, 8, 9, 10};
     int c_array[] = {11, 12, 13, 14, 15};
     
-    std::cout `<< "=== 统一处理不同容器 ===\n";
-    `processData<int>`(vec);     // vector
-    `processData`<int>`(arr);     // array
-    `processData`<int>`(c_array); // C数组
+    std::cout << "=== 统一处理不同容器 ===\n";
+    processData<int>(vec);     // vector
+    processData<int>(arr);     // array
+    processData<int>(c_array); // C数组
     
     // 矩阵操作示例
-    std::cout `<< "\n=== 矩阵操作示例 ===\n";
-    `Matrix<double>` matrix(3, 4);
+    std::cout << "\n=== 矩阵操作示例 ===\n";
+    Matrix<double> matrix(3, 4);
     matrix.fill(1.5);
     
     // 处理每一行
     for (size_t i = 0; i < 3; ++i) {
         auto row = matrix.getRow(i);
-        std::cout `<< "Row " << i << ": ";
+        std::cout << "Row " << i << ": ";
         for (const auto& val : row) {
             std::cout << val << " ";
         }
@@ -487,14 +473,14 @@ int main() {
     
     // 安全数组处理
     std::cout << "\n=== 安全数组处理 ===\n";
-`std::vector<int>`test_data = {1, 2, 3, 4, 5, 6};
-    std::cout `<< "Before: ";
+std::vector<int>test_data = {1, 2, 3, 4, 5, 6};
+    std::cout << "Before: ";
     for (const auto& val : test_data) {
         std::cout << val << " ";
     }
     std::cout << "\n";
     
-    `safeArrayProcess<int>`(test_data);
+    safeArrayProcess<int>(test_data);
     
     std::cout << "After: ";
     for (const auto& val : test_data) {

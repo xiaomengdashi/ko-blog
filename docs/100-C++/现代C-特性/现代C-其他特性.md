@@ -35,7 +35,6 @@ public:
     explicit operator 目标类型() const;
 };
 ```
-
 #### 2.3. 使用示例
 ```cpp
 class MyString {
@@ -57,9 +56,8 @@ private:
 MyString str1(10);           // 正确：显式构造
 // MyString str2 = 10;       // 错误：禁止隐式转换
 // bool valid = str1;        // 错误：禁止隐式转换
-bool valid = `static_cast`<bool>`(str1);  // 正确：显式转换
+bool valid = static_cast<bool>(str1);  // 正确：显式转换
 ```
-
 ---
 
 ### 3. decltype关键字 (C++11)
@@ -74,7 +72,6 @@ decltype(表达式) 函数名(参数列表);
 // 与auto结合使用
 auto 函数名(参数列表) -> decltype(表达式);
 ```
-
 #### 3.3. 使用示例
 ```cpp
 int x = 42;
@@ -86,16 +83,15 @@ decltype(ref) z = x;        // z的类型是const int&
 decltype(x + y) result;     // result的类型是int
 
 // 与容器结合
-``std::`vector`<int>` vec = {1, 2, 3};
+std::vector<int> vec = {1, 2, 3};
 decltype(vec.begin()) it = vec.begin();  // 迭代器类型
 
 // 函数返回类型推导
-`template`<typename T, typename U>`
+template<typename T, typename U>
 auto add(T a, U b) -> decltype(a + b) {
     return a + b;
 }
 ```
-
 ---
 
 ### 4. 返回值后置语法 (C++11)
@@ -109,12 +105,11 @@ auto 函数名(参数列表) -> 返回类型 {
 }
 
 // 模板函数中的应用
-`template`<typename T, typename U>`
+template<typename T, typename U>
 auto 函数名(T t, U u) -> decltype(表达式) {
     // 函数体
 }
 ```
-
 #### 4.3. 使用示例
 ```cpp
 // 简单函数
@@ -123,17 +118,16 @@ auto add(int a, int b) -> int {
 }
 
 // 模板函数中的复杂返回类型
-`template`<typename Container>`
+template<typename Container>
 auto getFirst(Container& c) -> decltype(c[0]) {
     return c[0];
 }
 
 // 与lambda结合
 auto lambda = [](int x, int y) -> double {
-    return `static_cast`<double>`(x) / y;
+    return static_cast<double>(x) / y;
 };
 ```
-
 ---
 
 ### 5. 属性(Attributes) (C++11起)
@@ -146,7 +140,6 @@ auto lambda = [](int x, int y) -> double {
 [[属性名(参数)]] 声明;
 [[属性1, 属性2]] 声明;
 ```
-
 #### 5.3. 使用示例
 ##### 5.3.1. [[deprecated]] - 标记弃用
 ```cpp
@@ -158,7 +151,6 @@ void oldFunction() {
 [[deprecated]]
 int old_variable = 42;
 ```
-
 ##### 5.3.2. [[nodiscard]] - 返回值不应被忽略
 ```cpp
 [[nodiscard]] int calculate() {
@@ -169,7 +161,6 @@ int old_variable = 42;
 // calculate();  // 警告：忽略返回值
 int result = calculate();  // 正确
 ```
-
 ##### 5.3.3. [[maybe_unused]] - 可能未使用
 ```cpp
 void debugFunction() {
@@ -177,7 +168,6 @@ void debugFunction() {
     // debugVar可能只在调试时使用
 }
 ```
-
 #### 5.4. 常用属性表格
 | 属性 | 标准版本 | 作用 | 示例 |
 | --- | --- | --- | --- |
@@ -224,7 +214,6 @@ public:
     constexpr ClassName(参数列表) : 成员初始化列表 {}
 };
 ```
-
 #### 6.3. constexpr的各种用法及作用
 ##### 6.3.1. constexpr变量 - 编译时常量
 **作用**：创建真正的编译时常量，可用于模板参数、数组大小等需要编译时确定值的场合。
@@ -236,7 +225,6 @@ constexpr double pi = 3.14159265359;     // 数学常量
 // 可用于数组大小
 int buffer[buffer_size];  // 编译时就知道大小
 ```
-
 ##### 6.3.2. constexpr函数 - 编译时计算
 **作用**：函数可以在编译时执行，如果参数是编译时常量，结果也是编译时常量。
 
@@ -255,7 +243,6 @@ constexpr int factorial(int n) {
 constexpr int result1 = square(10);      // 编译时计算：100
 constexpr int result2 = factorial(5);    // 编译时计算：120
 ```
-
 ##### 6.3.3. constexpr类和构造函数 - 编译时对象
 **作用**：允许在编译时创建和操作对象，实现复杂的编译时计算。
 
@@ -275,7 +262,6 @@ private:
 constexpr Point p(3, 4);
 constexpr int dist = p.distanceSquared();  // 编译时计算：25
 ```
-
 ##### 6.3.4. constexpr if - 编译时条件分支 (C++17)
 **作用**：在编译时根据条件选择不同的代码路径，实现真正的零开销抽象。这是模板元编程的重要工具，可以根据类型特征在编译时生成不同的代码。
 
@@ -288,12 +274,12 @@ constexpr int dist = p.distanceSquared();  // 编译时计算：25
 
 ```cpp
 // 基本用法
-`template`<typename T>`
+template<typename T>
 constexpr auto process_value(T value) {
-    if constexpr (`std::`is_integral_v`<T>`) {
+    if constexpr (std::is_integral_v<T>) {
         // 整数类型的处理 - 只有当T是整数时才编译这部分代码
         return value * 2;
-    } else if constexpr (`std::`is_floating_point_v`<T>`) {
+    } else if constexpr (std::is_floating_point_v<T>) {
         // 浮点类型的处理 - 只有当T是浮点数时才编译这部分代码
         return value * 1.5;
     } else {
@@ -307,11 +293,11 @@ auto int_result = process_value(10);      // 编译时选择整数分支
 auto float_result = process_value(3.14);  // 编译时选择浮点分支
 
 // 复杂示例：根据容器类型选择不同的访问方式
-`template`<typename Container>`
+template<typename Container>
 void print_container(const Container& c) {
-    if constexpr (`std::`is_same_v`<Container, std::string>`) {
+    if constexpr (std::is_same_v<Container, std::string>) {
         // 字符串特殊处理
-        std::cout `<< "String: " << c << std::endl;
+        std::cout << "String: " << c << std::endl;
     } else if constexpr (requires { c.begin(); c.end(); }) {
         // 可迭代容器
         std::cout << "Container: ";
@@ -325,7 +311,6 @@ void print_container(const Container& c) {
     }
 }
 ```
-
 ##### 6.3.5. constexpr与其他关键字结合
 ###### 6.3.5.1. constexpr + static
 **作用**：创建编译时确定的静态常量
@@ -337,7 +322,6 @@ public:
     static constexpr double timeout = 30.0;
 };
 ```
-
 ###### 6.3.5.2. constexpr + lambda (C++17)
 **作用**：创建可在编译时执行的lambda表达式
 
@@ -348,7 +332,6 @@ constexpr auto square_lambda = [](int x) constexpr {
 
 constexpr int result = square_lambda(5);  // 编译时计算：25
 ```
-
 ---
 
 ### 7. 泛型Lambda (C++14)
@@ -363,11 +346,10 @@ auto lambda_name = [捕获列表](auto 参数1, auto 参数2, ...) {
 };
 
 // 带返回类型
-auto lambda_name = [捕获列表](auto 参数1, auto 参数2, ...) ->` 返回类型 {
+auto lambda_name = [捕获列表](auto 参数1, auto 参数2, ...) -> 返回类型 {
     // 函数体
 };
 ```
-
 #### 7.3. 使用示例
 ```cpp
 // 基本泛型lambda
@@ -381,7 +363,7 @@ double double_result = add(2.5, 1.5);          // double + double
 std::string str_result = add(std::string("Hello "), std::string("World"));  // string + string
 
 // 与STL算法结合
-``std::`vector`<int>` numbers = {1, 2, 3, 4, 5};
+std::vector<int> numbers = {1, 2, 3, 4, 5};
 
 // 泛型lambda用于变换
 auto square = [](auto x) { return x * x; };
@@ -390,12 +372,12 @@ std::transform(numbers.begin(), numbers.end(), numbers.begin(), square);
 // 泛型lambda用于打印容器
 auto print_container = [](const auto& container) {
     for (const auto& item : container) {
-        std::cout `<< item << " ";
+        std::cout << item << " ";
     }
     std::cout << std::endl;
 };
 
-print_container(numbers);  // `打印vector<int>`
-print_container(``std::`vector`<std::string>`{"a", "b", "c"});  // `打印vector`<string>`
+print_container(numbers);  // 打印vector<int>
+print_container(std::vector<std::string>{"a", "b", "c"});  // 打印vector<string>
 ```
 

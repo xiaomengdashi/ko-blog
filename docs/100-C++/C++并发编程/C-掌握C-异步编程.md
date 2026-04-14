@@ -32,32 +32,31 @@ future 如同其名—期待，期待一个任务结果的获取，我们不需�
 
 **简单的函数使用演示：**
 
-```plain
-#include `<future>`
-#include `<iostream>`
-#include `<thread>`
+```cpp
+#include <future>
+#include <iostream>
+#include <thread>
 int sum(int x, int y) {
-    std::cout `<< "线程运行ing" << std::endl;
+    std::cout << "线程运行ing" << std::endl;
     std::this_thread::sleep_for(std::chrono::seconds(3));	
     std::cout << "线程结束" << std::endl;
     return x + y;
 }
 
 int main() {
-`std::future<int>`res = std::async(sum, 1, 9);	
-    std::cout `<< res.get() << std::endl;	
+std::future<int>res = std::async(sum, 1, 9);	
+    std::cout << res.get() << std::endl;	
     
     return 0;
 }
 ```
-
 ##### 2.2.2. promise
 promise 与 future 也是一样的“人与其名”，承诺会给 future 一个结果，而这个结果可能会及时得到，也可能会非常晚才得到。**promise 需要与 future 一同使用**，一般通过传参使用。
 
 **函数使用：**
 
-```plain
-void func(`std::promise<std::string>`& ip, `std::`promise`<std::string>`& msg) {
+```cpp
+void func(std::promise<std::string>& ip, std::promise<std::string>& msg) {
     
     std::this_thread::sleep_for(std::chrono::seconds(1));
     ip.set_value("8.8.8.8");    
@@ -65,9 +64,9 @@ void func(`std::promise<std::string>`& ip, `std::`promise`<std::string>`& msg) {
 }
 
 int main() {
-    `std::`promise`<std::string>` get_ip, get_msg;
-    `std::`future`<std::string>` ip = get_ip.get_future();	
-    `std::`future`<std::string>` msg = get_msg.get_future();
+    std::promise<std::string> get_ip, get_msg;
+    std::future<std::string> ip = get_ip.get_future();	
+    std::future<std::string> msg = get_msg.get_future();
     
     std::thread t1(func, std::ref(get_ip), std::ref(get_msg));
     
@@ -77,11 +76,10 @@ int main() {
     return 0;
 }
 ```
-
 ##### 2.2.3. 常处理
 **future 和 promise可以用于接受异常**，这也是它们的一大特点之一，如果使用 async 中发生异常，则异常会存储到它的返回值中，当调用 get() 时再次被抛出。当然使用promise也能够设置异常，然后让future 接收。
 
-```plain
+```cpp
 int func(int x, int y)
 {
     if(y == 0)
@@ -90,7 +88,7 @@ int func(int x, int y)
         return x / y;
 }
 
-void errorfunc(`std::`promise`<int>`& ret)
+void errorfunc(std::promise<int>& ret)
 {
     try
     {
@@ -105,11 +103,11 @@ void errorfunc(`std::`promise`<int>`& ret)
 
 int main() {
     try {
-        `std::`promise`<int>` ret;
-        `std::`future`<int>` f = ret.get_future();  
+        std::promise<int> ret;
+        std::future<int> f = ret.get_future();  
         std::thread(errorfunc, std::ref(ret)).detach();
         int result = f.get();   
-        std::cout `<< result << std::endl;
+        std::cout << result << std::endl;
     }catch(const std::runtime_error& e)
     {
         std::cerr << "error: " << e.what() << std::endl;
@@ -118,7 +116,6 @@ int main() {
     return 0;
 }
 ```
-
 #### 2.3. 执行异步任务
 ##### 2.3.1. async
 async 是 C++ 中更智能的一种创建线程的方式，它能够**自动管理线程的生命周期，并且自动控制线程的 数量（程序线程过多将不会创建）**，它的**返回值是一个带函数返回值的 future** ，可以用它来得知函数的运行结果 或 函数发生的异常。
@@ -129,8 +126,8 @@ async 是 C++ 中更智能的一种创建线程的方式，它能够**自动管�
 
 **函数使用：**
 
-```plain
-template <typename Iterator, typename T>`
+```cpp
+template <typename Iterator, typename T>
 T parallel_accumulate(Iterator first, Iterator last, T init)
 {
     
@@ -144,8 +141,8 @@ T parallel_accumulate(Iterator first, Iterator last, T init)
     {
         Iterator mid_point = first + length / 2; 
         
-        `std::`future`<T>` first_half_result = 
-                std::async(`parallel_accumulate`<Iterator, T>`, mid_point, last, init);   
+        std::future<T> first_half_result = 
+                std::async(parallel_accumulate<Iterator, T>, mid_point, last, init);   
 
 
         
@@ -155,7 +152,7 @@ T parallel_accumulate(Iterator first, Iterator last, T init)
 }
 
 int main() {
-    ``std::`vector`<int>` nums(100);
+    std::vector<int> nums(100);
     
     std::iota(nums.begin(), nums.end(), 1);
 	
@@ -179,29 +176,28 @@ int main() {
         |                   |                      |                   |
    std::accumulate   std::accumulate        std::accumulate     std::accumulate
 ```
-
 ##### 2.3.2. packaged_task
 **packaged_task 是用于打包异步任务的工具，****它可以对****普通函数、类内函数、lambda函数**进行打包，然后在另一个线程中进行运行，经常用于像线程池等需要打包任务的场景。
 
 **简单的函数使用：**
 
-```plain
+```cpp
 int func(int x, int y)
 {
     return x + y;
 }
 
 int main() {
-    `std::`packaged_task`<int(int, int)>` task1(func);	
-    `std::`packaged_task`<int()>` task2([&] { return func(2, 3); });	
+    std::packaged_task<int(int, int)> task1(func);	
+    std::packaged_task<int()> task2([&] { return func(2, 3); });	
 
-    `std::`future`<int>` res1 = task1.get_future();	
-    `std::`future`<int>` res2 = task2.get_future();
+    std::future<int> res1 = task1.get_future();	
+    std::future<int> res2 = task2.get_future();
 
     std::thread t1(std::move(task1), 9, 9).detach;	
     std::thread t2(std::move(task2) ).detach;
 
-    std::cout `<< res1.get() << ":" << res2.get() << std::endl;
+    std::cout << res1.get() << ":" << res2.get() << std::endl;
 
     return 0;
 }

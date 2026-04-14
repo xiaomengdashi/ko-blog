@@ -36,7 +36,6 @@ select可以监听多个文件描述符，直到条件满足或者超时返回
 int select(int nfds, fd_set *readfds, fd_set *writefds,
 fd_set *exceptfds, struct timeval *timeout);
 ```
-
 nfds：最大的文件描述符加1
 
 readfds：监听可读集合
@@ -55,14 +54,13 @@ void FD_CLR(int fd, fd_set *set);
 int  FD_ISSET(int fd, fd_set *set); 
 void FD_ZERO(fd_set *set);
 ```
-
 **demo**
 
 下面这个程序使用select监听标准输入，直到标准输入可读时，返回并打印内容
 
 ```cpp
-#include `<stdio.h>`
-#include `<sys/select.h>`
+#include <stdio.h>
+#include <sys/select.h>
 
 int main(int argc, char* argv[])
 {
@@ -103,7 +101,6 @@ int main(int argc, char* argv[])
     return 0;
 }
 ```
-
 #### 1.2. select机制内核源码剖析
 我们先来看看`fd_set`是什么东西
 
@@ -114,7 +111,6 @@ typedef struct {
 unsigned long fds_bits [__FDSET_LONGS]; 
 } __kernel_fd_set;
 ```
-
 从上面可以看出，fd_set其实就是一个数组，内核用一个位来表示一个文件描述符，从内核定义来看，一共有1024个位
 
 下面再来看看这四个设置函数
@@ -132,35 +128,30 @@ void FD_ZERO(fd_set *set);
 #define FD_ISSET(fd,fdsetp)	__FD_ISSET(fd,fdsetp)
 #define FD_ZERO(fdsetp)		__FD_ZERO(fdsetp)
 ```
-
 先看FD_SET，其实就是将特定的位置1
 
 ```cpp
 #define __FD_SET(fd, fdsetp) \
-		(((fd_set *)(fdsetp))->fds_bits[(fd) >> 5] |= (1`<<((fd) & 31)))
+		(((fd_set *)(fdsetp))->fds_bits[(fd) >> 5] |= (1<<((fd) & 31)))
 ```
-
 再看看FD_CLR，其实就是将特定的位置0
 
 ```cpp
 #define __FD_CLR(fd, fdsetp) \
-		(((fd_set *)(fdsetp))->`fds_bits[(fd) >> 5] &= ~(1`<<((fd) & 31)))
+		(((fd_set *)(fdsetp))->fds_bits[(fd) >> 5] &= ~(1<<((fd) & 31)))
 ```
-
 看看FD_ISSET，其实就是判断特定的位是否被置1
 
 ```cpp
 #define __FD_ISSET(fd, fdsetp) \
-		((((fd_set *)(fdsetp))->`fds_bits[(fd) >> 5] & (1`<<((fd) & 31))) != 0)
+		((((fd_set *)(fdsetp))->fds_bits[(fd) >> 5] & (1<<((fd) & 31))) != 0)
 ```
-
 看一下FD_ZERO，其实就是将所有的位置0
 
 ```cpp
 #define __FD_ZERO(fdsetp) \
 		(memset (fdsetp, 0, sizeof (*(fd_set *)(fdsetp))))
 ```
-
 至此我们直到，fd_set其实就是一个数组，然后里面每一个位都表示一个文件描述符的状态，我们将我们要监听的文件描述符对应的位标志好后，传递给内核，内核会将状态通过位标记返回到应用层
 
 **下面就马上来分析select对应的系统调用**
@@ -171,7 +162,6 @@ select对应的系统调用如下
 SYSCALL_DEFINE5(select, int, n, fd_set __user *, inp, fd_set __user *, outp,
 		fd_set __user *, exp, struct timeval __user *, tvp)
 ```
-
 将其展开后得到如下函数
 
 ```cpp
@@ -189,7 +179,6 @@ SYSCALL_DEFINE5(select, int, n, fd_set __user *, inp, fd_set __user *, outp,
     return ret;
 }
 ```
-
 接下来看`core_sys_select`
 
 ```cpp
@@ -202,7 +191,7 @@ int core_sys_select(int n, fd_set __user *inp, fd_set __user *outp,
     size = FDS_BYTES(n); 
     
     
-    if (size >` sizeof(stack_fds) / 6)
+    if (size > sizeof(stack_fds) / 6)
 		bits = kmalloc(6 * size, GFP_KERNEL);
     
     
@@ -234,7 +223,6 @@ int core_sys_select(int n, fd_set __user *inp, fd_set __user *outp,
     return ret;
 }
 ```
-
 下面来看一看`do_select`函数
 
 ```cpp
@@ -244,10 +232,10 @@ int do_select(int n, fd_set_bits *fds, struct timespec *end_time)
 
         for (i = 0; i < n; ++rinp, ++routp, ++rexp)
             {
-                for (j = 0; j < __NFDBITS; ++j, ++i, bit `<<= 1)
+                for (j = 0; j < __NFDBITS; ++j, ++i, bit <<= 1)
                     {
 
-                        mask = (*f_op->`poll)(file, wait);
+                        mask = (*f_op->poll)(file, wait);
 
 
                         if ((mask & POLLIN_SET) && (in & bit)) {
@@ -276,7 +264,6 @@ int do_select(int n, fd_set_bits *fds, struct timespec *end_time)
     }
 }
 ```
-
 do_select会遍历所有要监听的文件描述符，调用对应驱动程序的poll函数，驱动程序的poll一般实现如下
 
 ```cpp
@@ -294,7 +281,6 @@ static unsigned int button_poll(struct file *fp, poll_table * wait)
 	return mask;
 }
 ```
-
 看看poll_wait做了什么
 
 ```cpp
@@ -304,7 +290,6 @@ static inline void poll_wait(struct file * filp, wait_queue_head_t * wait_addres
 		p->qproc(filp, wait_address, p);
 }
 ```
-
 `p->qproc`在之前又被初始化为`__pollwait`
 
 ```cpp

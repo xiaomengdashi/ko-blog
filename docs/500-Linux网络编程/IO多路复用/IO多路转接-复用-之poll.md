@@ -21,7 +21,7 @@ poll的机制与select类似，与select在本质上没有多大差别，使用�
 poll函数的函数原型如下：
 
 ```c
-#include `<poll.h>`
+#include <poll.h>
 // 每个委托poll检测的fd都对应这样一个结构体
 struct pollfd {
     int   fd;         /* 委托内核检测的文件描述符 */
@@ -32,7 +32,6 @@ struct pollfd {
 struct pollfd myfd[100];
 int poll(struct pollfd *fds, nfds_t nfds, int timeout);
 ```
-
 + 函数参数：
 
 fds: 这是一个`struct pollfd`类型的数组, 里边存储了待检测的文件描述符的信息，这个数组中有三个成员：
@@ -56,13 +55,13 @@ fds: 这是一个`struct pollfd`类型的数组, 里边存储了待检测的文�
 **服务器端**
 
 ```c
-#include `<stdio.h>`
-#include `<stdlib.h>`
-#include `<unistd.h>`
-#include `<string.h>`
-#include `<arpa/inet.h>`
-#include `<sys/select.h>`
-#include `<poll.h>`
+#include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
+#include <string.h>
+#include <arpa/inet.h>
+#include <sys/select.h>
+#include <poll.h>
 
 int main()
 {
@@ -97,7 +96,7 @@ int main()
     // 数据初始化, 创建自定义的文件描述符集
     struct pollfd fds[1024];
     // 初始化
-    for(int i=0; `i`<1024; ++i)
+    for(int i=0; i<1024; ++i)
     {
         fds[i].fd = -1;
         fds[i].events = POLLIN;
@@ -126,7 +125,7 @@ int main()
             int connfd = accept(lfd, (struct sockaddr*)&sockcli, &len);
             // 委托内核检测connfd的读缓冲区
             int i;
-            for(i=0; `i<1024; ++i)
+            for(i=0; i<1024; ++i)
             {
                 if(fds[i].fd == -1)
                 {
@@ -134,7 +133,7 @@ int main()
                     break;
                 }
             }
-            maxfd = i >` maxfd ? i : maxfd;
+            maxfd = i > maxfd ? i : maxfd;
         }
         // 通信, 有客户端发送数据过来
         for(int i=1; i<=maxfd; ++i)
@@ -167,7 +166,6 @@ int main()
     return 0;
 }
 ```
-
 从上面的测试代码可以得知，使用poll和select进行IO多路转接的处理思路是完全相同的，但是使用poll编写的代码看起来会更直观一些，select使用的位图的方式来标记要委托内核检测的文件描述符（每个比特位对应一个唯一的文件描述符），并且对这个`fd_set`类型的位图变量进行读写还需要借助一系列的宏函数，操作比较麻烦。而poll直接将要检测的文件描述符的相关信息封装到了一个结构体`struct pollfd`中，我们可以直接读写这个结构体变量。
 
 另外poll的第二个参数有两种赋值方式，但是都和第一个参数的数组有关系：
@@ -180,11 +178,11 @@ int main()
 **客户端**
 
 ```c
-#include `<stdio.h>`
-#include `<stdlib.h>`
-#include `<unistd.h>`
-#include `<string.h>`
-#include `<arpa/inet.h>`
+#include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
+#include <string.h>
+#include <arpa/inet.h>
 
 int main()
 {

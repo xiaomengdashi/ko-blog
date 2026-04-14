@@ -35,7 +35,6 @@ async fn main() {
     let handle = tokio::spawn(test_async()).await;
 }
 ```
-
 上面使用tokio提供的宏创建了runtime，使用宏创建runtime需要使用到macros feature，建议在Cargo.toml中指定full feature，这将启用除了test-util和tracing之外的所有feature
 
   
@@ -54,7 +53,6 @@ fn main(){
         });
 }
 ```
-
 两者区别不大，但是如果你需要在开发过程中集成senrty监控服务的运行状况，异常时进行上报的话，你必须使用第二种方式。
 
   
@@ -77,7 +75,6 @@ async fn test_async() {
 }
 let handle = tokio::spawn(test_async()).await;
 ```
-
 tokio::spawn会将传入的Future加入当前的runtime并执行。
 
 定时器
@@ -89,7 +86,6 @@ tokio::time::sleep(
 ).await;
 println!("bbb");
 ```
-
 在tokio异步环境中如果需要使用定时器，强烈要求不要使用std::thread::sleep，如果使用std::thread::sleep则会导致tokio的线程调度器失去对该线程的控制，从而影响调度策略；如果采用tokio内置的定时器则不然，tokio内置的定时器在sleep时，只是将当前任务放到了阻塞队列，然后线程会去执行其它任务，当定时时间到之后再唤醒该任务继续执行。
 
 通道
@@ -98,14 +94,13 @@ tokio为线程间通信设计的通道有oneshot通道、mpsc通道、broadcast�
 
 ```rust
 let (sender,receiver ) = 
-    tokio::sync::mpsc::channel::`<u8>`(10);
+    tokio::sync::mpsc::channel::<u8>(10);
 ```
-
 以上创建了一个发送数据类型为u8缓冲区长度为10的mpsc通道。可以在不同线程间使用sender和receiver 发送和接收数据。
 
 ```rust
 async fn test_async_sender(
-    sender: tokio::sync::mpsc::`Sender`<u8>` ) {
+    sender: tokio::sync::mpsc::Sender<u8> ) {
     loop {
         tokio::time::sleep(
             tokio::time::Duration::from_secs(2)
@@ -119,7 +114,7 @@ async fn test_async_sender(
 
 
 async fn test_asyn_receiver(
-    mut receiver: tokio::sync::mpsc::`Receiver`<u8>`) {
+    mut receiver: tokio::sync::mpsc::Receiver<u8>) {
     loop {
         if let Some(v) = receiver.recv().await {
             println!("v:{v}");
@@ -132,7 +127,7 @@ async fn test_asyn_receiver(
 #[tokio::main]
 async fn main(){
     let (sender,receiver ) = 
-        tokio::sync::mpsc::channel::`<u8>`(10);
+        tokio::sync::mpsc::channel::<u8>(10);
     tokio::spawn(test_async_sender(sender));
     tokio::spawn(test_asyn_receiver(receiver));
     tokio::select! {
@@ -140,7 +135,6 @@ async fn main(){
     }
 }
 ```
-
 主线程创建好通道并将test_async_sender和test_asyn_receiver加入runtime运行后便在main函数中等待，直到收到ctrl_c发送的信号时才会退出。
 
   
@@ -174,7 +168,7 @@ tokio::select
 #[tokio::main]
 async fn main(){
     let (sender,mut receiver ) = 
-        tokio::sync::mpsc::channel::`<u8>`(4);
+        tokio::sync::mpsc::channel::<u8>(4);
     tokio::spawn(test_async_sender(sender));
     // tokio::spawn(test_asyn_receiver(receiver));
     loop {
@@ -194,7 +188,6 @@ async fn main(){
     }   // loop
 }
 ```
-
 之前的主函数稍加改动，我们不再额外创建一个任务使用receiver接收数据，这次想在主线程中循环接收sender发送的数据，与此同时还想继续监听ctrl_c事件触发程序退出，这就需要使用tokio提供的并发宏select了。
 
   

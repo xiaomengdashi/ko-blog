@@ -25,14 +25,13 @@ slug: /Rust/与C混合编译/Rust入门-Rust如何调用C静态库的函数_rust
 这里我们建一个StaticLib1.cpp的文件，内容如下，
 
 ```cpp
-#include `<cstdlib>`
-#include `<cinttypes>`
+#include <cstdlib>
+#include <cinttypes>
 
 extern "C" std::int32_t abs(std::int32_t n) {
-    return std::abs(`static_cast`<std::intmax_t>`(n));
+    return std::abs(static_cast<std::intmax_t>(n));
 }
 ```
-
 注意，这里接口是extern "C"，也就是标准C接口。
 
 无论是用visual studio 2019或GCC，在windows下都可以生成这样一个静态库：StaticLib1.lib。

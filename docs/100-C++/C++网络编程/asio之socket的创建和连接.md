@@ -51,7 +51,7 @@ int  client_end_point() {
     if (ec.value() != 0) {
         // Provided IP address is invalid. Breaking execution.
         std::cout
-            `<< "Failed to parse the IP address. Error code = "
+            << "Failed to parse the IP address. Error code = "
             << ec.value() << ". Message: " << ec.message();
         return ec.value();
     }
@@ -66,7 +66,6 @@ int  client_end_point() {
     return 0;
 }
 ```
-
 如果是服务端，则只需根据本地地址绑定就可以生成endpoint
 
 ```cpp
@@ -91,7 +90,6 @@ int  server_end_point(){
     return 0;
 }
 ```
-
 ### 3. 创建socket
 创建socket分为4步，创建上下文iocontext，选择协议，生成socket，打开socket。
 
@@ -126,7 +124,6 @@ int create_tcp_socket() {
     return 0;
 }
 ```
-
 上述socket只是通信的socket，如果是服务端，我们还需要生成一个acceptor的socket，用来接收新的连接。
 
 ```cpp
@@ -161,7 +158,6 @@ int  create_acceptor_socket() {
     return 0;
 }
 ```
-
 ### 4. 绑定acceptor
 对于acceptor类型的socket，服务器要将其绑定到指定的断点,所有连接这个端点的连接都可以被接收到。
 
@@ -201,7 +197,6 @@ int  bind_acceptor_socket() {
     return 0;
 }
 ```
-
 ### 5. 连接指定的端点
 作为客户端可以连接服务器指定的端点进行连接
 
@@ -243,7 +238,6 @@ int  connect_to_end() {
     }
 }
 ```
-
 ### 6. 服务器接收连接
 当有客户端连接时，服务器需要接收连接
 
@@ -294,7 +288,6 @@ int accept_new_connection(){
     }
 }
 ```
-
 ### 7. 关于buffer
 任何网络库都有提供buffer的数据结构，所谓buffer就是接收和发送数据时缓存数据的结构。  
 boost::asio提供了asio::mutable_buffer 和 asio::const_buffer这两个结构，他们是一段连续的空间，首字节存储了后续数据的长度。  
@@ -312,21 +305,19 @@ asio::const_buffers_1和asio::mutable_buffers_1是asio::mutable_buffer和asio::c
 比如boost的发送接口send要求的参数为ConstBufferSequence类型
 
 ```cpp
-`template<typename ConstBufferSequence>`
+template<typename ConstBufferSequence>
 std::size_t send(const ConstBufferSequence & buffers);
 ```
-
 我们需要将"Hello Word转化为该类型"
 
 ```cpp
 void use_const_buffer() {
     std::string buf = "hello world!";
     asio::const_buffer  asio_buf(buf.c_str(), buf.length());
-    ``std::`vector`<asio::const_buffer>` buffers_sequence;
+    std::vector<asio::const_buffer> buffers_sequence;
     buffers_sequence.push_back(asio_buf);
 }
 ```
-
 最终buffers_sequence就是可以传递给发送接口send的类型。但是这太复杂了，可以直接用buffer函数转化为send需要的参数类型
 
 ```cpp
@@ -334,17 +325,15 @@ void use_buffer_str() {
     asio::const_buffers_1 output_buf = asio::buffer("hello world");
 }
 ```
-
 output_buf可以直接传递给该send接口。我们也可以将数组转化为send接受的类型
 
 ```cpp
 void use_buffer_array(){
     const size_t  BUF_SIZE_BYTES = 20;
-    ``std::`unique_ptr`<char[] >` buf(new char[BUF_SIZE_BYTES]);
-    auto input_buf = asio::buffer(`static_cast`<void*>`(buf.get()), BUF_SIZE_BYTES);
+    std::unique_ptr<char[] > buf(new char[BUF_SIZE_BYTES]);
+    auto input_buf = asio::buffer(static_cast<void*>(buf.get()), BUF_SIZE_BYTES);
 }
 ```
-
 对于流式操作，我们可以用streambuf，将输入输出流和streambuf绑定，可以实现流式输入和输出。
 
 ```cpp
@@ -354,7 +343,7 @@ void use_stream_buffer() {
     std::ostream output(&buf);
 
     // Writing the message to the stream-based buffer.
-    output `<< "Message1\nMessage2";
+    output << "Message1\nMessage2";
 
     // Now we want to read all data from a streambuf
     // until '\n' delimiter.

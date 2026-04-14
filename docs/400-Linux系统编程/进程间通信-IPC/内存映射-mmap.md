@@ -17,11 +17,10 @@ slug: /Linux系统编程/进程间通信-IPC/内存映射-mmap
 使用内存映射区既可以进程有血缘关系的进程间通信也可以进程没有血缘关系的进程间通信。创建内存映射区的函数原型如下：
 
 ```c
-#include `<sys/mman.h>`
+#include <sys/mman.h>
 // 创建内存映射区
 void *mmap(void *addr, size_t length, int prot, int flags, int fd, off_t offset);
 ```
-
 + 参数:
     - addr: 从动态库加载区的什么位置开始创建内存映射区，一般指定为NULL, 委托内核分配
         * length: 创建的内存映射区的大小（单位：字节），实际上这个大小是按照4k的整数倍去分配的
@@ -52,13 +51,11 @@ void *mmap(void *addr, size_t length, int prot, int flags, int fd, off_t offset)
      - 内存映射区创建成功之后, 关闭这个文件描述符不会影响进程间通信
 6. 第六个参数 offset，不偏移指定为0，如果偏移必须是4k的整数倍
 ```
-
 内存映射区使用完之后也需要释放，释放函数原型如下：
 
 ```c
 int munmap(void *addr, size_t length);
 ```
-
 + 参数:
     - addr: mmap()的返回值, 创建的内存映射区的起始地址
     - length: 和mmap()第二个参数相同即可
@@ -80,8 +77,8 @@ int munmap(void *addr, size_t length);
 ```
 
 ```c
-#include `<sys/mman.h>`
-#include `<fcntl.h>`
+#include <sys/mman.h>
+#include <fcntl.h>
 
 int main()
 {
@@ -117,7 +114,6 @@ int main()
     return 0;
 }
 ```
-
 ### 3. 没有血缘关系
 对于没有血缘关系的进程间通信，需要在每个进程中分别创建内存映射区，但是这些进程的内存映射区必须要关联相同的磁盘文件，这样才能实现进程间的数据同步。
 
@@ -125,12 +121,12 @@ int main()
 >
 
 ```c
-#include `<stdio.h>`
-#include `<stdlib.h>`
-#include `<unistd.h>`
-#include `<string.h>`
-#include `<sys/mman.h>`
-#include `<fcntl.h>`
+#include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
+#include <string.h>
+#include <sys/mman.h>
+#include <fcntl.h>
 
 int main()
 {
@@ -154,17 +150,16 @@ int main()
     return 0;
 }
 ```
-
 > 进程B的测试代码:
 >
 
 ```c
-#include `<stdio.h>`
-#include `<stdlib.h>`
-#include `<unistd.h>`
-#include `<string.h>`
-#include `<sys/mman.h>`
-#include `<fcntl.h>`
+#include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
+#include <string.h>
+#include <sys/mman.h>
+#include <fcntl.h>
 
 int main()
 {
@@ -188,7 +183,6 @@ int main()
     return 0;
 }
 ```
-
 ### 4. 拷贝文件
 使用内存映射区除了可以实现进程间通信，也可以进行文件的拷贝，使用这种方式拷贝文件可以减少程序猿的工作量，我们只需要负责创建内存映射区和打开磁盘文件，关于文件中的数据读写就无需关心了。
 
@@ -204,12 +198,12 @@ int main()
 文件拷贝示例代码如下：
 
 ```c
-#include `<stdio.h>`
-#include `<stdlib.h>`
-#include `<unistd.h>`
-#include `<string.h>`
-#include `<fcntl.h>`
-#include `<sys/mman.h>`
+#include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
+#include <string.h>
+#include <fcntl.h>
+#include <sys/mman.h>
 
 int main()
 {

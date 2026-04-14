@@ -217,7 +217,7 @@ slug: /C++/面试题/C-C-秋招常考面试题最全总结-让你有一种相见
 
 假设有三个顾客 A、B、C 按顺序到来，他们都排在同一个窗口前，这样形成了一个不平衡的队伍（类似于一个倾向右侧的链表）。 
 
-```plain
+```cpp
 A
 
 
@@ -236,10 +236,9 @@ A
 
       C
 ```
-
 此时，工作人员（平衡二叉树的机制）发现了不平衡，于是他会把顾客 B 提到前面，把 A 放在 B 的左边，而 C 保持在 B 的右边。 
 
-```plain
+```cpp
 B
 
 
@@ -250,7 +249,6 @@ B
 
   A   C
 ```
-
 > **这个重新排队的过程就是右旋**。这样，队伍重新平衡，所有顾客都可以更快地买票。
 >
 > 总结来说，平衡二叉树通过旋转操作和自平衡算法来调整节点的分布，就像重新排队以保证每个顾客能更快买到票一样。
@@ -366,7 +364,7 @@ B
 
 方法 1: 使用加减法 
 
-```plain
+```cpp
 a = a + b;
 
 
@@ -377,10 +375,9 @@ b = a - b;
 
 a = a - b;
 ```
-
 方法 2: 使用异或运算 
 
-```plain
+```cpp
 a = a ^ b;
 
 
@@ -391,7 +388,6 @@ b = a ^ b;
 
 a = a ^ b;
 ```
-
 ---
 
 ### 15. 十五、什么是锁？为什么需要锁？**
@@ -539,7 +535,7 @@ a = a ^ b;
 + 当向 vector 添加元素超过其当前容量时，它会创建一个更大的动态数组，并将所有现有元素复制到新数组中，释放就数组的内存。
 + 新容器通常是当前容量的两倍，不过这可能因实现而异。 
 
-```plain
+```cpp
 // 扩容
 
 
@@ -626,7 +622,6 @@ a = a ^ b;
 
 	}
 ```
-
 ---
 
 ### 21. 二十一、红黑树 和 avl 的区别，插入多个数据，选择 avl，还是红黑树**
@@ -662,7 +657,7 @@ a = a ^ b;
 ##### 22.0.2. 虚函数与虚函数表（vtable）
 + **虚函数**：在基类中使用 `**virtual**` 关键字声明的函数，允许派生类进行重写。**虚函数实现动态绑定的基础。**
 
-```plain
+```cpp
 class Base {
 
 
@@ -675,7 +670,7 @@ public:
 
 
 
-        std::cout `<< "Base class show" << std::endl;
+        std::cout << "Base class show" << std::endl;
 
 
 
@@ -713,7 +708,6 @@ public:
 
 };
 ```
-
 **虚函数表（vtable）**：**编译器为包含虚函数的类创建一个虚函数表。****虚函数表**是一个**函数指针的数组**，**存储类的每个虚函数的地址**。当类对象被创建时，它的虚函数指针（`vptr`）指向该类的虚函数表。
 
 + 对于基类对象，`**vptr**`会指向基类的虚函数表；对于派生类对象，`vptr` 会指向派生类的虚函数表。
@@ -726,8 +720,8 @@ public:
 2. 编译器通过 `**vptr**` 在虚函数表中查找相应函数的地址。
 3. 在运行时调用派生类中重写的虚函数，而不是基类的版本。
 
-```plain
-#include <iostream>`
+```cpp
+#include <iostream>
 
 
 
@@ -751,7 +745,7 @@ public:
 
 
 
-        cout `<< "Base class show" << endl;
+        cout << "Base class show" << endl;
 
 
 
@@ -819,7 +813,7 @@ int main() {
 
 
 
-    ptr->`show(); // 调用 Base::show，输出 "Base class show"
+    ptr->show(); // 调用 Base::show，输出 "Base class show"
 
 
 
@@ -845,7 +839,6 @@ int main() {
 
 }
 ```
-
 ##### 22.0.4. 运行时的表现
 + 当 `ptr` 指向 `baseObj` 时，调用的是 `Base::show`，因为 `ptr` 的 `vptr` 指向 `Base` 的虚函数表。
 + 当 `ptr` 指向 `derivedObj` 时，调用的是 `Derived::show`，因为 `ptr` 的 `vptr` 指向 `Derived` 的虚函数表。
@@ -870,8 +863,8 @@ int main() {
 > **函数重载** 是指在**同一作用域中**，**多个函数可以有相同的名字，但它们的参数列表不同**。编译器根据函数调用时提供的参数数量和类型来决定调用哪个函数。
 >
 
-```plain
-#include `<iostream>`
+```cpp
+#include <iostream>
 
 
 
@@ -887,7 +880,7 @@ void print(int i) {
 
 
 
-    cout `<< "Integer: " << i << endl;
+    cout << "Integer: " << i << endl;
 
 
 
@@ -933,13 +926,12 @@ int main() {
 
 }
 ```
-
 ###### 23.0.1.2. 运算符重载
 >` **运算符重载** 是允许用户定义的类**型重新定义内置运算符的行为**。通过重载，用户可以让自定义对象像内置类型一样使用运算符。
 >
 
-```plain
-#include `<iostream>`
+```cpp
+#include <iostream>
 
 
 
@@ -1007,7 +999,7 @@ int main() {
 
 
 
-    cout `<< "Real: " << c3.real << ", Imaginary: " << c3.imag << endl;
+    cout << "Real: " << c3.real << ", Imaginary: " << c3.imag << endl;
 
 
 
@@ -1017,7 +1009,6 @@ int main() {
 
 }
 ```
-
 ##### 23.0.2. 运行时多态（动态多态）
 >` 运行时多态，也称为**动态多态**，是在程序运行过程中，**根据实际的对象类型决定调用哪个函数。它主要通过虚函数和继承来实现。**
 >
@@ -1026,8 +1017,8 @@ int main() {
 > 当一个**基类指针或引用指向派生类对象时**，使用虚函数可以在运行时决定调用派生类的函数。这是通过虚函数表（vtable）来实现的。
 >
 
-```plain
-#include `<iostream>`
+```cpp
+#include <iostream>
 
 
 
@@ -1051,7 +1042,7 @@ public:
 
 
 
-        cout `<< "Base display" << endl;
+        cout << "Base display" << endl;
 
 
 
@@ -1111,7 +1102,7 @@ int main() {
 
 
 
-    ptr->`display();  // 调用 Derived::display
+    ptr->display();  // 调用 Derived::display
 
 
 
@@ -1121,13 +1112,12 @@ int main() {
 
 }
 ```
-
 ###### 23.0.2.2. 抽象类与纯虚函数
 > **纯虚函数**是没有实现的虚函数，用于在基类中定义接口。**包含纯虚函数的类称为抽象类，无法实例化，必须通过派生类重写其纯虚函数并实现。**
 >
 
-```plain
-#include `<iostream>`
+```cpp
+#include <iostream>
 
 
 
@@ -1175,7 +1165,7 @@ public:
 
 
 
-        cout `<< "Drawing Circle" << endl;
+        cout << "Drawing Circle" << endl;
 
 
 
@@ -1199,7 +1189,7 @@ int main() {
 
 
 
-    shape->`draw();  // 调用 Circle::draw
+    shape->draw();  // 调用 Circle::draw
 
 
 
@@ -1213,7 +1203,6 @@ int main() {
 
 }
 ```
-
 ##### 23.0.3. 总结
 + **编译时多态（静态多态）**：
     - 函数重载、运算符重载、模板。
@@ -1262,12 +1251,12 @@ int main() {
 > 虽然多态的重点在于统一的接口，但有时我们需要在运行时判断实际的对象类型。在 C++ 中可以通过 `dynamic_cast` 进行**运行时类型识别（RTTI）**，以确认某个基类指针指向的具体对象类型。
 >
 
-```plain
+```cpp
 Animal* animal = new Dog();
 
 
 
-if (Dog* dog = `dynamic_cast`<Dog*>`(animal)) {
+if (Dog* dog = dynamic_cast<Dog*>(animal)) {
 
 
 
@@ -1277,7 +1266,6 @@ if (Dog* dog = `dynamic_cast`<Dog*>`(animal)) {
 
 }
 ```
-
 ##### 24.0.8. 总结
 C++ 中多态的主要特点包括：
 
@@ -1300,7 +1288,7 @@ C++ 中多态的主要特点包括：
 > 最常见的内存泄漏场景是使用 `**new**`** 或 **`**malloc()**`**动态分配的内存没有被及时释放**。C++ 需要手动释放动态分配的内存，**如果忘记使用 **`**delete**`** 或 **`**free()**`** 释放这块内存**，程序退出之前这部分内存将无法被使用。
 >
 
-```plain
+```cpp
 void memoryLeak() {
 
 
@@ -1319,12 +1307,11 @@ void memoryLeak() {
 
 }
 ```
-
 ##### 25.0.2. 在异常处理时未释放内存**
 > 当程序抛出异常时，**如果没有适当地处理内存释放，可能会导致内存泄漏**。特别是在使用 `**new**`动态分配内存的过程中，如果在释放内存之前发生了异常，分配的内存将无法被释放。
 >
 
-```plain
+```cpp
 void exceptionLeak() {
 
 
@@ -1339,12 +1326,11 @@ void exceptionLeak() {
 
 }
 ```
-
 ##### 25.0.3. 没有为类的析构函数释放内存**
 > 在类中使用 `**new**`动态分配内存时，如果没有在析构函数中正确释放这部分内存，会导致每次创建对象时动态分配的内存得不到释放，进而造成内存泄漏。
 >
 
-```plain
+```cpp
 class MyClass {
 
 
@@ -1391,13 +1377,12 @@ public:
 
 };
 ```
-
 ##### 25.0.4. 循环引用**
 > 在使用智能指针（特别是 `**std::shared_ptr**`）时，循环引用是导致内存泄漏的一个常见原因。`**std::shared_ptr**`** 会使用引用计数来管理内存，当引用计数为 0 时，内存会被释放**。然而，如果两个对象通过 `std::shared_ptr` 互相引用，它们的引用计数永远不会变为 0，导致内存无法释放。
 >
 
-```plain
-#include `<memory>`
+```cpp
+#include <memory>
 
 
 
@@ -1417,7 +1402,7 @@ public:
 
 
 
-`std::shared_ptr<B>`b_ptr;
+std::shared_ptr<B>b_ptr;
 
 
 
@@ -1437,7 +1422,7 @@ public:
 
 
 
-    ``std::`shared_ptr`<A>` a_ptr;
+    std::shared_ptr<A> a_ptr;
 
 
 
@@ -1453,11 +1438,11 @@ void circularReference() {
 
 
 
-    ``std::`shared_ptr`<A>` a = `std::`make_shared`<A>`();
+    std::shared_ptr<A> a = std::make_shared<A>();
 
 
 
-`std::shared_ptr<B>`b =`std::make_shared<B>`();
+std::shared_ptr<B>b =std::make_shared<B>();
 
 
 
@@ -1475,10 +1460,9 @@ void circularReference() {
 
 }
 ```
-
 解决办法是使用`**std::weak_ptr**` 解决循环引用问题。`**std::weak_ptr**` 不会增加引用计数，从而避免循环引用。 
 
-```plain
+```cpp
 class A {
 
 
@@ -1487,13 +1471,12 @@ public:
 
 
 
-`std::weak_ptr<B>`b_ptr;  // 使用 weak_ptr
+std::weak_ptr<B>b_ptr;  // 使用 weak_ptr
 
 
 
 };
 ```
-
 ---
 
 ### 26. 二十六、什么是智能指针，你在一般什么情况下使用智能指针 **
@@ -1513,12 +1496,12 @@ C++ 标准库中最常用的智能指针有三种：
     - 当你希望明确某个对象的生命周期并且不希望其被多个对象共享时，使用 `std::unique_ptr`。
     - 适用于对象的所有权明确归属单个作用域或单一逻辑控制者。
 
-```plain
-#include `<memory>`
+```cpp
+#include <memory>
 
 
 
-#include `<iostream>`
+#include <iostream>
 
 
 
@@ -1530,11 +1513,11 @@ void uniquePtrExample() {
 
 
 
-    ``std::`unique_ptr`<int>` ptr1(new int(10));  // 创建 unique_ptr
+    std::unique_ptr<int> ptr1(new int(10));  // 创建 unique_ptr
 
 
 
-    std::cout `<< "Value: " << *ptr1 << std::endl;
+    std::cout << "Value: " << *ptr1 << std::endl;
 
 
 
@@ -1542,11 +1525,11 @@ void uniquePtrExample() {
 
 
 
-    //`std::unique_ptr<int>`ptr2 = ptr1;  // 错误：无法复制 unique_ptr
+    //std::unique_ptr<int>ptr2 = ptr1;  // 错误：无法复制 unique_ptr
 
 
 
-    ``std::`unique_ptr`<int>` ptr2 = std::move(ptr1);  // 转移所有权
+    std::unique_ptr<int> ptr2 = std::move(ptr1);  // 转移所有权
 
 
 
@@ -1558,7 +1541,7 @@ void uniquePtrExample() {
 
 
 
-        std::cout `<< "ptr1 is null after move" << std::endl;
+        std::cout << "ptr1 is null after move" << std::endl;
 
 
 
@@ -1572,7 +1555,6 @@ void uniquePtrExample() {
 
 }
 ```
-
 **何时使用**：
 
 + **对象的生命周期在单个作用域内，且不需要多个指针共享该对象。**
@@ -1586,12 +1568,12 @@ void uniquePtrExample() {
     - 当你希望多个对象共享同一个资源时，使用 `std::shared_ptr`。
     - 适用于需要共享资源或对象生命周期无法明确归属单一对象的场景。
 
-```plain
-#include <memory>`
+```cpp
+#include <memory>
 
 
 
-#include `<iostream>`
+#include <iostream>
 
 
 
@@ -1603,11 +1585,11 @@ void sharedPtrExample() {
 
 
 
-    ``std::`shared_ptr`<int>` ptr1 = `std::`make_shared`<int>`(20);  // 创建 shared_ptr
+    std::shared_ptr<int> ptr1 = std::make_shared<int>(20);  // 创建 shared_ptr
 
 
 
-    ``std::`shared_ptr`<int>` ptr2 = ptr1;  // 共享所有权
+    std::shared_ptr<int> ptr2 = ptr1;  // 共享所有权
 
 
 
@@ -1615,7 +1597,7 @@ void sharedPtrExample() {
 
 
 
-    std::cout `<< "Reference count: " << ptr1.use_count() << std::endl;
+    std::cout << "Reference count: " << ptr1.use_count() << std::endl;
 
 
 
@@ -1637,7 +1619,6 @@ void sharedPtrExample() {
 
 }
 ```
-
 **何时使用**：
 
 + 当需要多个对象或作用域共享同一个对象，且该对象在某一特定时刻自动销毁时。
@@ -1656,12 +1637,12 @@ void sharedPtrExample() {
     - 用于解决 `std::shared_ptr` 之间的循环引用问题，确保对象可以被正确释放。
     - `std::weak_ptr` 的引用不会影响对象的生命周期。
 
-```plain
-#include `<memory>`
+```cpp
+#include <memory>
 
 
 
-#include `<iostream>`
+#include <iostream>
 
 
 
@@ -1677,11 +1658,11 @@ public:
 
 
 
-    ``std::`shared_ptr`<Node>` next;
+    std::shared_ptr<Node> next;
 
 
 
-    `std::`weak_ptr`<Node>` prev;  // 使用 weak_ptr 避免循环引用
+    std::weak_ptr<Node> prev;  // 使用 weak_ptr 避免循环引用
 
 
 
@@ -1693,7 +1674,7 @@ public:
 
 
 
-        std::cout `<< "Node destroyed" << std::endl;
+        std::cout << "Node destroyed" << std::endl;
 
 
 
@@ -1713,11 +1694,11 @@ void weakPtrExample() {
 
 
 
-    auto node1 =`std::make_shared<Node>`();
+    auto node1 =std::make_shared<Node>();
 
 
 
-    auto node2 = `std::`make_shared`<Node>`();
+    auto node2 = std::make_shared<Node>();
 
 
 
@@ -1733,13 +1714,12 @@ void weakPtrExample() {
 
 
 
-    std::cout `<< "Both nodes created" << std::endl;
+    std::cout << "Both nodes created" << std::endl;
 
 
 
 }
 ```
-
 **何时使用**：
 
 + 当你需要避免 `std::shared_ptr` 之间的循环引用时，使用 `std::weak_ptr`。
@@ -1944,10 +1924,9 @@ void weakPtrExample() {
 > `**ps**` 命令用于显示当前系统中运行的进程信息。它可以通过不同的选项来获取特定的进程信息。
 >
 
-```plain
+```cpp
 ps aux
 ```
-
 + `a`：显示所有终端的进程，不仅限于当前用户的。
 + `u`：以用户为主的输出格式，显示更多详细信息（如 CPU 和内存使用情况）。
 + `x`：显示没有控制终端的进程（即守护进程）。
@@ -1956,10 +1935,9 @@ ps aux
 > `**top**`命令提供了一个动态、实时的进程视图，显示系统中最耗资源的进程，并可以按资源使用情况进行排序。
 >
 
-```plain
+```cpp
 top
 ```
-
 + 这将显示进程的 CPU、内存使用情况、运行时间、进程状态等。
 + 通过 `q` 退出 `top`。
 
@@ -1972,18 +1950,16 @@ top
 
 + 查看某个进程的线程：
 
-```plain
+```cpp
 ps -T -p PID
 ```
-
 + 其中，`PID` 是进程的 ID。这个命令会列出该进程下的所有线程及其状态。 
 
 显示所有线程： 
 
-```plain
+```cpp
 ps -eLf
 ```
-
 + `e`：显示所有进程。
 + `L`：显示所有线程。
 + `f`：显示详细的格式。
@@ -1997,31 +1973,27 @@ ps -eLf
 
 + 查看所有当前的网络连接（包括监听和已建立的连接）：
 
-```plain
+```cpp
 netstat -an
 ```
-
 + `-a`：显示所有的连接（包括监听和非监听的）。
 + `-n`：以数字形式显示地址和端口。
 
 查看 TCP 连接： 
 
-```plain
+```cpp
 netstat -tn
 ```
-
 查看 UDP 连接：
 
-```plain
+```cpp
 netstat -un
 ```
-
 查看某个进程使用的网络连接： 
 
-```plain
+```cpp
 netstat -tp
 ```
-
 ##### 36.0.2. `**ss**`** 命令**（`netstat` 的现代替代工具）
 > `ss`（Socket Statistics）是查看网络连接的现代工具，比 `netstat` 更快、更高效。
 >
@@ -2075,22 +2047,20 @@ netstat -tp
 
 + **左值 (Lvalue)**：指的是内存中有**明确存储位置**的对象，换句话说，左值可以出现在赋值操作符的**左边**。左值在程序的生命周期内是可以被修改的。常见的左值是变量和可以取地址的对象。
 
-```plain
+```cpp
 int x = 10;  // x 是左值，因为它有存储位置，可以被修改
 ```
-
 + **右值 (Rvalue)**：指的是**不具备持久存储位置**，通常是**临时对象**或字面量，无法取地址。右值通常出现在赋值操作符的**右边**，它们是短暂的、不可修改的。 
 
-```plain
+```cpp
 int y = x + 5;  // x + 5 是右值，它是临时生成的一个值，没有存储位置
 ```
-
 ![](/img/posts/ee847e59955b784e68953c9812071e31.png)
 
 ##### 38.0.2. 移动语义和右值引用的应用场景（重点！！）**
 + **移动构造函数与移动赋值运算符**： 在移动构造函数和移动赋值运算符中，通过右值引用可以高效地“移动”对象的资源，而不是进行[深拷贝](https://so.csdn.net/so/search?q=%E6%B7%B1%E6%8B%B7%E8%B4%9D&spm=1001.2101.3001.7020)，显著提升性能。
 
-```plain
+```cpp
 class MyClass {
 
 
@@ -2113,7 +2083,6 @@ private:
 
 };
 ```
-
 **避免临时对象拷贝**： 右值引用可以让我们避免在传递临时对象时的深拷贝，从而减少不必要的性能开销。
 
 ##### 38.0.3. 总结
@@ -2135,8 +2104,8 @@ private:
 2. **初始化顺序**：如果有继承关系，基类的构造函数会首先运行，并设置基类的 `vptr`，然后派生类的构造函数会覆盖基类的 `vptr`，指向派生类的虚函数表。
 3. **运行时多态**：通过 `vptr`，对象在调用虚函数时可以根据实际的对象类型选择相应的虚函数实现。
 
-```plain
-#include `<iostream>`
+```cpp
+#include <iostream>
 
 
 
@@ -2156,7 +2125,7 @@ public:
 
 
 
-    virtual void show() { cout `<< "Base class show" << endl; }
+    virtual void show() { cout << "Base class show" << endl; }
 
 
 
@@ -2204,7 +2173,7 @@ int main() {
 
 
 
-    b->`show(); // 输出 "Derived class show"
+    b->show(); // 输出 "Derived class show"
 
 
 
@@ -2218,7 +2187,6 @@ int main() {
 
 }
 ```
-
 在这个例子中，`Derived` 类对象构造时，基类 `Base` 的构造函数先被调用，初始化基类的 `vptr`，然后派生类 `Derived` 的构造函数调用时，重新设置 `vptr`，使其指向 `Derived` 的虚函数表。最终，通过 `b->show()` 调用的是 `Derived` 类的 `show` 方法，实现了多态。 
 
 ##### 39.0.1. 总结
@@ -2235,8 +2203,8 @@ int main() {
 
 举例说明： 
 
-```plain
-#include `<iostream>`
+```cpp
+#include <iostream>
 
 
 
@@ -2256,7 +2224,7 @@ public:
 
 
 
-    ~Base() { cout `<< "Base destructor called" << endl; }
+    ~Base() { cout << "Base destructor called" << endl; }
 
 
 
@@ -2307,10 +2275,9 @@ int main() {
 }
 ```
 
-```plain
+```cpp
 Base destructor called
 ```
-
 在上面的代码中，`b` 是一个基类指针，但它实际上指向了 `Derived` 类的对象。当我们通过 `delete b` 释放对象时，由于 `Base` 类的析构函数不是虚函数，**只会调用 **`**Base**`** 的析构函数**，而不会调用 `Derived` 的析构函数。
 
 这会导致 `Derived` 类中的资源没有被正确释放，从而可能导致资源泄漏。
@@ -2359,7 +2326,7 @@ Base destructor called
 
 1. **访问成员变量和函数** 
 
-```plain
+```cpp
 class MyClass {
 
 
@@ -2404,7 +2371,7 @@ public:
 
 
 
-        std::cout `<< "Value: " << this->`value `<< std::endl;
+        std::cout << "Value: " << this->value << std::endl;
 
 
 
@@ -2414,10 +2381,9 @@ public:
 
 };
 ```
-
 2. **返回当前对象的引用**（链式调用） 
 
-```plain
+```cpp
 class MyClass {
 
 
@@ -2492,7 +2458,6 @@ int main() {
 
 }
 ```
-
 ##### 42.0.3. 总结**
 + `**this**`** 指针的作用**是**指向调用成员函数的当前对象**，可以用于访问该对象的成员，避免命名冲突，或者返回对象本身。
 + `**this**`** 指针的值**是编**译器在调用成员函数时自动生成的，指向当前对象的地址**。
@@ -2555,12 +2520,12 @@ int main() {
 2. **元素搬移**：**将原来 **`**vector**`** 中的元素从旧的内存位置复制到新的内存空间**。
 3. **释放旧内存**：释放旧的内存块，指向新的内存区域。
 
-```plain
-#include `<iostream>`
+```cpp
+#include <iostream>
 
 
 
-#include `<stdexcept>`
+#include <stdexcept>
 
 
 
@@ -2568,7 +2533,7 @@ int main() {
 
 
 
-template `<typename T>`
+template <typename T>
 
 
 
@@ -2836,7 +2801,7 @@ int main() {
 
 
 
-    `MyVector`<int>` vec;
+    MyVector<int> vec;
 
 
 
@@ -2848,7 +2813,7 @@ int main() {
 
 
 
-    std::cout `<< "初始容量: " << vec.getCapacity() << std::endl;
+    std::cout << "初始容量: " << vec.getCapacity() << std::endl;
 
 
 
@@ -2915,7 +2880,7 @@ int main() {
 }
 ```
 
-```plain
+```cpp
 初始容量: 0
 
 
@@ -2962,7 +2927,6 @@ int main() {
 
 最终元素: 1 2 3 4 5 6 7 8 9 10
 ```
-
 + **扩容机制**：`std::vector` 的容量通常按倍数扩展，旧数据会被复制到新内存中，旧内存会被释放。
 + **删除元素后是否释放内存**：`**erase()**`** 和 **`**pop_back()**` 只改变元素数量，内存不会自动释放，`vector` 的 `capacity` 不会缩小。
 
@@ -2973,12 +2937,12 @@ int main() {
 ##### 45.0.1. 在循环中使用失效迭代器**
 如果你在一个循环中删除 `vector` 的元素，**但继续使用失效的迭代器来访问剩余元素，这通常会导致未定义行为、程序崩溃或错误输出**。常见的场景是 `erase()` 操作未正确处理迭代器。
 
-```plain
-#include `<iostream>`
+```cpp
+#include <iostream>
 
 
 
-#include `<vector>`
+#include <vector>
 
 
 
@@ -2990,7 +2954,7 @@ int main() {
 
 
 
-    ``std::`vector`<int>` v = {1, 2, 3, 4, 5};
+    std::vector<int> v = {1, 2, 3, 4, 5};
 
 
 
@@ -3010,7 +2974,7 @@ int main() {
 
 
 
-            v.erase(it);  // 删除 3 后，`it` 失效
+            v.erase(it);  // 删除 3 后，it 失效
 
 
 
@@ -3018,7 +2982,7 @@ int main() {
 
 
 
-        std::cout `<< *it << " ";  // 使用了失效迭代器
+        std::cout << *it << " ";  // 使用了失效迭代器
 
 
 
@@ -3032,17 +2996,16 @@ int main() {
 
 }
 ```
-
 当使用 `erase()` 删除元素时，迭代器会失效，因此应始终使用 `erase()` 返回的新迭代器来继续操作，而不是使用失效的旧迭代器。 
 
 **注意：erase 返回的是，删除元素的下一个位置 **
 
-```plain
-#include <iostream>`
+```cpp
+#include <iostream>
 
 
 
-#include `<vector>`
+#include <vector>
 
 
 
@@ -3054,7 +3017,7 @@ int main() {
 
 
 
-    ``std::`vector`<int>` v = {1, 2, 3, 4, 5};
+    std::vector<int> v = {1, 2, 3, 4, 5};
 
 
 
@@ -3106,7 +3069,7 @@ int main() {
 
 
 
-        std::cout `<< val << " ";  // 输出: 1 2 4 5
+        std::cout << val << " ";  // 输出: 1 2 4 5
 
 
 
@@ -3124,17 +3087,16 @@ int main() {
 
 }
 ```
-
 ##### 45.0.2. 扩容后迭代器失效**
 >` 虽然你提到的是删除操作，但如果删除后添加元素，**导致 **`**vector**`** 扩容**，也会导致迭代器失效。**在扩容时，所有的迭代器都会失效**，因为 `**vector**`** 底层内存会重新分配**。
 >
 
-```plain
-#include `<iostream>`
+```cpp
+#include <iostream>
 
 
 
-#include `<vector>`
+#include <vector>
 
 
 
@@ -3146,7 +3108,7 @@ int main() {
 
 
 
-    ``std::`vector`<int>` v = {1, 2, 3, 4, 5};
+    std::vector<int> v = {1, 2, 3, 4, 5};
 
 
 
@@ -3170,7 +3132,7 @@ int main() {
 
 
 
-    std::cout `<< *it << std::endl;  // 可能导致未定义行为
+    std::cout << *it << std::endl;  // 可能导致未定义行为
 
 
 
@@ -3180,7 +3142,6 @@ int main() {
 
 }
 ```
-
 >` `push_back(6)` 可能会触发 `vector` 扩容，导致所有指向原内存的迭代器失效。
 >
 
@@ -3197,7 +3158,7 @@ vector迭代器失效有两种
 > `std::unique_ptr` 和裸指针（也就是普通的原生指针）在 C++ 中有不同的用途和特性，主要区别体现在**内存管理**、**安全性**以及**效率**等方面。
 >
 
-```plain
+```cpp
 void useRawPointer() {
 
 
@@ -3206,7 +3167,7 @@ void useRawPointer() {
 
 
 
-    std::cout `<< *ptr << std::endl;  // 使用
+    std::cout << *ptr << std::endl;  // 使用
 
 
 
@@ -3217,8 +3178,8 @@ void useRawPointer() {
 }
 ```
 
-```plain
-#include <memory>`
+```cpp
+#include <memory>
 
 
 
@@ -3226,11 +3187,11 @@ void useUniquePointer() {
 
 
 
-    ``std::`unique_ptr`<int>` ptr = `std::`make_unique`<int>`(10);  // 自动管理内存
+    std::unique_ptr<int> ptr = std::make_unique<int>(10);  // 自动管理内存
 
 
 
-    std::cout `<< *ptr << std::endl;  // 使用
+    std::cout << *ptr << std::endl;  // 使用
 
 
 
@@ -3240,7 +3201,6 @@ void useUniquePointer() {
 
 }
 ```
-
 ##### 46.0.1. 总结**
 + **内存管理**：`**unique_ptr**`自动管理内存，而裸指针需要手动管理。
 + **安全性**：`unique_ptr` 更安全，避免了裸指针常见的内存泄漏和悬空指针问题。
@@ -3257,14 +3217,13 @@ void useUniquePointer() {
 + **示例**：
     - 假设一个 32 位的整型数 `**0x12345678**`，在大端模式下，内存中存储顺序为：
 
-```plain
+```cpp
 地址:    0x00    0x01    0x02    0x03
 
 
 
 数据:    0x12    0x34    0x56    0x78
 ```
-
 **用处**：
 
 + **网络协议**：大端模式广泛应用于网络字节序（也称为**网络序**）。网络协议通常使用大端字节序传输数据，因为这样可以使得**跨平台通信更加一致**。
@@ -3275,14 +3234,13 @@ void useUniquePointer() {
 + **示例**：
     - 假设一个 32 位的整型数 `**0x12345678**`，在小端模式下，内存中存储顺序为：
 
-```plain
+```cpp
 地址:    0x00    0x01    0x02    0x03
 
 
 
 数据:    0x78    0x56    0x34    0x12
 ```
-
 **用处**：
 
 + **计算机架构**：小端模式在大多数计算机架构中被广泛使用，特别是在**Intel x86** 和 **x86-64** 体系结构中。这是因为在处理器中，读取和操作数据时，低位字节通常是更频繁操作的部分，小端模式可以更有效地处理这种情况。
@@ -3304,7 +3262,7 @@ void useUniquePointer() {
 
 ---
 
-```plain
+```cpp
 int main()
 
 
@@ -3363,7 +3321,6 @@ int main()
 
 }
 ```
-
 ---
 
 ### 48. 四十八、什么是B+树，它有什么特点？ **
@@ -3439,7 +3396,7 @@ int main()
 > **Lambda 表达式是一种匿名函数**，**允许你在需要函数的地方定义和使用内联函数**，尤其适合用于短小的函数逻辑。语法格式如下：
 >
 
-```plain
+```cpp
 [捕获列表](参数列表) -> 返回类型 {
 
 
@@ -3450,7 +3407,6 @@ int main()
 
 };
 ```
-
 + **捕获列表**：定义 lambda 函数**如何访问外部作用域的变量**。
 + **参数列表**：传递给 lambda **函数的参数**。
 + **返回类型**（可选）：可以省略，编译器会根据返回值推断类型。
@@ -3474,16 +3430,16 @@ int main()
 ##### 53.0.5. 对数组排序的例子
 在这个例子中，我们将对一个整数数组进行降序排序：
 
-```plain
-#include `<iostream>`
+```cpp
+#include <iostream>
 
 
 
-#include `<vector>`
+#include <vector>
 
 
 
-#include `<algorithm>`
+#include <algorithm>
 
 
 
@@ -3495,7 +3451,7 @@ int main() {
 
 
 
-    ``std::`vector`<int>` nums = {5, 2, 8, 1, 4};
+    std::vector<int> nums = {5, 2, 8, 1, 4};
 
 
 
@@ -3531,7 +3487,7 @@ int main() {
 
 
 
-        std::cout `<< n << " ";
+        std::cout << n << " ";
 
 
 
@@ -3553,7 +3509,6 @@ int main() {
 
 }
 ```
-
 ##### 53.0.6. 对字符串数组排序的例子
 在这个例子中，我们将根据字符串的长度对字符串数组进行升序排序：
 
@@ -3563,7 +3518,7 @@ int main() {
 >` **内联函数**（`inline` function）是通过**在函数定义前加上关键字 **`**inline**`来建议编译器**将函数代码直接插入到每个调用它的地方**，**而不是通过函数调用机制**。这样可以**减少函数调用时的开销****。内联函数通常用于那些频繁调用、代码短小的函数。 **
 >
 
-```plain
+```cpp
 inline int add(int a, int b) {
 
 
@@ -3594,7 +3549,6 @@ int main() {
 
 }
 ```
-
 ##### 54.0.1. 内联函数的优点
 + **减少函数调用的开销**：内联函数避免了**传统函数调用时压栈、出栈等开销**，特别是在频繁调用的小函数中效果显著。
 + **代码优化**：编译器在内联展开时可以进行一些额外的优化，比如消除无用代码或常量折叠。
@@ -3721,7 +3675,7 @@ int main() {
 
 这两个步骤必须保证要么全部完成，要么全部不完成（回滚）。因此，可以将它们作为一个事务来执行：
 
-```plain
+```cpp
 START TRANSACTION;
 
 
@@ -3756,13 +3710,11 @@ UPDATE accounts SET balance = balance + 100 WHERE account_id = 'B';
 
 COMMIT;
 ```
-
 如果在执行过程中发生错误，可以使用 `ROLLBACK` 来回滚整个事务，保证数据一致性： 
 
-```plain
+```cpp
 ROLLBACK;
 ```
-
 ##### 58.0.4. 事务隔离级别**
 **事务的隔离性决定了并发事务之间的相互影响程度。**数据库系统通常提供四种事务隔离级别，不同的隔离级别可以防止不同类型的并发问题：
 
@@ -3810,16 +3762,16 @@ ROLLBACK;
 > 在 C++ 中，`volatile` 关键字的主要作用是告诉编译器，**被 **`**volatile**`** 修饰的变量可能会在程序执行的过程中被外部环境（如硬件设备、中断、其他线程等）修改，因此编译器不应对该变量进行优化。 **
 >
 
-```plain
-#include `<stdio.h>`
+```cpp
+#include <stdio.h>
 
 
 
-#include `<stdlib.h>`
+#include <stdlib.h>
 
 
 
-#include `<pthread.h>`
+#include <pthread.h>
 
 
 

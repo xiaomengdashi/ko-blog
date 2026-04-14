@@ -20,14 +20,12 @@ slug: /C++/C++调试技术/GDB-调试程序主要命令和步骤---
 ```bash
 gdb ./BigTea
 ```
-
 #### 2. 设置调试符号
 确保程序在编译时使用了调试符号（通常使用 `-g` 选项）。如果程序没有调试符号，GDB 可能无法显示变量信息和函数名称。
 
 ```bash
 g++ -g -o BigTea source_file.cpp
 ```
-
 #### 3. 设置断点
 通过设置断点，程序会在特定位置暂停，允许高大强查看程序的状态。可以通过以下命令设置断点：
 
@@ -36,26 +34,22 @@ g++ -g -o BigTea source_file.cpp
 ```bash
 break function_name
 ```
-
 + 在某行代码处设置断点：
 
 ```bash
 break file_name:line_number
 ```
-
 比如，如果想在 `main.cpp` 的第 30 行处设置断点：
 
 ```bash
 break main.cpp:30
 ```
-
 #### 4. 启动程序执行
 在 GDB 中，使用 `run` 命令来启动程序执行。GDB 会在遇到断点时暂停程序。
 
 ```bash
 run
 ```
-
 #### 5. 查看程序状态
 当程序在断点处暂停时，可以使用 GDB 的一些命令来检查程序的状态：
 
@@ -64,37 +58,31 @@ run
 ```bash
 backtrace
 ```
-
 或者简写为：
 
 ```bash
 bt
 ```
-
 + **查看当前函数的局部变量**：
 
 ```bash
 info locals
 ```
-
 + **查看当前函数的所有参数**：
 
 ```bash
 info args
 ```
-
 + **查看某个变量的值**：
 
 ```bash
 print variable_name
 ```
-
 + **查看内存地址**：
 
 ```bash
 x /10xw variable_name
 ```
-
 这会显示 `variable_name` 的内存地址以及周围的内存内容。
 
 #### 6. 单步调试
@@ -105,54 +93,46 @@ x /10xw variable_name
 ```bash
 step
 ```
-
 + **单步执行一行代码**，不进入函数：
 
 ```bash
 next
 ```
-
 #### 7. 继续执行程序
 当程序在断点暂停时，使用以下命令继续执行程序，直到遇到下一个断点。
 
 ```bash
 continue
 ```
-
 #### 8. 打印调用栈的详细信息
 如果高大强想查看当前调用栈的更多信息，可以使用：
 
 ```bash
 info stack
 ```
-
 #### 9. 修改变量值
 在调试时，可以修改程序中的变量值来测试不同的执行路径。
 
 ```bash
 set variable variable_name = new_value
 ```
-
 #### 10. 切换源代码文件
 如果程序中有多个源代码文件，高大强可以使用 `list` 命令查看当前行附近的代码，或者查看指定文件的某一行代码。
 
 ```bash
 list
 ```
-
 或
 
 ```bash
 list file_name:line_number
 ```
-
 #### 11. 结束调试
 如果高大强想要结束调试，可以使用 `quit` 命令退出 GDB：
 
 ```bash
 quit
 ```
-
 #### 12. 调试多线程程序
 如果 BigTea 是一个多线程程序，高大强可以使用以下命令来查看线程信息和切换线程：
 
@@ -161,7 +141,6 @@ quit
 ```bash
 info threads
 ```
-
 + **切换到某个线程**：
 
 ```bash

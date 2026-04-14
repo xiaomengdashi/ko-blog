@@ -19,25 +19,25 @@ slug: /C++/C++并发编程/并发/C-死锁问题
 ### 3. 死锁场景深入剖析
 #### 3.1. 经典双锁死锁场景
 ```cpp
-#include `<iostream>`
-#include `<thread>`
-#include `<mutex>`
+#include <iostream>
+#include <thread>
+#include <mutex>
 
 std::mutex mutex1;
 std::mutex mutex2;
 
 void thread1() {
-    `std::`lock_guard`<std::mutex>` lock1(mutex1);
+    std::lock_guard<std::mutex> lock1(mutex1);
     std::this_thread::sleep_for(std::chrono::milliseconds(100));
-    `std::`lock_guard`<std::mutex>` lock2(mutex2);  // 等待mutex2
-    std::cout `<< "Thread 1 finished" << std::endl;
+    std::lock_guard<std::mutex> lock2(mutex2);  // 等待mutex2
+    std::cout << "Thread 1 finished" << std::endl;
 }
 
 void thread2() {
-`std::lock_guard<std::mutex>`lock2(mutex2);
+std::lock_guard<std::mutex>lock2(mutex2);
     std::this_thread::sleep_for(std::chrono::milliseconds(100));
-    `std::`lock_guard`<std::mutex>` lock1(mutex1);  // 等待mutex1
-    std::cout `<< "Thread 2 finished" << std::endl;
+    std::lock_guard<std::mutex> lock1(mutex1);  // 等待mutex1
+    std::cout << "Thread 2 finished" << std::endl;
 }
 
 int main() {
@@ -49,7 +49,6 @@ int main() {
     return 0;
 }
 ```
-
 **问题分析**：
 
 + 线程1持有mutex1，等待mutex2
@@ -58,9 +57,9 @@ int main() {
 
 #### 3.2. 多线程资源竞争死锁
 ```cpp
-#include <iostream>`
-#include `<thread>`
-#include `<mutex>`
+#include <iostream>
+#include <thread>
+#include <mutex>
 
 class BankAccount {
 public:
@@ -70,9 +69,9 @@ public:
     BankAccount(int bal) : balance(bal) {}
     
     void transfer(BankAccount& to, int amount) {
-        `std::`lock_guard`<std::mutex>` lock1(mtx);
+        std::lock_guard<std::mutex> lock1(mtx);
         std::this_thread::sleep_for(std::chrono::milliseconds(10));
-        `std::`lock_guard`<std::mutex>` lock2(to.mtx);
+        std::lock_guard<std::mutex> lock2(to.mtx);
         
         balance -= amount;
         to.balance += amount;
@@ -91,7 +90,6 @@ int main() {
     return 0;
 }
 ```
-
 **问题分析**：
 
 + 两个线程分别尝试在不同账户间转账
@@ -100,14 +98,14 @@ int main() {
 
 #### 3.3. 归锁死锁场景
 ```cpp
-#include `<iostream>`
-#include `<thread>`
-#include `<mutex>`
+#include <iostream>
+#include <thread>
+#include <mutex>
 
 std::mutex mtx;
 
 void recursiveFunction(int depth) {
-    `std::`lock_guard`<std::mutex>` lock(mtx);
+    std::lock_guard<std::mutex> lock(mtx);
     if (depth > 0) {
         recursiveFunction(depth - 1);  // 尝试再次获取同一个锁
     }
@@ -119,7 +117,6 @@ int main() {
     return 0;
 }
 ```
-
 **问题分析**：
 
 + 同一线程尝试多次获取不可重入的mutex
@@ -128,34 +125,34 @@ int main() {
 
 #### 3.4. 多层嵌套锁死锁
 ```cpp
-#include `<iostream>`
-#include `<thread>`
-#include `<mutex>`
+#include <iostream>
+#include <thread>
+#include <mutex>
 
 std::mutex mtx_a, mtx_b, mtx_c;
 
 void worker1() {
-    `std::`lock_guard`<std::mutex>` lock_a(mtx_a);
+    std::lock_guard<std::mutex> lock_a(mtx_a);
     std::this_thread::sleep_for(std::chrono::milliseconds(50));
-    `std::`lock_guard`<std::mutex>` lock_b(mtx_b);
+    std::lock_guard<std::mutex> lock_b(mtx_b);
     std::this_thread::sleep_for(std::chrono::milliseconds(50));
-    `std::`lock_guard`<std::mutex>` lock_c(mtx_c);
+    std::lock_guard<std::mutex> lock_c(mtx_c);
 }
 
 void worker2() {
-    `std::`lock_guard`<std::mutex>` lock_b(mtx_b);
+    std::lock_guard<std::mutex> lock_b(mtx_b);
     std::this_thread::sleep_for(std::chrono::milliseconds(50));
-    `std::`lock_guard`<std::mutex>` lock_c(mtx_c);
+    std::lock_guard<std::mutex> lock_c(mtx_c);
     std::this_thread::sleep_for(std::chrono::milliseconds(50));
-    `std::`lock_guard`<std::mutex>` lock_a(mtx_a);
+    std::lock_guard<std::mutex> lock_a(mtx_a);
 }
 
 void worker3() {
-    `std::`lock_guard`<std::mutex>` lock_c(mtx_c);
+    std::lock_guard<std::mutex> lock_c(mtx_c);
     std::this_thread::sleep_for(std::chrono::milliseconds(50));
-    `std::`lock_guard`<std::mutex>` lock_a(mtx_a);
+    std::lock_guard<std::mutex> lock_a(mtx_a);
     std::this_thread::sleep_for(std::chrono::milliseconds(50));
-    `std::`lock_guard`<std::mutex>` lock_b(mtx_b);
+    std::lock_guard<std::mutex> lock_b(mtx_b);
 }
 
 int main() {
@@ -169,7 +166,6 @@ int main() {
     return 0;
 }
 ```
-
 **问题分析**：
 
 + 三个线程形成复杂的循环等待
@@ -190,11 +186,11 @@ int main() {
 **std::lock源码（两个锁）**
 
 ```cpp
-template `<class _L0, class _L1>`
+template <class _L0, class _L1>
 _LIBCPP_HIDE_FROM_ABI void lock(_L0& __l0, _L1& __l1) {
   while (true) {
     {
-      `unique_lock`<_L0>` __u0(__l0);     //锁定l0
+      unique_lock<_L0> __u0(__l0);     //锁定l0
       if (__l1.try_lock()) {           //尝试l1加锁   
         __u0.release();                //释放l0所有权（__u0在析构时候不会解锁）
         break;                         //退出循环
@@ -202,7 +198,7 @@ _LIBCPP_HIDE_FROM_ABI void lock(_L0& __l0, _L1& __l1) {
     }                                   //如果l1尝试加锁失败，__u0会在析构函数中解锁
     __libcpp_thread_yield();             //让出cpu时间
     {
-      `unique_lock`<_L1>` __u1(__l1);       //锁定l1
+      unique_lock<_L1> __u1(__l1);       //锁定l1
       if (__l0.try_lock()) {             //尝试l0加锁 
         __u1.release();                  //释放l1所有权（__u1在析构时候不会解锁）
         break;
@@ -212,14 +208,13 @@ _LIBCPP_HIDE_FROM_ABI void lock(_L0& __l0, _L1& __l1) {
   }                                        
 }
 ```
-
 **std::lock源码（多把锁）**  
 核心：分治递归+锁顺序重排重试+每次尝试后主动让出cpu  
 概述：首先锁定第一个互斥量，然后尝试获取剩余所有锁，失败时锁定第二个互斥量并将第一个锁移至队尾重新尝试，若仍失败则递归调用自身处理从第三个锁开始的子问题，同时将前两个锁移至队尾；每次失败后让出CPU时间片，通过索引跳跃和参数重排实现轮询，当所有锁成功获取时返回，整个过程在有限循环内通过动态调整锁的获取顺序避免死锁。
 
 ```cpp
 //std::lock主体实现
-template `<class _L0, class _L1, class _L2, class... _L3>`
+template <class _L0, class _L1, class _L2, class... _L3>
 
 inline _LIBCPP_HIDE_FROM_ABI void lock(_L0& __l0, _L1& __l1, _L2& __l2, _L3&... __l3) {
 
@@ -228,13 +223,13 @@ std::__lock_first(0, __l0, __l1, __l2, __l3...);
 }
 
 //__lock_first主体实现  
-template `<class _L0, class _L1, class _L2, class... _L3>`
+template <class _L0, class _L1, class _L2, class... _L3>
 void __lock_first(int __i, _L0& __l0, _L1& __l1, _L2& __l2, _L3&... __l3) {
 
 while (true) {
 switch (__i) {
     case 0: {
-    `unique_lock`<_L0>` __u0(__l0);
+    unique_lock<_L0> __u0(__l0);
     __i = std::try_lock(__l1, __l2, __l3...);
     if (__i == -1) {
         __u0.release();
@@ -247,7 +242,7 @@ __libcpp_thread_yield();
 break;
 
 case 1: {
-    `unique_lock`<_L1>` __u1(__l1);
+    unique_lock<_L1> __u1(__l1);
     __i = std::try_lock(__l2, __l3..., __l0);
     if (__i == -1) {
     __u1.release();
@@ -268,10 +263,10 @@ return;
 }
 
 //try_lock主体实现
-template `<class _L0, class _L1, class _L2, class... _L3>`
+template <class _L0, class _L1, class _L2, class... _L3>
 _LIBCPP_HIDE_FROM_ABI int try_lock(_L0& __l0, _L1& __l1, _L2& __l2, _L3&... __l3) {
 int __r = 0;
-`unique_lock`<_L0>` __u0(__l0, try_to_lock);
+unique_lock<_L0> __u0(__l0, try_to_lock);
 if (__u0.owns_lock()) {
 __r = std::try_lock(__l1, __l2, __l3...);
 if (__r == -1)
@@ -288,33 +283,30 @@ return __r;
 
 
 ```
-
-
-
 **示例代码**
 
 ```cpp
-#include `<iostream>`
-#include `<mutex>`
-#include `<thread>`
+#include <iostream>
+#include <mutex>
+#include <thread>
 
 std::mutex mutex1;
 std::mutex mutex2;
 
 void safeThread1() {
-    `std::`lock_guard`<std::mutex>` lock1(mutex1, std::adopt_lock);
-    `std::`lock_guard`<std::mutex>` lock2(mutex2, std::adopt_lock);
+    std::lock_guard<std::mutex> lock1(mutex1, std::adopt_lock);
+    std::lock_guard<std::mutex> lock2(mutex2, std::adopt_lock);
     std::lock(mutex1, mutex2);  // 原子性锁定
-    std::cout `<< "Thread 1 safely acquired both locks" << std::endl;
+    std::cout << "Thread 1 safely acquired both locks" << std::endl;
 }
 
 void safeThread2() {
-`std::unique_lock<std::mutex>`lock1(mutex1, std::defer_lock);
-    `std::`unique_lock`<std::mutex>` lock2(mutex2, std::defer_lock);
+std::unique_lock<std::mutex>lock1(mutex1, std::defer_lock);
+    std::unique_lock<std::mutex> lock2(mutex2, std::defer_lock);
 
     std::lock(lock1, lock2);  // 原子性锁定
 
-    std::cout `<< "Thread 2 safely acquired both locks" << std::endl;
+    std::cout << "Thread 2 safely acquired both locks" << std::endl;
 }
 
 int main() {
@@ -326,9 +318,6 @@ int main() {
     return 0;
 }
 ```
-
-
-
 #### 4.2. std::scoped_lock (C++17) - RAII多锁管理
 **核心特点**：
 
@@ -340,16 +329,16 @@ int main() {
 内部封装了std::lock的调用，提供更简洁的RAII接口，确保异常安全。
 
 ```cpp
-#include <iostream>`
-#include `<thread>`
-#include `<mutex>`
+#include <iostream>
+#include <thread>
+#include <mutex>
 
 std::mutex mutex1;
 std::mutex mutex2;
 
 void modernSafeThread() {
     std::scoped_lock lock(mutex1, mutex2);  // C++17简化语法
-    std::cout `<< "Modern safe thread acquired locks" << std::endl;
+    std::cout << "Modern safe thread acquired locks" << std::endl;
     // 自动释放锁
 }
 
@@ -362,7 +351,6 @@ int main() {
     return 0;
 }
 ```
-
 #### 4.3. std::recursive_mutex - 可重入锁
 **核心特点**：
 
@@ -374,17 +362,17 @@ int main() {
 内部维护线程ID和锁定计数，同一线程可以多次锁定而不会阻塞，解决递归调用中的自死锁问题。
 
 ```cpp
-#include <iostream>`
-#include `<thread>`
-#include `<mutex>`
+#include <iostream>
+#include <thread>
+#include <mutex>
 
 std::recursive_mutex rec_mtx;
 
 void recursiveFunction(int depth) {
-    `std::`lock_guard`<std::recursive_mutex>` lock(rec_mtx);
-    std::cout `<< "Depth: " << depth << std::endl;
+    std::lock_guard<std::recursive_mutex> lock(rec_mtx);
+    std::cout << "Depth: " << depth << std::endl;
     
-    if (depth >` 0) {
+    if (depth > 0) {
         recursiveFunction(depth - 1);  // 安全的递归调用
     }
 }
@@ -396,18 +384,18 @@ private:
     
 public:
     void method1() {
-        `std::`lock_guard`<std::recursive_mutex>` lock(mtx);
+        std::lock_guard<std::recursive_mutex> lock(mtx);
         value++;
         method2();  // 调用另一个需要锁的方法
     }
     
     void method2() {
-        `std::`lock_guard`<std::recursive_mutex>` lock(mtx);
+        std::lock_guard<std::recursive_mutex> lock(mtx);
         value *= 2;
     }
     
     int getValue() {
-        `std::`lock_guard`<std::recursive_mutex>` lock(mtx);
+        std::lock_guard<std::recursive_mutex> lock(mtx);
         return value;
     }
 };
@@ -418,11 +406,10 @@ int main() {
     
     RecursiveClass obj;
     obj.method1();
-    std::cout `<< "Final value: " << obj.getValue() << std::endl;
+    std::cout << "Final value: " << obj.getValue() << std::endl;
     return 0;
 }
 ```
-
 #### 4.4. 超时锁机制
 **核心特点**：
 
@@ -434,19 +421,19 @@ int main() {
 通过时间限制打破无限等待，允许线程在超时后采取替代策略，如重试、报错或执行其他逻辑。
 
 ```cpp
-#include <iostream>`
-#include `<thread>`
-#include `<mutex>`
-#include `<chrono>`
+#include <iostream>
+#include <thread>
+#include <mutex>
+#include <chrono>
 
 std::timed_mutex tmtx1;
 std::timed_mutex tmtx2;
 
 void timeoutThread1() {
-    `std::`unique_lock`<std::timed_mutex>` lock1(tmtx1);
+    std::unique_lock<std::timed_mutex> lock1(tmtx1);
     
     if (tmtx2.try_lock_for(std::chrono::milliseconds(100))) {
-        std::cout `<< "Thread 1 acquired both locks" << std::endl;
+        std::cout << "Thread 1 acquired both locks" << std::endl;
         tmtx2.unlock();
     } else {
         std::cout << "Thread 1 timeout, avoiding deadlock" << std::endl;
@@ -454,10 +441,10 @@ void timeoutThread1() {
 }
 
 void timeoutThread2() {
-`std::unique_lock<std::timed_mutex>`lock2(tmtx2);
+std::unique_lock<std::timed_mutex>lock2(tmtx2);
     
     if (tmtx1.try_lock_for(std::chrono::milliseconds(100))) {
-        std::cout `<< "Thread 2 acquired both locks" << std::endl;
+        std::cout << "Thread 2 acquired both locks" << std::endl;
         tmtx1.unlock();
     } else {
         std::cout << "Thread 2 timeout, avoiding deadlock" << std::endl;
@@ -476,11 +463,11 @@ public:
     
     bool acquireBothLocks(int maxRetries = 3) {
         for (int retry = 0; retry < maxRetries; ++retry) {
-`std::unique_lock<std::timed_mutex>`lock1(mtx1, std::defer_lock);
-            `std::`unique_lock`<std::timed_mutex>` lock2(mtx2, std::defer_lock);
+std::unique_lock<std::timed_mutex>lock1(mtx1, std::defer_lock);
+            std::unique_lock<std::timed_mutex> lock2(mtx2, std::defer_lock);
             
             if (std::try_lock(lock1, lock2) == -1) {
-                std::cout `<< "Successfully acquired both locks on retry " << retry << std::endl;
+                std::cout << "Successfully acquired both locks on retry " << retry << std::endl;
                 return true;
             }
             
@@ -506,7 +493,6 @@ int main() {
     return 0;
 }
 ```
-
 #### 4.5. 层次锁（Hierarchical Locking）
 **核心特点**：
 
@@ -520,10 +506,10 @@ int main() {
 ```cpp
 
 
-#include <iostream>`
-#include `<mutex>`
-#include `<stdexcept>`
-#include `<thread>`
+#include <iostream>
+#include <mutex>
+#include <stdexcept>
+#include <thread>
 
 class HierarchicalMutex {
 private:
@@ -619,8 +605,8 @@ HierarchicalMutex low_level_mutex(1000);    // 低层次互斥锁
  * 获取最低层次的锁并执行操作
  */
 void do_low_level_stuff() {
-    `std::`lock_guard`<HierarchicalMutex>` lock(low_level_mutex);  // RAII方式自动管理锁
-    std::cout `<< "Low level operation" << std::endl;
+    std::lock_guard<HierarchicalMutex> lock(low_level_mutex);  // RAII方式自动管理锁
+    std::cout << "Low level operation" << std::endl;
 }
 
 /**
@@ -629,9 +615,9 @@ void do_low_level_stuff() {
  * 这是正确的：从中层次(5000)到低层次(1000)
  */
 void do_mid_level_stuff() {
-`std::lock_guard<HierarchicalMutex>`lock(mid_level_mutex);  // 获取中层次锁
+std::lock_guard<HierarchicalMutex>lock(mid_level_mutex);  // 获取中层次锁
     do_low_level_stuff();  // 正确：从中层次到低层次，5000 > 1000
-    std::cout `<< "Mid level operation" << std::endl;
+    std::cout << "Mid level operation" << std::endl;
 }
 
 /**
@@ -640,9 +626,9 @@ void do_mid_level_stuff() {
  * 这是正确的：从高层次(10000)到中层次(5000)
  */
 void do_high_level_stuff() {
-`std::lock_guard<HierarchicalMutex>`lock(high_level_mutex);  // 获取高层次锁
+std::lock_guard<HierarchicalMutex>lock(high_level_mutex);  // 获取高层次锁
     do_mid_level_stuff();  // 正确：从高层次到中层次，10000 > 5000
-    std::cout `<< "High level operation" << std::endl;
+    std::cout << "High level operation" << std::endl;
 }
 
 /**

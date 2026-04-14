@@ -34,8 +34,8 @@ slug: /C++/基础知识/C++之继承总结
 + 我们看以下代码的运行结果
 
 ```cpp
-#`include`<iostream>`
-#`include`<string>`
+#include<iostream>
+#include<string>
 using namespace std;
 
 class Person
@@ -43,7 +43,7 @@ class Person
 public:
 void Print()
 {
-    cout `<< "name:" << _name << endl;
+    cout << "name:" << _name << endl;
     cout << "age:" << _age << endl;
 }
 protected:

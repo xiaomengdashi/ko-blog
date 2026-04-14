@@ -131,26 +131,25 @@ wss.on('connection', function connection(ws) {
   });
 });
 ```
-
 2. 客户端（使用浏览器和原生 WebSocket API）
 
 ```html
-`<!DOCTYPE html>`
-`<html lang="zh-CN">`
-`<head>`
-    `<meta charset="UTF-8">`
-    `<meta name="viewport" content="width=device-width, initial-scale=1.0">`
-    `<title>`WebSocket `示例</title>`</head>`<body>``
-    `<h1>`WebSocket `客户端示例</h1>`<div>`<label for="messageInput">``发送消息:</label>
-        `<input type="text" id="messageInput" placeholder="输入消息">`
-        `<button onclick="sendMessage()">`发送</button>`
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WebSocket 示例</title></head><body>
+    <h1>WebSocket 客户端示例</h1><div><label for="messageInput">发送消息:</label>
+        <input type="text" id="messageInput" placeholder="输入消息">
+        <button onclick="sendMessage()">发送</button>
     </div>
     <div>
-        `<h2>`接收到的消息:</h2>
-        `<ul id="messageList">`</ul>
+        <h2>接收到的消息:</h2>
+        <ul id="messageList"></ul>
     </div>
 
-    `<script>`
+    <script>
         // WebSocket 服务器地址
         const websocketServerUrl = "ws://localhost:8080";
 

@@ -64,8 +64,8 @@ _**常见用途：**
 RTMP 协议较为复杂，完整的实现需要处理握手、消息分块、命令消息等细节。
 
 ```cpp
-#include `<boost/asio.hpp>`
-#include `<iostream>`
+#include <boost/asio.hpp>
+#include <iostream>
 
 using boost::asio::ip::tcp;
 
@@ -81,7 +81,7 @@ void start_accept() {
     acceptor_.async_accept(
         [this](boost::system::error_code ec, tcp::socket socket) {
             if (!ec) {
-                std::cout `<< "New connection from: " << socket.remote_endpoint() << std::endl;
+                std::cout << "New connection from: " << socket.remote_endpoint() << std::endl;
                 handle_handshake(std::move(socket));
             }
             start_accept();
@@ -129,14 +129,11 @@ int main() {
     return 0;
 }
 ```
-
-
-
 客户端：
 
 ```cpp
-#include <boost/asio.hpp>`
-#include `<iostream>`
+#include <boost/asio.hpp>
+#include <iostream>
 
 using boost::asio::ip::tcp;
 
@@ -152,7 +149,7 @@ private:
         acceptor_.async_accept(
             [this](boost::system::error_code ec, tcp::socket socket) {
                 if (!ec) {
-                    std::cout `<< "New connection from: " << socket.remote_endpoint() << std::endl;
+                    std::cout << "New connection from: " << socket.remote_endpoint() << std::endl;
                     handle_handshake(std::move(socket));
                 }
                 start_accept();
@@ -200,7 +197,6 @@ int main() {
     return 0;
 }
 ```
-
 1. **RTMP 握手**：
     - RTMP 握手分为三个阶段：C0/C1（客户端发送）、S0/S1/S2（服务端响应）、C2（客户端确认）。
     - 上述代码简化了握手逻辑，仅发送和接收固定长度的数据。
@@ -215,11 +211,11 @@ int main() {
 RTSP 服务端需要监听客户端的请求，并根据控制命令（如播放、暂停、停止等）进行处理。由于 RTSP 是基于 TCP 的协议，我们使用 Boost.ASIO 来处理异步 TCP 通信。
 
 ```cpp
-#include <boost/asio.hpp>`
-#include `<iostream>`
-#include `<string>`
-#include `<map>`
-#include `<sstream>`
+#include <boost/asio.hpp>
+#include <iostream>
+#include <string>
+#include <map>
+#include <sstream>
 
 using boost::asio::ip::tcp;
 
@@ -232,7 +228,7 @@ public:
 
 private:
     void start_accept() {
-        auto socket = `std::`make_shared`<tcp::socket>`(acceptor_.get_io_context());
+        auto socket = std::make_shared<tcp::socket>(acceptor_.get_io_context());
         acceptor_.async_accept(*socket, [this, socket](boost::system::error_code ec) {
             if (!ec) {
                 handle_request(socket);
@@ -241,14 +237,14 @@ private:
         });
     }
 
-    void handle_request(``std::`shared_ptr`<tcp::socket>` socket) {
+    void handle_request(std::shared_ptr<tcp::socket> socket) {
         boost::asio::streambuf buffer;
         boost::asio::read_until(*socket, buffer, "\r\n\r\n");
 
         std::istream stream(&buffer);
         std::string request;
         std::getline(stream, request);
-        std::cout `<< "Received RTSP request: " << request << std::endl;
+        std::cout << "Received RTSP request: " << request << std::endl;
 
         // Handle different RTSP commands
         if (request.find("DESCRIBE") != std::string::npos) {
@@ -264,7 +260,7 @@ private:
         }
     }
 
-    void send_rtsp_response(`std::shared_ptr<tcp::socket>`socket, const std::string& status, const std::string& description) {
+    void send_rtsp_response(std::shared_ptr<tcp::socket>socket, const std::string& status, const std::string& description) {
         std::string response = "RTSP/1.0 " + status + "\r\n";
         response += "CSeq: 1\r\n"; // Sequence number (for tracking requests)
         response += "Content-Base: rtsp://localhost/stream\r\n";
@@ -283,20 +279,19 @@ int main() {
         RTSPServer server(io_context, 554); // RTSP default port
         io_context.run();
     } catch (const std::exception& e) {
-        std::cerr `<< "Exception: " << e.what() << std::endl;
+        std::cerr << "Exception: " << e.what() << std::endl;
     }
 }
 
 ```
-
 **RTSP 客户端：**
 
 RTSP 客户端向 RTSP 服务端发送请求，并接收响应。
 
 ```cpp
-#include <boost/asio.hpp>`
-#include `<iostream>`
-#include `<string>`
+#include <boost/asio.hpp>
+#include <iostream>
+#include <string>
 
 using boost::asio::ip::tcp;
 
@@ -320,7 +315,7 @@ public:
         std::istream stream(&buffer);
         std::string response;
         std::getline(stream, response);
-        std::cout `<< "Received RTSP response: " << response << std::endl;
+        std::cout << "Received RTSP response: " << response << std::endl;
     }
 
 private:
@@ -338,15 +333,14 @@ int main() {
     }
 }
 ```
-
 #### 2.3. RTP 异步服务端和客户端
 RTP 服务端和客户端使用 UDP 来传输实时数据。RTP 数据流通常由连续的数据包组成，每个包都包含时间戳和序列号等信息，以确保实时性和数据的顺序。
 
 **RTP 服务端：**
 
 ```cpp
-#include <boost/asio.hpp>`
-#include `<iostream>`
+#include <boost/asio.hpp>
+#include <iostream>
 
 using boost::asio::ip::udp;
 
@@ -369,12 +363,12 @@ private:
     }
 
     void handle_receive(std::size_t bytes_received) {
-        std::cout `<< "Received RTP packet of size " << bytes_received << " bytes" << std::endl;
+        std::cout << "Received RTP packet of size " << bytes_received << " bytes" << std::endl;
     }
 
     udp::socket socket_;
     udp::endpoint remote_endpoint_;
-`std::array<char, 1024>`recv_buffer_;
+std::array<char, 1024>recv_buffer_;
 };
 
 int main() {
@@ -383,17 +377,16 @@ int main() {
         RTPServer server(io_context, 5004); // Example RTP port
         io_context.run();
     } catch (const std::exception& e) {
-        std::cerr `<< "Exception: " << e.what() << std::endl;
+        std::cerr << "Exception: " << e.what() << std::endl;
     }
 }
 ```
-
 **RTP 客户端：**
 
 ```cpp
-#include <boost/asio.hpp>`
-#include `<iostream>`
-#include `<array>`
+#include <boost/asio.hpp>
+#include <iostream>
+#include <array>
 
 using boost::asio::ip::udp;
 
@@ -421,7 +414,7 @@ public:
     void send_rtp_packet(const std::string& data) {
         // Create RTP header
         RTPHeader header = { 2, 0, 0, 0, 0, 96, 1234, 567890, 12345678 }; // Example values for RTP header
-        `std::`array`<char, 1500>` packet;
+        std::array<char, 1500> packet;
         std::memcpy(packet.data(), &header, sizeof(RTPHeader));
         std::memcpy(packet.data() + sizeof(RTPHeader), data.c_str(), data.size());
 
@@ -430,7 +423,7 @@ public:
 
 private:
     udp::socket socket_;
-    ``std::`vector`<udp::endpoint>` endpoints_;
+    std::vector<udp::endpoint> endpoints_;
 };
 
 int main() {
@@ -439,20 +432,19 @@ int main() {
         RTPClient client(io_context, "localhost", 5004);
         client.send_rtp_packet("Sample RTP data");
     } catch (const std::exception& e) {
-        std::cerr `<< "Exception: " << e.what() << std::endl;
+        std::cerr << "Exception: " << e.what() << std::endl;
     }
 }
 
 ```
-
 #### 2.4. RTCP 异步服务端和客户端
 RTCP 用于反馈 RTP 流的质量。它使用 UDP 来传输控制信息。
 
 **RTCP 服务端：**
 
 ```cpp
-#include <boost/asio.hpp>`
-#include `<iostream>`
+#include <boost/asio.hpp>
+#include <iostream>
 
 using boost::asio::ip::udp;
 
@@ -475,12 +467,12 @@ private:
     }
 
     void handle_receive(std::size_t bytes_received) {
-        std::cout `<< "Received RTCP packet of size " << bytes_received << " bytes" << std::endl;
+        std::cout << "Received RTCP packet of size " << bytes_received << " bytes" << std::endl;
     }
 
     udp::socket socket_;
     udp::endpoint remote_endpoint_;
-`std::array<char, 1024>`recv_buffer_;
+std::array<char, 1024>recv_buffer_;
 };
 
 int main() {
@@ -489,17 +481,16 @@ int main() {
         RTCPServer server(io_context, 5005); // Example RTCP port
         io_context.run();
     } catch (const std::exception& e) {
-        std::cerr `<< "Exception: " << e.what() << std::endl;
+        std::cerr << "Exception: " << e.what() << std::endl;
     }
 }
 ```
-
 **RTCP 客户端：**
 
 ```cpp
-#include <boost/asio.hpp>`
-#include `<iostream>`
-#include `<array>`
+#include <boost/asio.hpp>
+#include <iostream>
+#include <array>
 
 using boost::asio::ip::udp;
 
@@ -523,7 +514,7 @@ public:
     void send_rtcp_packet() {
         // Create RTCP Sender Report (SR) Packet
         RTCPHeader header = { 2, 0, 0, 200, 7 }; // Example SR packet
-        `std::`array`<char, 1500>` packet;
+        std::array<char, 1500> packet;
         std::memcpy(packet.data(), &header, sizeof(RTCPHeader));
 
         // Add SR data (timestamp, packet count, etc.)
@@ -534,7 +525,7 @@ public:
 
 private:
     udp::socket socket_;
-    ``std::`vector`<udp::endpoint>` endpoints_;
+    std::vector<udp::endpoint> endpoints_;
 };
 
 int main() {

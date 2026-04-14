@@ -46,19 +46,18 @@ TIPC（Transparent Inter-Process Communication）是 Linux 系统上用于分布
 ```bash
 apt-get install libtipc-dev
 ```
-
 #### 4. 示例：TIPC 客户端和服务器
 ##### 4.1. TIPC 服务器
 这个服务器将监听一个端口，等待来自客户端的消息，并返回一个响应。
 
 ```c
-#include `<stdio.h>`
-#include `<stdlib.h>`
-#include `<string.h>`
-#include `<unistd.h>`
-#include `<tipc/socket.h>`
-#include `<sys/types.h>`
-#include `<sys/socket.h>`
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <unistd.h>
+#include <tipc/socket.h>
+#include <sys/types.h>
+#include <sys/socket.h>
 
 #define SERVER_PORT 4321
 #define SERVER_NODE 1  // 假设服务器节点为1
@@ -116,18 +115,17 @@ int main() {
     return 0;
 }
 ```
-
 ##### 4.2. TIPC 客户端
 客户端将连接到服务器，发送一个消息，并接收服务器的响应。
 
 ```c
-#include `<stdio.h>`
-#include `<stdlib.h>`
-#include `<string.h>`
-#include `<unistd.h>`
-#include `<tipc/socket.h>`
-#include `<sys/types.h>`
-#include `<sys/socket.h>`
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <unistd.h>
+#include <tipc/socket.h>
+#include <sys/types.h>
+#include <sys/socket.h>
 
 #define SERVER_PORT 4321
 #define SERVER_NODE 1  // 假设服务器节点为1
@@ -182,7 +180,6 @@ int main() {
     return 0;
 }
 ```
-
 #### 5. 译和运行代码
 首先，确保你的 Linux 系统支持 TIPC，并且已经加载了 TIPC 协议模块。
 
@@ -192,7 +189,6 @@ int main() {
 gcc -o tipc_server tipc_server.c -ltipc
 gcc -o tipc_client tipc_client.c -ltipc
 ```
-
 1. **运行 TIPC 服务器：**
 
 在一台机器上运行 TIPC 服务器，使用指定的节点号和端口。
@@ -200,7 +196,6 @@ gcc -o tipc_client tipc_client.c -ltipc
 ```c
 sudo ./tipc_server
 ```
-
 1. **运行 TIPC 客户端：**
 
 在同一台机器或另一台机器上，运行 TIPC 客户端并发送消息。
@@ -208,7 +203,6 @@ sudo ./tipc_server
 ```c
 ./tipc_client
 ```
-
 #### 6. 重要注意事项
 + **节点编号**：TIPC 使用节点编号来区分不同机器。上面的示例中假设节点号是 `1`。如果你在多台机器上运行，你需要确保每台机器上的 TIPC 节点号不同。
 + **TIPC 配置**：你需要确保内核支持 TIPC，并且已经启用 TIPC 协议。你可以检查和启用 TIPC 协议：

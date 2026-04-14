@@ -36,17 +36,17 @@ SFINAE，这名字听着就让人头大。简单来说，它是一种利用模�
 ##### 1.8.1. SFINAE的常见用法
 1. `**std::enable_if**`
 
-这是SFINAE最常用的工具。``std::`enable_if`&lt;condition, T>`::type` 只有当 `condition` 为真时，才会定义一个名为 `type` 的类型别名，否则不会定义。我们可以利用这个特性来控制模板的启用与禁用。
+这是 SFINAE 最常用的工具。`std::enable_if<condition, T>::type` 只有当 `condition` 为真时，才会定义一个名为 `type` 的类型别名，否则不会定义。我们可以利用这个特性来控制模板的启用与禁用。
 
-```plain
-template `<typename T, typename =`std::enable_if_t<`std::is_integral_v<T>`>>
+```cpp
+template <typename T, typename =std::enable_if_t<std::is_integral_v<T>>>
 void process(T value) {
-    std::cout `<< "Processing an integer: " << value << std::endl;
+    std::cout << "Processing an integer: " << value << std::endl;
 }
  
-template <typename T, typename =`std::enable_if_t<`std::is_floating_point_v<T>`>>
+template <typename T, typename =std::enable_if_t<std::is_floating_point_v<T>>>
 void process(T value) {
-    std::cout `<< "Processing a float: " << value << std::endl;
+    std::cout << "Processing a float: " << value << std::endl;
 }
  
 int main() {
@@ -56,26 +56,25 @@ int main() {
     return 0;
 }
 ```
-
 在这个例子中，我们使用了 `std::enable_if_t` 来限制 `process` 函数的模板参数类型。第一个 `process` 函数只接受整型参数，第二个 `process` 函数只接受浮点型参数。如果传入其他类型的参数，编译器会因为找不到匹配的重载而报错。
 
 1. `**std::void_t**`
 
 `std::void_t` 可以用来检测某个类型是否具有特定的成员。
 
-```plain
-template <typename T>`
-using has_size_type = `std::`void_t`<typename T::size_type>`;
+```cpp
+template <typename T>
+using has_size_type = std::void_t<typename T::size_type>;
  
-template `<typename T, typename = `has_size_type<T>`>
+template <typename T, typename = has_size_type<T>>
 bool hasSize(const T& obj) {
-    std::cout `<< "Type has size_type" << std::endl;
+    std::cout << "Type has size_type" << std::endl;
     return true;
 }
  
-template <typename T>`
-bool hasSize(const T& obj, `std::`enable_if_t`<!`std::is_void_v<has_size_type<T>`>, std::nullptr_t> = nullptr) {
-    std::cout `<< "Type does not have size_type" << std::endl;
+template <typename T>
+bool hasSize(const T& obj, std::enable_if_t<!std::is_void_v<has_size_type<T>>, std::nullptr_t> = nullptr) {
+    std::cout << "Type does not have size_type" << std::endl;
     return false;
 }
  
@@ -95,7 +94,6 @@ int main() {
     return 0;
 }
 ```
-
 在这个例子中，我们使用 `std::void_t` 来检测类型 `T` 是否具有 `size_type` 成员。如果类型 `T` 具有 `size_type` 成员，`has_size_type<T>` 将会是一个有效的类型别名，否则将会导致替换失败，从而选择第二个 `hasSize` 函数重载。
 
 ##### 1.8.2. SFINAE的缺点
@@ -111,31 +109,30 @@ C++20 Concepts 的出现，就是为了解决SFINAE的这些问题。Concepts �
 ##### 1.9.1. Concept 的定义
 Concept 本质上是一个返回 `bool` 类型的编译期谓词。我们可以使用 `requires` 关键字来定义 Concept。
 
-```plain
-template `<typename T>`
-concept Integral = `std::`is_integral_v`<T>`;
+```cpp
+template <typename T>
+concept Integral = std::is_integral_v<T>;
  
-template `<typename T>`
+template <typename T>
 concept Addable = requires(T a, T b) {
     a + b; // 表达式必须合法
     {
         a + b
-    } -> `std::`convertible_to`<T>`; // 表达式结果必须可以转换为T类型
+    } -> std::convertible_to<T>; // 表达式结果必须可以转换为T类型
 };
 ```
-
 第一个 Concept `Integral` 检查类型 `T` 是否为整型。第二个 Concept `Addable` 检查类型 `T` 是否支持加法运算，并且加法运算的结果可以转换为 `T` 类型。
 
 ##### 1.9.2. Concept 的使用
 我们可以在模板参数列表中使用 Concept 来约束模板参数的类型。
 
-```plain
-template `<Integral T>`
+```cpp
+template <Integral T>
 void process(T value) {
-    std::cout `<< "Processing an integer: " << value << std::endl;
+    std::cout << "Processing an integer: " << value << std::endl;
 }
  
-template <Addable T>`
+template <Addable T>
 T add(T a, T b) {
     return a + b;
 }
@@ -144,36 +141,35 @@ int main() {
     process(10);   // OK
     // process(3.14); // 编译错误，因为 double 不是 Integral
  
-    std::cout `<< add(5, 3) << std::endl;     // 输出：8
+    std::cout << add(5, 3) << std::endl;     // 输出：8
     std::cout << add(2.5, 1.5) << std::endl; // 输出：4
     // std::cout << add(std::string("hello"), std::string(" world")) << std::endl; // 编译错误，因为 std::string 不满足 Addable
     return 0;
 }
 ```
-
 在这个例子中，我们使用 `Integral` Concept 来约束 `process` 函数的模板参数类型，使用 `Addable` Concept 来约束 `add` 函数的模板参数类型。如果传入不满足约束的类型，编译器会给出清晰的错误信息。
 
 ##### 1.9.3. `requires` 子句
 除了在模板参数列表中使用 Concept 之外，我们还可以使用 `requires` 子句来约束模板。
 
-```plain
-template <typename T>`
-auto process(T value) -> `std::`enable_if_t`<`Integral<T>`> {
-    std::cout `<< "Processing an integer: " << value << std::endl;
+```cpp
+template <typename T>
+auto process(T value) -> std::enable_if_t<Integral<T>> {
+    std::cout << "Processing an integer: " << value << std::endl;
 }
  
-template <typename T>`
-auto add(T a, T b) -> `std::`enable_if_t`<`Addable<T>`, T> {
+template <typename T>
+auto add(T a, T b) -> std::enable_if_t<Addable<T>, T> {
     return a + b;
 }
  
-template `<typename T>`
-auto process(T value) requires `Integral`<T>` {
-    std::cout `<< "Processing an integer: " << value << std::endl;
+template <typename T>
+auto process(T value) requires Integral<T> {
+    std::cout << "Processing an integer: " << value << std::endl;
 }
  
-template <typename T>`
-auto add(T a, T b) requires `Addable`<T>` {
+template <typename T>
+auto add(T a, T b) requires Addable<T> {
     return a + b;
 }
  
@@ -181,13 +177,12 @@ int main() {
     process(10);   // OK
     // process(3.14); // 编译错误，因为 double 不是 Integral
  
-    std::cout `<< add(5, 3) << std::endl;     // 输出：8
+    std::cout << add(5, 3) << std::endl;     // 输出：8
     std::cout << add(2.5, 1.5) << std::endl; // 输出：4
     // std::cout << add(std::string("hello"), std::string(" world")) << std::endl; // 编译错误，因为 std::string 不满足 Addable
     return 0;
 }
 ```
-
 `requires` 子句可以放在函数声明的末尾，也可以放在函数体的开头。它的作用是检查模板参数是否满足指定的 Concept。如果模板参数不满足 Concept，编译器会给出清晰的错误信息。
 
 #### 1.10. Concepts vs. SFINAE：一场美丽的邂逅
@@ -200,23 +195,23 @@ int main() {
 ##### 1.10.1. 示例：使用 Concepts 改进 SFINAE 代码
 让我们用 Concepts 来改进之前使用 SFINAE 实现的 `hasSize` 函数。
 
-```plain
-template <typename T>`
+```cpp
+template <typename T>
 concept HasSizeType = requires(T obj) {
     typename T::size_type;
 };
  
-template `<typename T>`
-    requires `HasSizeType`<T>`
+template <typename T>
+    requires HasSizeType<T>
 bool hasSize(const T& obj) {
-    std::cout `<< "Type has size_type" << std::endl;
+    std::cout << "Type has size_type" << std::endl;
     return true;
 }
  
-template <typename T>`
-    requires (!`HasSizeType`<T>`)
+template <typename T>
+    requires (!HasSizeType<T>)
 bool hasSize(const T& obj) {
-    std::cout `<< "Type does not have size_type" << std::endl;
+    std::cout << "Type does not have size_type" << std::endl;
     return false;
 }
  
@@ -255,7 +250,6 @@ int main() {
 
 >` 来自: [告别SFINAE？C++20 Concepts模板元编程进阶指南！ - WEBKT](https://www.webkt.com/article/9316)
 >
-
 
 
 

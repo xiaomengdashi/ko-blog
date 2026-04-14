@@ -32,7 +32,7 @@ C语言版本基于POSIX线程库（pthread）实现，适合理解底层原理�
 ##### 3.1.1. 任务结构体
 每个任务包含函数指针、参数、返回值和状态标记，通过互斥锁保护结果访问：
 
-```plain
+```cpp
 struct Task {
     void *ret;  // 函数返回值(堆内存)
     void* (*func)(void *arg); // 任务函数指针
@@ -41,11 +41,10 @@ struct Task {
     pthread_mutex_t mutex;// 保护结果的互斥锁
 };
 ```
-
 ##### 3.1.2. 线程池结构体
 管理工作线程、任务队列和同步机制：
 
-```plain
+```cpp
 struct ThreadPool {
     bool running;   // 线程池运行状态
     uint32_t worker_count;  // 工作线程数量
@@ -56,11 +55,10 @@ struct ThreadPool {
     pthread_cond_t tasks_not_full;  // 队列非满
 };
 ```
-
 ##### 3.1.3. 任务队列（Queue）
 采用双向链表实现，支持线程安全的入队/出队：
 
-```plain
+```cpp
 // 队列结构体
 struct Queue {
     Node* front;  // 队头
@@ -75,12 +73,11 @@ struct Node {
     Node *next;  // 指向下一个节点的指针
 };
 ```
-
 #### 3.2. 核心函数实现
 ##### 3.2.1. 线程池创建
 初始化线程池，创建指定数量的工作线程：
 
-```plain
+```cpp
 ThreadPool *threadpool_create(const uint32_t workers_count, const uint32_t tasks_capacity) {
     ThreadPool *pool = (ThreadPool *)malloc(sizeof(ThreadPool));
     if (pool == NULL) {
@@ -114,11 +111,10 @@ ThreadPool *threadpool_create(const uint32_t workers_count, const uint32_t tasks
     return pool;
 }
 ```
-
 ##### 3.2.2. 工作线程逻辑
 工作线程的核心循环：等待任务→执行任务→更新结果：
 
-```plain
+```cpp
 void *threadpool_worker_thread(void *arg) {
     assert(arg != NULL);
     ThreadPool *pool = (ThreadPool *)arg;
@@ -146,11 +142,10 @@ void *threadpool_worker_thread(void *arg) {
     return NULL;
 }
 ```
-
 ##### 3.2.3. 任务添加
 主线程向队列添加任务，满队列时阻塞等待：
 
-```plain
+```cpp
 void threadpool_push(ThreadPool *pool, Task *task) {
     pthread_mutex_lock(&pool->mutex);
     
@@ -164,11 +159,10 @@ void threadpool_push(ThreadPool *pool, Task *task) {
     pthread_cond_signal(&pool->tasks_not_empty);  // 唤醒工作线程
 }
 ```
-
 ##### 3.2.4. 线程池销毁
 安全停止线程池，回收资源：
 
-```plain
+```cpp
 void threadpool_destroy(ThreadPool *pool) {
     if (pool == NULL) {
         return;
@@ -191,11 +185,10 @@ void threadpool_destroy(ThreadPool *pool) {
     free(pool);
 }
 ```
-
 #### 3.3. 测试示例
 定义三种典型任务（无参无返回、无参有返回、有参有返回），验证线程池功能（Results 和 Args 是用于接收线程返回值和线程参数的结构体）：
 
-```plain
+```cpp
 // 1. 无参无返回
 void *test1(void *arg) {
     printf("test1: tid = %lu\n", pthread_self());
@@ -221,10 +214,9 @@ void *test3(void *arg) {
     return results;
 }
 ```
-
 主线程添加任务并等待结果：
 
-```plain
+```cpp
 int main(int argc, char *argv[]) {
     ThreadPool *pool = threadpool_create(4, 10);
     Task task1 = {NULL, test1, NULL, false};
@@ -284,7 +276,6 @@ int main(int argc, char *argv[]) {
     return 0;
 }
 ```
-
 ### 4. C++实现线程池
 C++版本利用STL和C++新特性，相比C语言版本代码简洁很多，支持泛型任务和返回值获取。
 
@@ -292,29 +283,28 @@ C++版本利用STL和C++新特性，相比C语言版本代码简洁很多，支�
 ##### 4.1.1. 线程池类
 使用`std::vector<std::thread>`管理工作线程，`std::queue<std::function<void()>>`存储任务，通过`std::future`获取任务返回值：
 
-```plain
+```cpp
 class ThreadPool {
 public:
     ThreadPool(size_t threads);
     ~ThreadPool();
     // 向线程池添加任务，返回一个future对象用于获取结果
-    `template`&lt;class F, class... Args>`
+    template<class F, class... Args>
     auto enqueue(F&& f, Args&&... args) 
-        -> `std::`future`&lt;typename`std::result_of<F(Args...)>`::type>;
+        -> std::future<typename std::result_of<F(Args...)>::type>;
 private:
-    ``std::`vector`<std::thread>` workers;            // 工作线程数组
-    std::queue`<`std::function<void()>`> tasks;     // 任务队列
+    std::vector<std::thread> workers;            // 工作线程数组
+    std::queue<std::function<void()>> tasks;     // 任务队列
     std::mutex mutex;                            // 用于保护任务队列的互斥锁
     std::condition_variable condition;           // 用于等待新任务的条件变量
     bool running;                                // 线程池是否运行中
 };
 ```
-
 #### 4.2. 核心函数实现
 ##### 4.2.1. 构造函数
 创建工作线程，每个线程循环等待任务：
 
-```plain
+```cpp
 // 构造函数：初始化线程池，创建指定数量的工作线程
 ThreadPool::ThreadPool(size_t threads) : running(true) {
     // 创建工作线程
@@ -323,9 +313,9 @@ ThreadPool::ThreadPool(size_t threads) : running(true) {
             [this] {
                 // 工作线程一直运行
                 while(true) {
-                    ``std::`function`&lt;void()>` task;
+                    std::function<void()> task;
                     {
-                        `std::`unique_lock`&lt;std::mutex>` lock(this->mutex);
+                        std::unique_lock<std::mutex> lock(this->mutex);
                         // 线程池运行中且任务队列为空时阻塞等待
                         this->condition.wait(lock,[this] { return !(this->running && this->tasks.empty()); });
                         // 如果线程池已停止且任务队列为空，则退出线程
@@ -343,28 +333,27 @@ ThreadPool::ThreadPool(size_t threads) : running(true) {
     }
 }
 ```
-
 ##### 4.2.2. 任务添加
 通过模板和完美转发支持任意类型的任务和参数，返回`std::future`用于获取结果：
 
-```plain
+```cpp
 //! 模板函数不支持先声明再定义
-`template`<typename F, typename... Args>`
+template<typename F, typename... Args>
 auto ThreadPool::enqueue(F&& f, Args&&... args) 
-    -> `std::`future`<typename`std::result_of&lt;F(Args...)>`::type> {
+    -> std::future<typename std::result_of<F(Args...)>::type> {
     // 推断任务返回值类型
-    using return_type = typename `std::`result_of`&lt;F(Args...)>`::type;
+    using return_type = typename std::result_of<F(Args...)>::type;
     // 打包任务以便同意调用不同类型任务
-    auto task = `std::`make_shared`&lt;`std::packaged_task<return_type()>`>(
-        std::bind(`std::`forward`<F>`(f), `std::`forward`<Args>`(args)...)
+    auto task = std::make_shared<std::packaged_task<return_type()>>(
+        std::bind(std::forward<F>(f), std::forward<Args>(args)...)
     );
     
     // 获取future对象
-    `std::`future`<return_type>` result = task->get_future();
+    std::future<return_type> result = task->get_future();
     
     {
         // 作用于结束自动解锁
-        `std::`unique_lock`<std::mutex>` lock(mutex);
+        std::unique_lock<std::mutex> lock(mutex);
         // 如果线程池已停止，不能添加新任务
         if(!running){
             throw std::runtime_error("enqueue on stopped ThreadPool");
@@ -378,14 +367,13 @@ auto ThreadPool::enqueue(F&& f, Args&&... args)
     return result;
 }
 ```
-
 ##### 4.2.3. 析构函数
 停止线程池并等待所有线程结束：
 
-```plain
+```cpp
 ThreadPool::~ThreadPool() {
     {
-        `std::`unique_lock`<std::mutex>` lock(mutex);
+        std::unique_lock<std::mutex> lock(mutex);
         running = false;
     }
     // 唤醒所有等待资源的工作线程
@@ -396,15 +384,14 @@ ThreadPool::~ThreadPool() {
     } 
 }
 ```
-
 #### 4.3. 测试示例
 C++版本支持直接传递函数和参数，通过`std::future`非阻塞获取结果：
 
-```plain
+```cpp
 // 1. 无参无返回
 void test1() {
     std::ostringstream oss;
-    oss `<< "test1: tid = " << std::this_thread::get_id() << "\n";
+    oss << "test1: tid = " << std::this_thread::get_id() << "\n";
     std::cout << oss.str();
     std::this_thread::sleep_for(std::chrono::seconds(1));
 }
@@ -426,19 +413,18 @@ int test3(int a, int b) {
     return a + b;
 }
 ```
-
 主线程使用示例：
 
-```plain
+```cpp
 int main() {
     ThreadPool pool(4);
-`std::vector&lt;`std::future<int>`> results;
-    for (int i = 0; i &lt; 10; ++i) {
+std::vector<std::future<int>> results;
+    for (int i = 0; i < 10; ++i) {
         if(i % 3 == 0) pool.enqueue(test1);
         else if(i % 3 == 1) results.emplace_back(pool.enqueue(test2));
         else results.emplace_back(pool.enqueue(test3, i, i * 2));
     }
-    ``std::`vector`<bool>` completed(results.size(), false);
+    std::vector<bool> completed(results.size(), false);
     int remaining = results.size();
     // 或者创建新的线程监控也可以
     while (remaining > 0) {
@@ -449,7 +435,7 @@ int main() {
             if (status == std::future_status::ready) {
                 auto res = results[i].get();    //! 先把future的值取出来，防止与锁冲突导致死锁
                 std::ostringstream oss;
-                oss `<< "task" << i << " result: " << res << std::endl;
+                oss << "task" << i << " result: " << res << std::endl;
                 std::cout << oss.str();
                 completed[i] = true;
                 remaining--;

@@ -117,7 +117,6 @@ Func(); // 这里Func函数抛异常导致 delete[] p3未执行，p3没被释放
 delete[] p3;
 }
 ```
-
 ##### 7.2.2. 7.2.2内存泄漏的分类
 + **堆内存泄露（Heap leak）**：
 + 堆内存指的是程序执行中依据须要分配通过malloc / calloc / realloc / new等从堆中分配的一块内存，用完后必须通过调用相应的 free或者delete 删掉。假设程序的设计错误导致这部分内存没有被释放，那么以后这部分空间将无法再被使用，就会产生Heap Leak
@@ -132,12 +131,12 @@ delete[] p3;
 + 因为32位的环境下虚拟地址空间的大小只有4g，而光内核空间就需要1g，所以不可能申请得到，只有在64位的环境下才可以实现，只需要把执行环境改为64x即可
 
 ```rust
-#include `<iostream>`
+#include <iostream>
     using namespace std;
 int main()
     {
         void* p = new char[0xfffffffful];
-cout `<< "new:" << p << endl;
+cout << "new:" << p << endl;
 return 0;
 }
 ```

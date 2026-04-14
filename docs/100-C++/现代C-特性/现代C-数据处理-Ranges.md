@@ -26,8 +26,8 @@ C++20 Ranges是一个全新的标准库组件，它提供了一种更加现代�
 ### 2. 用使用模板
 #### 2.1. 基本语法模板
 ```cpp
-#include `<ranges>`
-#include `<algorithm>`
+#include <ranges>
+#include <algorithm>
 
 // 1. 基本视图创建
 auto view = container | std::views::view_name(参数);
@@ -47,7 +47,6 @@ auto processed = source_range
     | std::views::transform(function)
     | std::views::take(n);
 ```
-
 #### 2.2. 常用视图模板
 ```cpp
 // 过滤
@@ -68,17 +67,16 @@ auto reversed = container | std::views::reverse;
 // 枚举（带索引）
 auto enumerated = container | std::views::enumerate;
 ```
-
 ---
 
 ### 3. 具体使用示例
 #### 3.1. 基本视图操作
 ```cpp
-#include `<ranges>`
-#include `<vector>`
-#include `<iostream>`
+#include <ranges>
+#include <vector>
+#include <iostream>
 
-``std::`vector`<int>` numbers = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
+std::vector<int> numbers = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
 
 // 过滤偶数
 auto evens = numbers | std::views::filter([](int x) { return x % 2 == 0; });
@@ -89,7 +87,6 @@ auto squares = numbers | std::views::transform([](int x) { return x * x; });
 // 取前5个
 auto first_five = numbers | std::views::take(5);
 ```
-
 #### 3.2. 管道组合操作
 ```cpp
 // 组合多个操作：过滤偶数 -> 平方 -> 取前3个
@@ -100,10 +97,9 @@ auto result = numbers
 
 // 输出结果
 for (int value : result) {
-    std::cout `<< value << " ";  // 输出: 4 16 36
+    std::cout << value << " ";  // 输出: 4 16 36
 }
 ```
-
 #### 3.3. 算法使用
 ```cpp
 // 查找
@@ -113,29 +109,28 @@ auto it = std::ranges::find(numbers, 5);
 std::ranges::sort(numbers);
 
 // 计数
-auto count = std::ranges::count_if(numbers, [](int x) { return x >` 5; });
+auto count = std::ranges::count_if(numbers, [](int x) { return x > 5; });
 ```
-
 ---
 
 ### 4. 完整代码示例
 #### 4.1. 示例1：数据处理管道
 ```cpp
-#include `<ranges>`
-#include `<vector>`
-#include `<string>`
-#include `<iostream>`
-#include `<algorithm>`
+#include <ranges>
+#include <vector>
+#include <string>
+#include <iostream>
+#include <algorithm>
 
 int main() {
     // 原始数据
-    ``std::`vector`<std::string>` words = {
+    std::vector<std::string> words = {
         "hello", "world", "cpp", "ranges", "are", "awesome", "programming", "fun"
     };
     
-    std::cout `<< "=== 数据处理管道示例 ===\n";
+    std::cout << "=== 数据处理管道示例 ===\n";
     
-    // 管道操作：过滤长度>`3的单词 -> 转大写 -> 取前4个
+    // 管道操作：过滤长度>3的单词 -> 转大写 -> 取前4个
     auto processed = words
         | std::views::filter([](const std::string& s) { return s.length() > 3; })
         | std::views::transform([](const std::string& s) {
@@ -145,7 +140,7 @@ int main() {
         })
         | std::views::take(4);
     
-    std::cout `<< "处理后的单词: ";
+    std::cout << "处理后的单词: ";
     for (const auto& word : processed) {
         std::cout << word << " ";
     }
@@ -154,17 +149,16 @@ int main() {
     return 0;
 }
 ```
-
 #### 4.2. 示例2：数值计算和统计
 ```cpp
-#include <ranges>`
-#include `<vector>`
-#include `<numeric>`
-#include `<iostream>`
-#include `<algorithm>`
+#include <ranges>
+#include <vector>
+#include <numeric>
+#include <iostream>
+#include <algorithm>
 
 int main() {
-    std::cout `<< "=== 数值计算示例 ===\n";
+    std::cout << "=== 数值计算示例 ===\n";
     
     // 生成数据
     auto numbers = std::views::iota(1, 21);  // 1到20的数字
@@ -175,10 +169,10 @@ int main() {
         | std::views::filter([](int x) { return x % 2 == 0; })
         | std::views::transform([](int x) { return x * x; }),
         0,
-        std::plus<>`{}
+        std::plus<>{}
     );
     
-    std::cout `<< "偶数平方和: " << even_squares_sum << "\n";
+    std::cout << "偶数平方和: " << even_squares_sum << "\n";
     
     // 示例2：找出所有质数
     auto is_prime = [](int n) {
@@ -198,13 +192,13 @@ int main() {
     std::cout << "\n";
     
     // 示例3：分组处理
-`std::vector<int>`data = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
+std::vector<int>data = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
     
     // 按奇偶分组处理
     auto odds = data | std::views::filter([](int x) { return x % 2 == 1; });
     auto evens = data | std::views::filter([](int x) { return x % 2 == 0; });
     
-    std::cout `<< "奇数: ";
+    std::cout << "奇数: ";
     for (int odd : odds) {
         std::cout << odd << " ";
     }
@@ -219,14 +213,13 @@ int main() {
     return 0;
 }
 ```
-
 #### 4.3. 示例3：复杂数据结构处理
 ```cpp
-#include <ranges>`
-#include `<vector>`
-#include `<string>`
-#include `<iostream>`
-#include `<algorithm>`
+#include <ranges>
+#include <vector>
+#include <string>
+#include <iostream>
+#include <algorithm>
 
 struct Person {
     std::string name;
@@ -234,7 +227,7 @@ struct Person {
     std::string city;
     
     // 用于输出
-    friend std::ostream& operator`<<(std::ostream& os, const Person& p) {
+    friend std::ostream& operator<<(std::ostream& os, const Person& p) {
         return os << p.name << "(" << p.age << ", " << p.city << ")";
     }
 };
@@ -243,7 +236,7 @@ int main() {
     std::cout << "=== 复杂数据结构处理示例 ===\n";
     
     // 原始数据
-`std::vector<Person>`people = {
+std::vector<Person>people = {
         {"Alice", 25, "New York"},
         {"Bob", 30, "London"},
         {"Charlie", 35, "Tokyo"},
@@ -253,7 +246,7 @@ int main() {
     };
     
     // 示例1：查找特定城市的年轻人
-    std::cout `<< "纽约的30岁以下人员:\n";
+    std::cout << "纽约的30岁以下人员:\n";
     auto young_ny = people
         | std::views::filter([](const Person& p) { 
             return p.city == "New York" && p.age < 30; 
@@ -267,14 +260,14 @@ int main() {
     std::cout << "\n按年龄排序的姓名:\n";
     
     // 创建副本用于排序
-`std::vector<Person>`sorted_people = people;
+std::vector<Person>sorted_people = people;
     std::ranges::sort(sorted_people, {}, &Person::age);
     
     auto names = sorted_people
         | std::views::transform([](const Person& p) { return p.name; });
     
     for (const auto& name : names) {
-        std::cout `<< "  " << name << "\n";
+        std::cout << "  " << name << "\n";
     }
     
     // 示例3：统计信息
@@ -289,20 +282,19 @@ int main() {
     
     // 计算平均年龄
     auto ages = people | std::views::transform(&Person::age);
-    auto total_age = std::ranges::fold_left(ages, 0, std::plus<>`{});
-    double average_age = `static_cast`<double>`(total_age) / people.size();
+    auto total_age = std::ranges::fold_left(ages, 0, std::plus<>{});
+    double average_age = static_cast<double>(total_age) / people.size();
     
-    std::cout `<< "平均年龄: " << average_age << "\n\n";
+    std::cout << "平均年龄: " << average_age << "\n\n";
     
     return 0;
 }
 ```
-
 #### 4.4. 示例4：惰性求值和无限序列
 ```cpp
-#include <ranges>`
-#include `<iostream>`
-#include `<vector>`
+#include <ranges>
+#include <iostream>
+#include <vector>
 
 int main() {
     std::cout << "=== 惰性求值和无限序列示例 ===\n";
@@ -373,16 +365,16 @@ int main() {
 #### 5.1. 视图(Views)表格
 | 视图 | 功能 | 示例 |
 | --- | --- | --- |
-| `filter` | 过滤元素 | `data | std::views::filter(predicate)` |
-| `transform` | 变换元素 | `data | std::views::transform(func)` |
-| `take` | 取前N个 | `data | std::views::take(5)` |
-| `drop` | 跳过前N个 | `data | std::views::drop(3)` |
-| `reverse` | 反转 | `data | std::views::reverse` |
-| `enumerate` | 添加索引 | `data | std::views::enumerate` |
+| `filter` | 过滤元素 | `data \| std::views::filter(predicate)` |
+| `transform` | 变换元素 | `data \| std::views::transform(func)` |
+| `take` | 取前N个 | `data \| std::views::take(5)` |
+| `drop` | 跳过前N个 | `data \| std::views::drop(3)` |
+| `reverse` | 反转 | `data \| std::views::reverse` |
+| `enumerate` | 添加索引 | `data \| std::views::enumerate` |
 | `zip` | 组合多个范围 | `std::views::zip(range1, range2)` |
 | `iota` | 生成序列 | `std::views::iota(1, 10)` |
-| `split` | 分割字符串 | `str | std::views::split(' ')` |
-| `join` | 连接范围 | `ranges | std::views::join` |
+| `split` | 分割字符串 | `str \| std::views::split(' ')` |
+| `join` | 连接范围 | `ranges \| std::views::join` |
 
 
 #### 5.2. 算法(Algorithms)表格

@@ -45,8 +45,8 @@ slug: /C++/C++并发编程/并发/C-异步编程基础入门
 #### 2.2. 常用接口的使用方法
 ```cpp
 // 创建promise和future
-`std::`promise`<int>` prom;
-`std::`future`<int>` fut = prom.get_future();
+std::promise<int> prom;
+std::future<int> fut = prom.get_future();
 
 // 在promise中设置值
 prom.set_value(42);
@@ -61,48 +61,47 @@ if (fut.wait_for(std::chrono::seconds(0)) == std::future_status::ready) {
 
 }
 ```
-
 #### 2.3. 完整代码示例
 ```cpp
-#include `<chrono>`
-#include `<future>`
-#include `<iostream>`
-#include `<mutex>`
-#include `<thread>`
+#include <chrono>
+#include <future>
+#include <iostream>
+#include <mutex>
+#include <thread>
 
 int main() {
-  `std::`promise`<int>` mypromise;
+  std::promise<int> mypromise;
   std::mutex mtx;
   std::thread t1([&]() {
     {
-      `std::`lock_guard`<std::mutex>` lock(mtx);
-      std::cout `<< "线程: " << std::this_thread::get_id()
+      std::lock_guard<std::mutex> lock(mtx);
+      std::cout << "线程: " << std::this_thread::get_id()
                 << " 正在执行任务.....\n";
     }
     std::this_thread::sleep_for(std::chrono::seconds(1));
     mypromise.set_value(100);
     {
-`std::lock_guard<std::mutex>`lock(mtx);
-      std::cout `<< "线程: " << std::this_thread::get_id()
+std::lock_guard<std::mutex>lock(mtx);
+      std::cout << "线程: " << std::this_thread::get_id()
                 << " promise设置完毕\n";
     }
   });
   std::thread t2([&]() {
     {
-`std::lock_guard<std::mutex>`lock(mtx);
-      std::cout `<< "线程: " << std::this_thread::get_id()
+std::lock_guard<std::mutex>lock(mtx);
+      std::cout << "线程: " << std::this_thread::get_id()
                 << " 正在执行任务.....\n";
     }
     std::this_thread::sleep_for(std::chrono::seconds(5));
     {
-`std::lock_guard<std::mutex>`lock(mtx);
-      std::cout `<< "线程: " << std::this_thread::get_id()
+std::lock_guard<std::mutex>lock(mtx);
+      std::cout << "线程: " << std::this_thread::get_id()
                 << " 准备开始获取结果.....\n";
     }
     auto res = mypromise.get_future().get();
     {
-`std::lock_guard<std::mutex>`lock(mtx);
-      std::cout `<< "线程: " << std::this_thread::get_id()
+std::lock_guard<std::mutex>lock(mtx);
+      std::cout << "线程: " << std::this_thread::get_id()
                 << " 获取到promise: " << res << std::endl;
     }
   });
@@ -112,7 +111,6 @@ int main() {
   return 0;
 }
 ```
-
 ---
 
 ### 3. std::packaged_task - std::future
@@ -132,12 +130,12 @@ int main() {
 #### 3.2. 常用接口的使用方法
 ```cpp
 // 创建packaged_task
-`std::packaged_task<int(int, int)>`task([](int a, int b) {
+std::packaged_task<int(int, int)>task([](int a, int b) {
     return a + b;
 });
 
 // 获取future
-`std::`future`<int>` fut = task.get_future();
+std::future<int> fut = task.get_future();
 
 // 执行任务
 task(3, 4);
@@ -145,27 +143,26 @@ task(3, 4);
 // 获取结果
 int result = fut.get();  // result = 7
 ```
-
 #### 3.3. 完整代码示例
 ```cpp
-#include `<chrono>`
-#include `<future>`
-#include `<iostream>`
-#include `<mutex>`
-#include `<thread>`
+#include <chrono>
+#include <future>
+#include <iostream>
+#include <mutex>
+#include <thread>
 int main() {
   std::mutex mtx;
   // 创建异步任务包装器
-  `std::`packaged_task`<int()>` task([&]() {
+  std::packaged_task<int()> task([&]() {
     {
-      `std::`lock_guard`<std::mutex>` lock(mtx);
-      std::cout `<< "子线程开始.....\n";
+      std::lock_guard<std::mutex> lock(mtx);
+      std::cout << "子线程开始.....\n";
     }
     int sum = 0;
     for (int i = 0; i < 1000; i++) sum += i;
     {
-`std::lock_guard<std::mutex>`lock(mtx);
-      std::cout `<< "子线程返回.....\n";
+std::lock_guard<std::mutex>lock(mtx);
+      std::cout << "子线程返回.....\n";
     }
     return sum;
   });
@@ -184,7 +181,6 @@ int main() {
   return 0;
 }
 ```
-
 ---
 
 ### 4. std::async - std::future
@@ -220,26 +216,25 @@ auto fut2 = std::async(std::launch::async, [](int x) {
 int result1 = fut1.get();
 int result2 = fut2.get();
 ```
-
 #### 4.3. 完整代码示例
 ```cpp
-#include <chrono>`
-#include `<future>`
-#include `<iostream>`
-#include `<mutex>`
-#include `<thread>`
+#include <chrono>
+#include <future>
+#include <iostream>
+#include <mutex>
+#include <thread>
 
 int main() {
   std::mutex mtx;
   auto f = std::async([&]() {
     {
-      `std::`lock_guard`<std::mutex>` lock(mtx);
-      std::cout `<< "子线程开始.....\n";
+      std::lock_guard<std::mutex> lock(mtx);
+      std::cout << "子线程开始.....\n";
     }
     int sum = 0;
     for (int i = 0; i < 1000; i++) sum += i;
     {
-`std::lock_guard<std::mutex>`lock(mtx);
+std::lock_guard<std::mutex>lock(mtx);
       std::cout << "子线程返回.....\n";
     }
     return sum;

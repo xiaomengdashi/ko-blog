@@ -5,15 +5,15 @@ slug: /C++/Boost深度剖析/Boost库介绍
 
 Boost 是一个广泛使用的 C++ 库，它为 C++ 提供了丰富的功能组件。以下是 Boost 库的分类和各类别的组件，并且会提供其简要作用。为了更清晰地呈现这些内容，下面以树状图的形式来展示 Boost 的组件分类及其功能。
 
-```plain
+```cpp
 Boost Library
 │
 ├── Core Libraries
 │   ├── Boost.Config          # 提供配置宏，帮助跨平台编程
 │   ├── Boost.TypeTraits      # 类型特征（如类型推断、类型分类等）
-│   ├── Boost.SmartPtrs       # 智能指针（如 `shared_ptr`、`weak_ptr`、`unique_ptr`）
-│   ├── Boost.Utility         # 提供各种实用功能（如 `swap`、`pair` 等）
-│   └── Boost.Optional        # 可选类型（类似 `std::optional`）
+│   ├── Boost.SmartPtrs       # 智能指针（如 shared_ptr、weak_ptr、unique_ptr）
+│   ├── Boost.Utility         # 提供各种实用功能（如 swap、pair 等）
+│   └── Boost.Optional        # 可选类型（类似 std::optional）
 │
 ├── Algorithm Libraries
 │   ├── Boost.Algorithm       # 提供各种常见算法（如查找、排序等）
@@ -21,7 +21,7 @@ Boost Library
 │   └── Boost.Sort            # 排序算法
 │
 ├── Data Structures and Containers
-│   ├── Boost.Container       # 高性能容器（如 `flat_map`、`flat_set` 等）
+│   ├── Boost.Container       # 高性能容器（如 flat_map、flat_set 等）
 │   ├── Boost.Intrusive       # 内嵌式容器（支持无动态内存分配的容器）
 │   └── Boost.MultiIndex      # 支持多重索引的容器
 │
@@ -78,8 +78,8 @@ Boost Library
 ├── C++11 and Beyond
 │   ├── Boost.Fusion           # 元编程库，支持 C++11 和 C++14
 │   ├── Boost.Hana            # C++ metaprogramming (C++14 / C++17)
-│   ├── Boost.Optional        # C++11 标准的 `std::optional` 替代
-│   ├── Boost.Variant         # C++17 标准 `std::variant` 替代
+│   ├── Boost.Optional        # C++11 标准的 std::optional 替代
+│   ├── Boost.Variant         # C++17 标准 std::variant 替代
 │   └── Boost.MPL             # C++模板元编程库
 │
 └── Miscellaneous

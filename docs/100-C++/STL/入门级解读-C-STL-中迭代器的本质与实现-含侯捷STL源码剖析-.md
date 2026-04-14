@@ -35,7 +35,6 @@ STL 根据操作能力，把迭代器分为五大类，每种都是前一种的�
 ```cpp
 Input < Forward < Bidirectional < RandomAccess
 ```
-
 侯捷提到：STL 的设计哲学是“最小需求设计”，算法根据最弱要求选择最小类型，然后在运行时通过模板 + traits 实现“能力分发”。
 
 ---
@@ -44,7 +43,7 @@ Input < Forward < Bidirectional < RandomAccess
 当我们写一个泛型算法时，并不知道传入的迭代器是啥类型。这时就靠 `iterator_traits` 这个结构体提取类型信息：
 
 ```cpp
-`template`<typename Iterator>`
+template<typename Iterator>
 struct iterator_traits {
     using iterator_category = typename Iterator::iterator_category;
     using value_type = typename Iterator::value_type;
@@ -52,13 +51,11 @@ struct iterator_traits {
     ...
 };
 ```
-
 这样就能在算法中写：
 
 ```cpp
-typename `iterator_traits`<Iter>`::iterator_category()
+typename iterator_traits<Iter>::iterator_category()
 ```
-
 来获得标签（如 `random_access_iterator_tag`），再通过函数重载进行调度。
 
 👉 侯捷称其为 “类型的标签分发器”。
@@ -70,9 +67,9 @@ typename `iterator_traits`<Iter>`::iterator_category()
 
 #### 4.1. 例：advance() 实现**
 ```cpp
-template `<typename InputIterator, typename Distance>`
+template <typename InputIterator, typename Distance>
 void advance(InputIterator& it, Distance n) {
-    _advance(it, n, `iterator_traits`<InputIterator>`::iterator_category());
+    _advance(it, n, iterator_traits<InputIterator>::iterator_category());
 }
 void _advance(InputIterator& it, Distance n, input_iterator_tag) {
     while (n--) ++it;
@@ -85,7 +82,6 @@ void _advance(RandomAccessIterator& it, Distance n, random_access_iterator_tag) 
     it += n;
 }
 ```
-
 这样就能根据 `it` 的类型自动调度最高效版本，而不需要用户干预。你不写 `if`，编译器帮你选最优路径。
 
 这就是**模板 + 类型标签**的魅力，侯捷称其为 STL 最经典技巧之一。
@@ -99,28 +95,25 @@ STL 提供了很多“迭代器适配器”，用于将普通容器包装为“�
 让你从容器尾部向前遍历。
 
 ```cpp
-`vector`<int>` v = {1,2,3,4};
+vector<int> v = {1,2,3,4};
 for (auto rit = v.rbegin(); rit != v.rend(); ++rit)
-    cout `<< *rit; // 输出 4 3 2 1
+    cout << *rit; // 输出 4 3 2 1
 ```
-
 它的 `base()` 实际指向正向迭代器的“后一位”，所以 `*rit` 实际是 `*(base() - 1)`。
 
 #### 5.2. 2）back_insert_iterator：尾部插入器**
 把赋值操作转成容器的 `push_back`：
 
 ```cpp
-`vector<int>` v;
+vector<int> v;
 auto it = back_inserter(v);
 *it = 1;  // 等价于 v.push_back(1);
 ```
-
 适合配合 `copy` 使用：
 
 ```cpp
 copy(src.begin(), src.end(), back_inserter(dest));
 ```
-
 #### 5.3. 3）insert_iterator：中间插入器**
 让插入发生在指定位置上：
 
@@ -128,14 +121,13 @@ copy(src.begin(), src.end(), back_inserter(dest));
 insert_iterator it(v, v.begin() + 3);
 *it = 99;  // 插入在第4位前
 ```
-
 ---
 
 ### 6. 六、源码中 __normal_iterator 的作用**
 侯捷特别分析了 `__normal_iterator`：STL 的 vector、string 的迭代器其实就是对原生指针加壳。
 
 ```cpp
-`template`<typename T>`
+template<typename T>
 class __normal_iterator {
     T* ptr;
 public:
@@ -145,7 +137,7 @@ public:
 };
 ```
 
-为什么不直接用裸指针？为了统一接口（traits支持、自定义功能等），让 ``vector`<int>`::iterator` 看起来也是一个类，而不仅仅是 `int*`。
+为什么不直接用裸指针？为了统一接口（traits 支持、自定义功能等），让 `vector<int>::iterator` 看起来也是一个类，而不仅仅是 `int*`。
 
 ---
 
@@ -179,7 +171,6 @@ public:
 
 > 来自: [入门级解读：C++ STL 中迭代器的本质与实现（含侯捷STL源码剖析）](https://mp.weixin.qq.com/s?src=11&timestamp=1756393217&ver=6202&signature=KFFYMvZoBAmASEvIazuku7jqXtPTwDNh4cwvB0WNu1qr1wJ1Ag8R*Q7gI*-WC9O0l5gYTcofdCmdPhbilzK4rLP-3arwrMDuYZp32LTp0yX-NfYY-6p2jejtrlg25Q9O&new=1)
 >
-
 
 
 

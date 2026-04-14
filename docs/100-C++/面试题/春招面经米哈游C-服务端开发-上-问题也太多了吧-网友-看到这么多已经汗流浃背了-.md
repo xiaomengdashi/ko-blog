@@ -40,9 +40,9 @@ https://www.nowcoder.com/feed/main/detail/7f28c235a0134b4a9be9fea52efe9551
 ##### 1.0.1. 情况一：模板匹配失败但可以回退到其它重载
 这是合法的，不算错误，只要编译器找到了其它可以匹配的函数模板或重载。
 
-```plain
-template `<typename T>`
-void func(T t) { std::cout `<< "Template version\n"; }
+```cpp
+template <typename T>
+void func(T t) { std::cout << "Template version\n"; }
 
 void func(int i) { std::cout << "Non-template version\n"; }
 
@@ -50,31 +50,28 @@ int main() {
     func(10); // 模板匹配 int，但也有非模板重载，选择非模板版本，合法！
 }
 ```
-
 ##### 1.0.2. 情况二：只有一个模板版本，但模板匹配失败
 这是 编译错误，因为编译器无法推导或替换模板参数，导致函数/类无法实例化。
 
-```plain
-template <typename T>`
+```cpp
+template <typename T>
 void func(T t1, T t2) { }
 
 int main() {
     func(1, 1.0); // T 同时要匹配 int 和 double，推导失败，编译错误
 }
 ```
-
 解决方法：显式指定模板类型或者使用两个模板参数：
 
-```plain
-template `<typename T1, typename T2>`
+```cpp
+template <typename T1, typename T2>
 void func(T1 t1, T2 t2); // OK
 ```
-
 ##### 1.0.3. 情况三：模板类中的某个方法匹配失败
 C++ 会在你实例化这个方法时才做替换（SFINAE：Substitution Failure Is Not An Error），这也是标准行为的一部分。
 
-```plain
-template `<typename T>`
+```cpp
+template <typename T>
 class Wrapper {
 public:
     void doSomething() {
@@ -83,11 +80,10 @@ public:
 };
 
 int main() {
-    `Wrapper`<int>` w; // 编译通过
+    Wrapper<int> w; // 编译通过
     // w.doSomething(); // 如果调用就报错
 }
 ```
-
 ### 2. 2、三种智能指针？怎么用？区别？**
 ##### 2.0.1. `std::unique_ptr`（唯一所有权指针）
 独占资源，不能被复制，只能移动（move）。
@@ -95,36 +91,33 @@ int main() {
 生命周期随指针对象结束而自动释放资源。
 
 ###### 2.0.1.1. 用法
-```plain
-#include `<memory>`
+```cpp
+#include <memory>
 
-``std::`unique_ptr`<int>` ptr1(new int(10));      // 创建方式1
-auto ptr2 = `std::`make_unique`<int>`(20);       // 推荐方式（C++14 起）
+std::unique_ptr<int> ptr1(new int(10));      // 创建方式1
+auto ptr2 = std::make_unique<int>(20);       // 推荐方式（C++14 起）
 
 // 转移所有权
-``std::`unique_ptr`<int>` ptr3 = std::move(ptr1); // ptr1 被清空，ptr3 拥有资源
+std::unique_ptr<int> ptr3 = std::move(ptr1); // ptr1 被清空，ptr3 拥有资源
 ```
-
 ###### 2.0.1.2. 禁止复制
-```plain
-``std::`unique_ptr`<int>` ptr4 = ptr2; // 错误，不能复制
+```cpp
+std::unique_ptr<int> ptr4 = ptr2; // 错误，不能复制
 ```
-
 ##### 2.0.2. `std::shared_ptr`（共享所有权指针）
 多个 `shared_ptr` 可以共享同一块资源。
 
 内部维护一个 引用计数，最后一个引用释放时自动释放资源。
 
 ###### 2.0.2.1. 用法
-```plain
-#include `<memory>`
+```cpp
+#include <memory>
 
-``std::`shared_ptr`<int>` sp1 = `std::`make_shared`<int>`(100); // 推荐方式
-``std::`shared_ptr`<int>` sp2 = sp1; // 引用计数 +1
+std::shared_ptr<int> sp1 = std::make_shared<int>(100); // 推荐方式
+std::shared_ptr<int> sp2 = sp1; // 引用计数 +1
 
-std::cout `<< sp1.use_count();  // 打印引用计数
+std::cout << sp1.use_count();  // 打印引用计数
 ```
-
 **「不能形成循环引用」**，否则内存泄漏！
 
 ##### 2.0.3. `std::weak_ptr`（弱引用指针）
@@ -135,19 +128,18 @@ std::cout `<< sp1.use_count();  // 打印引用计数
 必须用 `.lock()` 转换为 `shared_ptr` 才能使用资源。
 
 ###### 2.0.3.1. 用法
-```plain
-#include <memory>`
+```cpp
+#include <memory>
 
-``std::`shared_ptr`<int>` sp = `std::`make_shared`<int>`(42);
-`std::`weak_ptr`<int>` wp = sp;
+std::shared_ptr<int> sp = std::make_shared<int>(42);
+std::weak_ptr<int> wp = sp;
 
 if (auto locked = wp.lock()) {
-    std::cout `<< *locked << std::endl;  // 安全访问
+    std::cout << *locked << std::endl;  // 安全访问
 } else {
     std::cout << "资源已释放" << std::endl;
 }
 ```
-
 ##### 2.0.4. 别与对比
 | **特性** | **unique_ptr** | **shared_ptr** | **weak_ptr** |
 | :--- | :--- | :--- | :--- |
@@ -191,13 +183,13 @@ unique_ptr不使用计数，追求轻量和明确性，因此禁用复制。
 ##### 4.0.1. 方法 1：使用 = delete（推荐）
 将复制构造函数和复制赋值运算符标记为 deleted。
 
-```plain
-#include `<iostream>`
+```cpp
+#include <iostream>
 
 class NoCopy {
 public:
     NoCopy(int val) : value(val) {}
-    void print() const { std::cout `<< "Value: " << value << "\n"; }
+    void print() const { std::cout << "Value: " << value << "\n"; }
 
     // 禁用复制构造函数
     NoCopy(const NoCopy&) = delete;
@@ -219,17 +211,16 @@ int main() {
     return0;
 }
 ```
-
 ##### 4.0.2. 方法 2：声明为私有（C++98/03）
 将复制构造函数和赋值运算符声明为 private，不提供实现。
 
-```plain
-#include <iostream>`
+```cpp
+#include <iostream>
 
 class NoCopy {
 public:
     NoCopy(int val) : value(val) {}
-    void print() const { std::cout `<< "Value: " << value << "\n"; }
+    void print() const { std::cout << "Value: " << value << "\n"; }
 
 private:
     int value;
@@ -248,7 +239,6 @@ int main() {
     return0;
 }
 ```
-
 ### 5. 5、****shared_ptr****是否线程安全（引用计数为什么线程安全）？**
 shared_ptr**「本身并非完全线程安全的」**，但它的引用计数管理在特定条件下是线程安全的。
 
@@ -530,18 +520,18 @@ CPU 访问效率：
 
 示例：
 
-```plain
-#include <iostream>`
-#include `<thread>`
-#include `<mutex>`
+```cpp
+#include <iostream>
+#include <thread>
+#include <mutex>
 
 std::mutex mtx;
 int counter = 0;
 
 void increment(int id) {
-    `std::`lock_guard`<std::mutex>` lock(mtx); // 自动加锁和解锁
+    std::lock_guard<std::mutex> lock(mtx); // 自动加锁和解锁
     counter++;
-    std::cout `<< "Thread " << id << " counter: " << counter << "\n";
+    std::cout << "Thread " << id << " counter: " << counter << "\n";
 }
 
 int main() {
@@ -553,7 +543,6 @@ int main() {
     return0;
 }
 ```
-
 ##### 10.0.2. 读写锁
 允许多个线程同时读，但写操作互斥。
 
@@ -566,23 +555,23 @@ C++ 支持：C++17 引入 `std::shared_mutex`。
 
 示例：
 
-```plain
-#include <iostream>`
-#include `<thread>`
-#include `<shared_mutex>`
+```cpp
+#include <iostream>
+#include <thread>
+#include <shared_mutex>
 
 std::shared_mutex rw_mtx;
 int data = 0;
 
 void reader(int id) {
-    `std::`shared_lock`<std::shared_mutex>` lock(rw_mtx); // 读锁
-    std::cout `<< "Reader " << id << " reads: " << data << "\n";
+    std::shared_lock<std::shared_mutex> lock(rw_mtx); // 读锁
+    std::cout << "Reader " << id << " reads: " << data << "\n";
 }
 
 void writer(int id) {
-`std::unique_lock<std::shared_mutex>`lock(rw_mtx); // 写锁
+std::unique_lock<std::shared_mutex>lock(rw_mtx); // 写锁
     data++;
-    std::cout `<< "Writer " << id << " writes: " << data << "\n";
+    std::cout << "Writer " << id << " writes: " << data << "\n";
 }
 
 int main() {
@@ -593,7 +582,6 @@ int main() {
     return0;
 }
 ```
-
 ##### 10.0.3. 条件变量
 用于线程间同步，等待特定条件成立。
 
@@ -606,26 +594,26 @@ int main() {
 
 示例：
 
-```plain
-#include <iostream>`
-#include `<thread>`
-#include `<mutex>`
-#include `<condition_variable>`
+```cpp
+#include <iostream>
+#include <thread>
+#include <mutex>
+#include <condition_variable>
 
 std::mutex mtx;
 std::condition_variable cv;
 bool ready = false;
 
 void worker() {
-    `std::`unique_lock`<std::mutex>` lock(mtx);
+    std::unique_lock<std::mutex> lock(mtx);
     cv.wait(lock, [] { return ready; }); // 等待 ready 为 true
-    std::cout `<< "Worker proceeds\n";
+    std::cout << "Worker proceeds\n";
 }
 
 void signaler() {
     std::this_thread::sleep_for(std::chrono::seconds(1));
     {
-`std::lock_guard<std::mutex>`lock(mtx);
+std::lock_guard<std::mutex>lock(mtx);
         ready = true;
     }
     cv.notify_one(); // 唤醒一个等待线程
@@ -639,7 +627,6 @@ int main() {
     return0;
 }
 ```
-
 ##### 10.0.4. 信号量
 计数器，控制多个线程对有限资源的访问。
 
@@ -652,16 +639,16 @@ C++ 支持：C++20引入`std::counting_semaphore`。
 
 示例：
 
-```plain
-#include `<iostream>`
-#include `<thread>`
-#include `<semaphore>`
+```cpp
+#include <iostream>
+#include <thread>
+#include <semaphore>
 
-`std::`counting_semaphore`<2>` sem(2); // 最多 2 个线程访问
+std::counting_semaphore<2> sem(2); // 最多 2 个线程访问
 
 void task(int id) {
     sem.acquire();
-    std::cout `<< "Thread " << id << " enters\n";
+    std::cout << "Thread " << id << " enters\n";
     std::this_thread::sleep_for(std::chrono::seconds(1));
     std::cout << "Thread " << id << " exits\n";
     sem.release();
@@ -675,7 +662,6 @@ int main() {
     return0;
 }
 ```
-
 ##### 10.0.5. 子操作
 无锁操作，直接在硬件层面保证线程安全。
 
@@ -685,16 +671,16 @@ int main() {
 
 示例：
 
-```plain
-#include <iostream>`
-#include `<thread>`
-#include `<atomic>`
+```cpp
+#include <iostream>
+#include <thread>
+#include <atomic>
 
-`std::`atomic`<int>` counter(0);
+std::atomic<int> counter(0);
 
 void increment(int id) {
     counter.fetch_add(1); // 原子递增
-    std::cout `<< "Thread " << id << " counter: " << counter << "\n";
+    std::cout << "Thread " << id << " counter: " << counter << "\n";
 }
 
 int main() {
@@ -705,7 +691,6 @@ int main() {
     return0;
 }
 ```
-
 ##### 10.0.6. 对比与选择
 | **机制** | **互斥性** | **同步性** | **性能开销** | **适用场景** |
 | :--- | :--- | :--- | :--- | :--- |
@@ -739,42 +724,42 @@ int main() {
 
 示例：
 
-```plain
-#include <iostream>`
-#include `<thread>`
-#include `<mutex>`
-#include `<condition_variable>`
-#include `<queue>`
+```cpp
+#include <iostream>
+#include <thread>
+#include <mutex>
+#include <condition_variable>
+#include <queue>
 
 std::mutex mtx;
 std::condition_variable cv;
-`std::`queue`<int>` buffer;
+std::queue<int> buffer;
 constint BUFFER_SIZE = 5;
 bool finished = false;
 
 void producer(int id) {
     for (int i = 0; i < 10; ++i) {
-        `std::`unique_lock`<std::mutex>` lock(mtx);
+        std::unique_lock<std::mutex> lock(mtx);
         cv.wait(lock, [] { return buffer.size() < BUFFER_SIZE; }); // 等待不满
         buffer.push(i);
-        std::cout `<< "Producer " << id << " produced: " << i << "\n";
+        std::cout << "Producer " << id << " produced: " << i << "\n";
         lock.unlock();
         cv.notify_one(); // 通知消费者
         std::this_thread::sleep_for(std::chrono::milliseconds(100)); // 模拟生产
     }
-`std::lock_guard<std::mutex>`lock(mtx);
+std::lock_guard<std::mutex>lock(mtx);
     if (id == 1) finished = true; // 假设两个生产者，id=1 结束
 }
 
 void consumer(int id) {
     while (true) {
-        `std::`unique_lock`<std::mutex>` lock(mtx);
+        std::unique_lock<std::mutex> lock(mtx);
         cv.wait(lock, [] { return !buffer.empty() || finished; }); // 等待非空
         if (buffer.empty() && finished) break;
         if (!buffer.empty()) {
             int data = buffer.front();
             buffer.pop();
-            std::cout `<< "Consumer " << id << " consumed: " << data << "\n";
+            std::cout << "Consumer " << id << " consumed: " << data << "\n";
         }
         lock.unlock();
         cv.notify_one(); // 通知生产者
@@ -793,7 +778,6 @@ int main() {
     return0;
 }
 ```
-
 ##### 11.0.2. 信号量
 工具：C++20 的 std::counting_semaphore。
 
@@ -811,24 +795,24 @@ int main() {
 
 示例：
 
-```plain
-#include <iostream>`
-#include `<thread>`
-#include `<semaphore>`
-#include `<queue>`
+```cpp
+#include <iostream>
+#include <thread>
+#include <semaphore>
+#include <queue>
 
-`std::`queue`<int>` buffer;
-`std::`counting_semaphore`<5>` sem_empty(5); // 空闲槽位
-`std::`counting_semaphore`<5>` sem_full(0);  // 数据项
+std::queue<int> buffer;
+std::counting_semaphore<5> sem_empty(5); // 空闲槽位
+std::counting_semaphore<5> sem_full(0);  // 数据项
 std::mutex mtx;
 
 void producer(int id) {
     for (int i = 0; i < 10; ++i) {
         sem_empty.acquire(); // 等待空位
         {
-            `std::`lock_guard`<std::mutex>` lock(mtx);
+            std::lock_guard<std::mutex> lock(mtx);
             buffer.push(i);
-            std::cout `<< "Producer " << id << " produced: " << i << "\n";
+            std::cout << "Producer " << id << " produced: " << i << "\n";
         }
         sem_full.release(); // 通知有数据
         std::this_thread::sleep_for(std::chrono::milliseconds(100));
@@ -840,10 +824,10 @@ void consumer(int id) {
         sem_full.acquire(); // 等待数据
         int data;
         {
-`std::lock_guard<std::mutex>`lock(mtx);
+std::lock_guard<std::mutex>lock(mtx);
             data = buffer.front();
             buffer.pop();
-            std::cout `<< "Consumer " << id << " consumed: " << data << "\n";
+            std::cout << "Consumer " << id << " consumed: " << data << "\n";
         }
         sem_empty.release(); // 释放空位
         std::this_thread::sleep_for(std::chrono::milliseconds(150));
@@ -858,7 +842,6 @@ int main() {
     return0;
 }
 ```
-
 ##### 11.0.3. 子操作 + 无锁队列
 工具：std::atomic + 自定义无锁队列。
 
@@ -873,18 +856,18 @@ int main() {
 
 示例：无锁队列实现较复杂，这里仅示意
 
-```plain
-#include <iostream>`
-#include `<thread>`
-#include `<atomic>`
-#include `<vector>`
+```cpp
+#include <iostream>
+#include <thread>
+#include <atomic>
+#include <vector>
 
-`std::`atomic`<int>` counter(0);
+std::atomic<int> counter(0);
 
 void producer() {
     for (int i = 0; i < 10; ++i) {
         counter.fetch_add(1); // 原子递增
-        std::cout `<< "Produced: " << i << "\n";
+        std::cout << "Produced: " << i << "\n";
     }
 }
 
@@ -903,7 +886,6 @@ int main() {
     return0;
 }
 ```
-
 ### 12. 12、系统调用是什么？new是系统调用还是用户调用？**
 ##### 12.0.1. 什么是系统调用？
 系统调用 是用户程序（运行在用户态）请求操作系统内核（运行在内核态）提供服务的接口。
@@ -1016,9 +998,9 @@ new 的工作：
 + 用户态库将结果转换为标准形式（如 errno）。
 
 ##### 13.0.5. 流程示例
-```plain
-#include <unistd.h>`
-#include `<iostream>`
+```cpp
+#include <unistd.h>
+#include <iostream>
 
 int main() {
     char buf[10];

@@ -12,7 +12,6 @@ slug: /getting-started/markdown
 ## 二级标题
 ### 三级标题
 ```
-
 ### 1.2. 代码块
 
 ````markdown
@@ -30,7 +29,6 @@ def hello():
 [链接文字](https://example.com)
 ![图片描述](./path/to/image.png)
 ```
-
 ### 1.4. 表格
 
 ```markdown
@@ -39,7 +37,6 @@ def hello():
 | A   | B   | C   |
 | D   | E   | F   |
 ```
-
 ### 1.5. 列表
 
 ```markdown
@@ -49,13 +46,11 @@ def hello():
 1. 有序列表项1
 2. 有序列表项2
 ```
-
 ### 1.6. 用
 
 ```markdown
 > 这是一段引用文字
 ```
-
 ### 1.7. 提示框
 
 ```markdown
@@ -75,19 +70,18 @@ def hello():
 这是危险警告
 :::
 ```
-
 ### 1.8. 标签
 
 ```markdown
 `<!-- truncate -->`  `<!-- 摘要分割线 -->`
 ```
-
 ### 1.9. Tabs 选项卡
 
 ```markdown
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 
-`<Tabs>`
-  `<TabItem value="apple" label="Apple">`苹果&lt;/TabItem>`
-  `&lt;TabItem value="orange" label="Orange">`橙子</TabItem>`&lt;/Tabs>`
+<Tabs>
+  <TabItem value="apple" label="Apple">苹果</TabItem>
+  <TabItem value="orange" label="Orange">橙子</TabItem>
+</Tabs>

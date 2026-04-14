@@ -7,17 +7,17 @@ slug: /Rust/黑客编程之道/Rust-构建高性能网络协议
 首先，我们需要创建一个高效的协议解析器，以尽量减少内存拷贝操作：
 
 ```rust
-pub struct `ProtocolParser`<'a>` {
+pub struct ProtocolParser<'a> {
     // 零拷贝缓冲区视图
     buffer: &'a [u8],
     // 当前解析位置
     position: usize,
     // 内存映射的包池
-    packet_pool: `Arc`<PacketPool>`,
+    packet_pool: Arc<PacketPool>,
 }
 
-`impl`<'a>` `ProtocolParser`<'a>` {
-    pub fn parse_packet(&mut self) -> `Result`<Packet, ParseError>` {
+impl<'a> ProtocolParser<'a> {
+    pub fn parse_packet(&mut self) -> Result<Packet, ParseError> {
         // 确保可以读取头部
         if self.remaining() < HEADER_SIZE {
             return Err(ParseError::Incomplete);
@@ -81,20 +81,19 @@ pub struct `ProtocolParser`<'a>` {
     }
 }
 ```
-
 #### 1.1. 内存映射的包池
 为了高效管理内存，我们可以使用内存映射（memory-mapped）的包池：
 
 ```rust
 pub struct PacketPool {
     // 预分配的包缓冲区
-    buffers: `Vec`<MmapMut>`,
+    buffers: Vec<MmapMut>,
     // 空闲包槽的列表
-    free_slots: `Mutex`<`Vec<(usize, usize)>`>, // (buffer_idx, offset)
+    free_slots: Mutex<Vec<(usize, usize)>>, // (buffer_idx, offset)
 }
 
 impl PacketPool {
-    pub fn new(buffer_size: usize, buffer_count: usize) -> io::`Result`<Self>` {
+    pub fn new(buffer_size: usize, buffer_count: usize) -> io::Result<Self> {
         let mut buffers = Vec::with_capacity(buffer_count);
         let mut free_slots = Vec::new();
 
@@ -120,7 +119,7 @@ impl PacketPool {
         })
     }
 
-    pub fn acquire(&self, size: usize) -> `Result`<Packet, PoolError>` {
+    pub fn acquire(&self, size: usize) -> Result<Packet, PoolError> {
         let (buffer_idx, offset) = {
             let mut slots = self.free_slots.lock().unwrap();
             slots.pop().ok_or(PoolError::NoFreeSlots)?
@@ -134,7 +133,6 @@ impl PacketPool {
     }
 }
 ```
-
 ---
 
 ### 2. 实现无锁事件循环
@@ -143,15 +141,15 @@ impl PacketPool {
 ```rust
 pub struct NetworkEventLoop {
     // 使用多生产者单消费者通道的事件队列
-    event_queue: `Arc`<crossbeam::channel::`Sender<NetworkEvent>`>,
+    event_queue: Arc<crossbeam::channel::Sender<NetworkEvent>>,
     // Epoll/IOCP 事件处理器
     event_handler: EventHandler,
     // 连接管理器
-    connections: `Arc`<ConnectionManager>`,
+    connections: Arc<ConnectionManager>,
 }
 
 impl NetworkEventLoop {
-    pub fn run(&self) -> `Result`<(), Error>` {
+    pub fn run(&self) -> Result<(), Error> {
         let mut events = Vec::with_capacity(1024);
 
         loop {
@@ -179,7 +177,7 @@ impl NetworkEventLoop {
         }
     }
 
-    fn handle_read(&self, conn_id: ConnectionId) -> `Result`<(), Error>` {
+    fn handle_read(&self, conn_id: ConnectionId) -> Result<(), Error> {
         let conn = self.connections.get(conn_id)?;
         
         // 无需拷贝地读取数据
@@ -208,14 +206,13 @@ impl NetworkEventLoop {
     }
 }
 ```
-
 #### 2.1. 无锁连接管理器
 无锁的连接管理器可以高效地分配和管理连接：
 
 ```rust
 pub struct ConnectionManager {
     // 使用原子指针数组的连接槽
-    connections: `Box`<[`AtomicPtr<Connection>`]>,
+    connections: Box<[AtomicPtr<Connection>]>,
     // 槽分配器
     slot_allocator: SlotAllocator,
 }
@@ -224,7 +221,7 @@ impl ConnectionManager {
     pub fn add_connection(
         &self,
         socket: Socket
-    ) -> `Result`<ConnectionId, Error>` {
+    ) -> Result<ConnectionId, Error> {
         // 分配槽位
         let slot = self.slot_allocator.allocate()?;
         
@@ -241,7 +238,7 @@ impl ConnectionManager {
         Ok(ConnectionId(slot))
     }
 
-    pub fn get(&self, id: ConnectionId) -> `Result`<&Connection, Error>` {
+    pub fn get(&self, id: ConnectionId) -> Result<&Connection, Error> {
         let ptr = self.connections[id.0].load(Ordering::Acquire);
         
         if ptr.is_null() {
@@ -252,7 +249,6 @@ impl ConnectionManager {
     }
 }
 ```
-
 ---
 
 ### 3. 自定义协议实现
@@ -282,7 +278,7 @@ impl PacketHeader {
         }
 
         // 验证大小
-        if self.size < size_of::`<PacketHeader>`() ||
+        if self.size < size_of::<PacketHeader>() ||
            self.size > MAX_PACKET_SIZE {
             return false;
         }
@@ -301,7 +297,7 @@ impl PacketHeader {
         let bytes = unsafe {
             std::slice::from_raw_parts(
                 &header as *const _ as *const u8,
-                size_of::`<PacketHeader>`()
+                size_of::<PacketHeader>()
             )
         };
 

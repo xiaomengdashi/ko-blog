@@ -13,10 +13,10 @@ slug: /C++/Boost深度剖析/boost-interprocess-进程间通信之消息队列�
 #### 1.2. [](/img/posts/dae5255d27e3b9639698e479cd8d9396.png)
 #### 1.3. 写一个消息队列的类，"Condition_shared_data.hpp"
 ```cpp
-#include `<boost/interprocess/detail/config_begin.hpp>`
-#include `<boost/interprocess/sync/interprocess_mutex.hpp>`
-#include `<boost/interprocess/sync/interprocess_condition.hpp>`
-#include `<boost/interprocess/detail/config_end.hpp>`
+#include <boost/interprocess/detail/config_begin.hpp>
+#include <boost/interprocess/sync/interprocess_mutex.hpp>
+#include <boost/interprocess/sync/interprocess_condition.hpp>
+#include <boost/interprocess/detail/config_end.hpp>
 
 struct trace_queue
 {
@@ -44,17 +44,16 @@ struct trace_queue
  
 
 ```
-
 #### 1.4. 进程A的函数，"ProcessA.cpp"
 ```cpp
 #include"stdafx.h"
-#include `<boost/interprocess/shared_memory_object.hpp>`
-#include `<boost/interprocess/mapped_region.hpp>`
-#include `<boost/interprocess/sync/scoped_lock.hpp>`
-#`include`<boost\thread\thread.hpp>`
-#`include`<boost\date_time\posix_time\posix_time.hpp>`
-#include `<iostream>`
-#include `<cstdio>`
+#include <boost/interprocess/shared_memory_object.hpp>
+#include <boost/interprocess/mapped_region.hpp>
+#include <boost/interprocess/sync/scoped_lock.hpp>
+#include<boost\thread\thread.hpp>
+#include<boost\date_time\posix_time\posix_time.hpp>
+#include <iostream>
+#include <cstdio>
 #include "Condition_shared_data.hpp"
  
  
@@ -69,9 +68,9 @@ int main()
 		shm_remove() { shared_memory_object::remove("MySharedMemory"); }
 		~shm_remove() { shared_memory_object::remove("MySharedMemory"); }
 	} remover;
-	//`<-
+	//<-
 	(void)remover;
-	//->`
+	//->
  
 	//Create a shared memory object.
 	shared_memory_object shm
@@ -98,32 +97,32 @@ int main()
 		const int NumMsg = 100;
  
 		for (int i = 0; i < NumMsg; ++i) {
-			`scoped_lock`<interprocess_mutex>` lock(data->mutex);
+			scoped_lock<interprocess_mutex> lock(data->mutex);
 			if (data->message_in) {
 				data->cond_full.wait(lock);
 			}
 			if (i == (NumMsg - 1))
 			{
 				std::sprintf(data->items, "%s", "last message");
-				std::cout `<< "last message:" << i << std::endl;
+				std::cout << "last message:" << i << std::endl;
 			}		
 			else
 			{
-				std::sprintf(data->`items, "%s_%d", "my_trace", i);
-				std::cout `<< "My trace:" << i << std::endl;
+				std::sprintf(data->items, "%s_%d", "my_trace", i);
+				std::cout << "My trace:" << i << std::endl;
 				boost::this_thread::sleep(boost::posix_time::milliseconds(100));
 			}
  
  
 			//Notify to the other process that there is a message
-			data->`cond_empty.notify_one();
+			data->cond_empty.notify_one();
  
 			//Mark message buffer as full
 			data->message_in = true;
 		}
 	}
 	catch (interprocess_exception &ex) {
-		std::cout `<< ex.what() << std::endl;
+		std::cout << ex.what() << std::endl;
 		return 1;
 	}
  
@@ -131,15 +130,14 @@ int main()
 	return 0;
 }
 ```
-
 #### 1.5. 进程B的函数，"ProcessB.cpp"
 ```cpp
 #include"stdafx.h"
-#include <boost/interprocess/shared_memory_object.hpp>`
-#include `<boost/interprocess/mapped_region.hpp>`
-#include `<boost/interprocess/sync/scoped_lock.hpp>`
-#include `<iostream>`
-#include `<cstring>`
+#include <boost/interprocess/shared_memory_object.hpp>
+#include <boost/interprocess/mapped_region.hpp>
+#include <boost/interprocess/sync/scoped_lock.hpp>
+#include <iostream>
+#include <cstring>
 #include "Condition_shared_data.hpp"
  
 using namespace boost::interprocess;
@@ -165,12 +163,12 @@ int main()
 		void * addr = region.get_address();
  
 		//Obtain a pointer to the shared structure
-		trace_queue * data = `static_cast`<trace_queue*>`(addr);
+		trace_queue * data = static_cast<trace_queue*>(addr);
  
 		//Print messages until the other process marks the end
 		bool end_loop = false;
 		do {
-			`scoped_lock`<interprocess_mutex>` lock(data->mutex);
+			scoped_lock<interprocess_mutex> lock(data->mutex);
 			if (!data->message_in) 
 			{
 				data->cond_empty.wait(lock);
@@ -178,20 +176,20 @@ int main()
 			if (std::strcmp(data->items, "last message") == 0)
 			{
 				end_loop = true;
-				std::cout `<< "last message !" << std::endl;
+				std::cout << "last message !" << std::endl;
 			}
 			else 
 			{
 				//Print the message
-				std::cout << "Receive the message:"<<data->`items `<< std::endl;
+				std::cout << "Receive the message:"<<data->items << std::endl;
 				//Notify the other process that the buffer is empty
-				data->`message_in = false;
+				data->message_in = false;
 				data->cond_full.notify_one();
 			}
 		} while (!end_loop);
 	}
 	catch (interprocess_exception &ex) {
-		std::cout `<< ex.what() << std::endl;
+		std::cout << ex.what() << std::endl;
 		return 1;
 	}
 	getchar();

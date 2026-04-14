@@ -29,12 +29,12 @@ slug: /C++/面试题/C-秋招高频面试题汇总-C-多态-malloc函数-内存�
 #### 1.2. 1.2**多态如何解决代码复用难题**
 在软件开发中，代码复用是提高开发效率、降低维护成本的关键。然而，在没有多态的情况下，实现代码复用往往面临诸多挑战。比如，我们要开发一个图形绘制系统，其中包含圆形、矩形和三角形等多种图形。如果不使用多态，那么为了绘制这些不同的图形，我们可能需要编写大量重复的代码。
 
-```plain
+```cpp
 class Circle {
 public:
     void drawCircle() {
         // 绘制圆形的具体代码
-        std::cout `<< "Drawing a circle" << std::endl;
+        std::cout << "Drawing a circle" << std::endl;
     }
 };
 
@@ -66,12 +66,11 @@ int main() {
     return 0;
 }
 ```
-
 在这段代码中，每个图形类都有自己独立的绘制函数，当我们需要绘制不同的图形时，需要分别调用不同的函数。如果后续要添加新的图形，比如梯形，就需要再次编写新的绘制函数，并且在使用时也需要额外添加调用逻辑，代码的扩展性和复用性都很差 。
 
 而当我们引入多态后，情况就大不相同了。我们可以定义一个基类，比如Shape，在其中声明一个虚函数draw，然后让各个图形类继承自Shape类，并重写draw函数。
 
-```plain
+```cpp
 class Shape {
 public:
     virtual void draw() = 0; // 纯虚函数，使Shape成为抽象类
@@ -103,7 +102,7 @@ public:
 
 void drawShapes(Shape* shapes[], int count) {
     for (int i = 0; i < count; ++i) {
-        shapes[i]->`draw();
+        shapes[i]->draw();
     }
 }
 
@@ -120,7 +119,6 @@ int main() {
     return 0;
 }
 ```
-
 在这个改进后的代码中，drawShapes函数可以接受一个Shape类型的指针数组，无论数组中的元素是指向Circle、Rectangle还是Triangle对象，都可以通过调用draw函数来实现正确的绘制。这样，当我们需要添加新的图形时，只需要创建一个新的派生类并重写draw函数，而drawShapes函数的代码无需修改，大大提高了代码的复用性和可扩展性。
 
 #### 1.3. 1.3多态的实现原理
@@ -128,14 +126,13 @@ C++实现多态的主要方式有：
 
 **(1)重载（Overloading）：**通过函数名相同但参数不同的多个函数实现不同行为。在编译时通过参数类型决定调用哪个函数。
 
-```plain
+```cpp
 void add(int a, int b) { ... } 
 void add(double a, double b) { ... }
 ```
-
 **(2)重写（Overriding）：**通过继承让派生类重新实现基类的虚函数。在运行时通过指针/引用的实际类型调用对应的函数。
 
-```plain
+```cpp
 class Base {
 public:
     virtual void func() { ... }
@@ -149,27 +146,24 @@ public:
 Base* b = new Derived();
 b->func(); // Calls Derived::func()
 ```
-
 **(3)编译时多态：**通过模板和泛型实现针对不同类型具有不同实现的函数。在编译时通过传入类型决定具体实现。
 
-```plain
-template `<typename T>`
+```cpp
+template <typename T>
 void func(T t) { ... }
 
-func(1);   // Calls `func`<int>` 
-func(3.2); // Calls `func`<double>`
+func(1);   // Calls func<int> 
+func(3.2); // Calls func<double>
 ```
-
 **(4)条件编译：**通过#ifdef/#elif等预处理命令针对不同条件编译不同的代码实现产生不同行为的程序。编译时通过定义的宏决定具体实现
 
-```plain
+```cpp
 #ifdef _WIN32 
     void func() { ... }   // Windows version
 #elif __linux__
     void func() { ... }   // Linux version   
 #endif
 ```
-
 综上,C++通过重载、重写、模板、条件编译等手段实现多态。其中,重写基于继承和虚函数实现真正的运行时多态,增强了程序的灵活性和可扩展性。
 
 **一个接口，多种方法：**
@@ -189,9 +183,9 @@ func(3.2); // Calls `func`<double>`
 
 malloc函数的原型是void* malloc(size_t size)，它接受一个参数size，表示需要分配的内存字节数。返回值是一个void*类型的指针，指向分配的内存块起始地址，如果分配失败则返回NULL 。例如，我们要动态分配一个能存储 10 个整数的数组，可以这样写：
 
-```plain
-#include `<stdio.h>`
-#include `<stdlib.h>`
+```cpp
+#include <stdio.h>
+#include <stdlib.h>
 
 int main() {
     int *arr;
@@ -214,7 +208,6 @@ int main() {
     return 0;
 }
 ```
-
 在使用malloc时，有几个关键的注意事项。首先，一定要检查返回值是否为NULL，以确保内存分配成功，否则对空指针进行操作会导致程序崩溃。其次，当不再需要分配的内存时，必须使用free函数释放内存，否则会造成内存泄漏，就像你借了图书馆的书却不归还，导致后续其他人无法借阅（内存无法被重新利用）。并且，free只能释放由malloc、calloc、realloc分配的内存，不能释放其他类型的内存。同时，释放内存后，应将指针置为NULL，防止成为野指针，避免不小心再次访问已释放的内存区域。
 
 与其他内存分配方式相比，malloc属于动态内存分配，与静态内存分配（如在函数内部定义的局部变量）不同，静态内存的生命周期在函数结束时就结束了，而动态分配的内存只要不调用free，就会一直存在，这使得它在需要灵活管理内存的场景中非常有用。和 C++ 中的new操作符相比，malloc只是分配内存，不会调用对象的构造函数进行初始化，而new会调用构造函数；malloc分配失败返回NULL，new则是抛出异常。
@@ -224,7 +217,7 @@ int main() {
 
 首先我们要确定所采用的数据结构。一个简单可行方案是将堆内存空间以块的形式组织起来，每个块由meta区和数据区组成，meta区记录数据块的元信息（数据区大小、空闲标志位、指针等等），数据区是真实分配的内存区域，并且数据区的第一个字节地址即为malloc返回的地址，可以使用如下结构体定义一个block
 
-```plain
+```cpp
 typedef struct s_block *t_block;
 struck s_block{
     size_t size;//数据区大小
@@ -234,12 +227,11 @@ struck s_block{
     char data[1];//这是一个虚拟字段，表示数据块的第一个字节，长度不应计入meta
 };
 ```
-
 **（2）寻找合适的block**
 
 现在考虑如何在block链中查找合适的block。一般来说有两种查找算法：First fit:从头开始，使用第一个数据区大小大于要求size的块所谓此次分配的块 Best fit:从头开始，遍历所有块，使用数据区大小大于size且差值最小的块作为此次分配的块 两种方式各有千秋，best fit有较高的内存使用率（payload较高），而first fit具有较高的运行效率。这里我们采用first fit算法
 
-```plain
+```cpp
 t_block find_block(t_block *last,size_t size){
     t_block b = first_block;
     while(b&&b->size>=size)
@@ -250,14 +242,13 @@ t_block find_block(t_block *last,size_t size){
     return b;
 }
 ```
-
 find_block从first_block开始，查找第一个符合要求的block并返回block起始地址，如果找不到这返回NULL，这里在遍历时会更新一个叫last的指针，这个指针始终指向当前遍历的block.这是为了如果找不到合适的block而开辟新block使用的。
 
 **（3）开辟新的block**
 
 如果现有block都不能满足size的要求，则需要在链表最后开辟一个新的block。这里关键是如何只使用sbrk创建一个struct：
 
-```plain
+```cpp
 #define BLOCK_SIZE 24
 
 t_block extend_heap{
@@ -273,12 +264,11 @@ t_block extend_heap{
         return b;
 };
 ```
-
 **（4）分裂block**
 
 First fit有一个比较致命的缺点，就是可能会让更小的size占据很大的一块block，此时，为了提高payload,应该在剩余数据区足够大的情况下，将其分裂为一个新的block：
 
-```plain
+```cpp
 void split_block(t_block b,size_t s)
 {
     t_block new;
@@ -290,7 +280,6 @@ void split_block(t_block b,size_t s)
     b->next = new;
 }
 ```
-
 #### 2.3. 2.3**Malloc函数的实现原理**
 **（1）空闲链表机制**
 
@@ -349,7 +338,7 @@ Linux维护一个break指针，这个指针执行堆空间的某个地址，从�
 
 例如，我们写这样一段代码：
 
-```plain
+```cpp
 int *p = (int *)malloc(1000000000 * sizeof(int));  // 尝试分配非常大的内存空间，可能超出系统可分配范围
 if (p == NULL) {
     printf("内存分配失败，无法继续执行后续操作！\n");
@@ -359,7 +348,6 @@ if (p == NULL) {
 // 如果分配成功，就可以继续使用这块内存，例如进行赋值等操作
 *p = 10;
 ```
-
 像这样通过检查返回的指针是否为 NULL，就能知道内存分配是不是成功啦。要是忽略了这个判断，后续还继续去使用这个可能为 NULL 的指针，就很容易引发程序崩溃，比如出现段错误等情况呢，所以这一步的判断千万不能省略哦。
 
 **⑵内存释放操作**
@@ -368,7 +356,7 @@ if (p == NULL) {
 
 free 函数的使用方式很简单，它的原型是 void free(void *FirstByte)，参数就是之前 malloc 分配内存时返回的那个指针。举个简单的例子来说明一下：
 
-```plain
+```cpp
 char *str = (char *)malloc(50 * sizeof(char));  // 分配可以存放50个字符的内存空间
 if (str!= NULL) {
     strcpy(str, "Hello World");  // 使用分配的内存空间存放字符串
@@ -376,7 +364,6 @@ if (str!= NULL) {
     free(str);  // 使用完后，用free函数释放内存
 }
 ```
-
 这样就把通过 malloc 申请的内存归还给系统了，让系统可以把这些内存再次分配给其他需要的部分使用哦。
 
 **⑶避免野指针问题**
@@ -385,7 +372,7 @@ if (str!= NULL) {
 
 比如说，有这样一段代码：
 
-```plain
+```cpp
 int *ptr = (int *)malloc(10 * sizeof(int));
 if (ptr!= NULL) {
     *ptr = 10;
@@ -396,10 +383,9 @@ if (ptr!= NULL) {
     }
 }
 ```
-
 所以呀，为了避免这种情况发生，在释放内存后，正确的做法是把对应的指针置为 NULL，像这样修改一下上面的代码：
 
-```plain
+```cpp
 int *ptr = (int *)malloc(10 * sizeof(int));
 if (ptr!= NULL) {
     *ptr = 10;
@@ -407,7 +393,6 @@ if (ptr!= NULL) {
     ptr = NULL;  // 释放后将指针置为NULL，避免成为野指针
 }
 ```
-
 这样就能有效地防止意外访问已经释放的内存区域，减少程序出现错误的风险啦。
 
 ### 3. Part3****内存管理：守护程序的 “内存管家”**
@@ -612,8 +597,8 @@ lock-free必然是obstruction-free的。
 
 在x64下进行实践的，用的是CAS操作，CAS操作是lock-free技术的基础，我们可以用下面的代码来描述：
 
-```plain
-template `<class T>`
+```cpp
+template <class T>
 bool CAS(T* addr, T expected, T value)
 {
   if (*addr == expected)
@@ -624,19 +609,17 @@ bool CAS(T* addr, T expected, T value)
   return false;
 }
 ```
-
 在GCC中，CAS操作如下所示：
 
-```plain
+```cpp
 bool __sync_bool_compare_and_swap (type *ptr, type oldval type newval, ...)
 type __sync_val_compare_and_swap (type *ptr, type oldval type newval, ...)
 ```
-
 这两个函数提供原子的比较和交换，如果*ptr == oldval，就将newval写入*ptr，第一个函数在相等并写入的情况下返回true，第二个函数的内置行为和第一个函数相同，只是它返回操作之前的值。
 
 后面的可扩展参数(...)用来指出哪些变量需要memory barrier，因为目前gcc实现的是full barrier，所以可以略掉这个参数,除过CAS操作，GCC还提供了其他一些原子操作，可以在无锁算法中灵活使用：
 
-```plain
+```cpp
 type __sync_fetch_and_add (type *ptr, type value, ...)
 type __sync_fetch_and_sub (type *ptr, type value, ...)
 type __sync_fetch_and_or (type *ptr, type value, ...)

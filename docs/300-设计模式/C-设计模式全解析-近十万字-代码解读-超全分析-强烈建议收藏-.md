@@ -95,9 +95,9 @@ C++代码实现：
 ###### 2.0.1.1. 饿汉式（Eager Initialization）
 饿汉式单例在程序启动时就创建实例，无论是否需要。它的优点是线程安全，但缺点是如果实例创建开销大且不一定会被使用，会造成资源浪费。
 
-```plain
-#include `<iostream>`
-#include `<string>`
+```cpp
+#include <iostream>
+#include <string>
 
 class SingletonEager {
 private:
@@ -106,7 +106,7 @@ private:
 
     // 私有构造函数
     SingletonEager(conststd::string& n = "DefaultEager") : name(n) {
-        std::cout `<< "SingletonEager instance created: " << name << std::endl;
+        std::cout << "SingletonEager instance created: " << name << std::endl;
     }
 
     // 禁止拷贝构造和赋值
@@ -129,14 +129,14 @@ SingletonEager* SingletonEager::instance = new SingletonEager();
 
 // int main() {
 //     SingletonEager* s1 = SingletonEager::getInstance();
-//     s1->`showMessage();
+//     s1->showMessage();
 
 //     SingletonEager* s2 = SingletonEager::getInstance();
 //     s2->showMessage();
 
 //     // 验证是同一个实例
 //     if (s1 == s2) {
-//         std::cout `<< "s1 and s2 are the same instance." << std::endl;
+//         std::cout << "s1 and s2 are the same instance." << std::endl;
 //     }
 
 //     // 注意：饿汉式通常不需要手动delete，因为其生命周期与程序相同
@@ -146,13 +146,12 @@ SingletonEager* SingletonEager::instance = new SingletonEager();
 //     return 0;
 // }
 ```
-
 ###### 2.0.1.2. 懒汉式（Lazy Initialization） - 线程不安全
 懒汉式单例在第一次使用时才创建实例。这种方式在单线程环境下可以节省资源，但在多线程环境下存在线程安全问题，可能创建多个实例。
 
-```plain
-#include <iostream>`
-#include `<string>`
+```cpp
+#include <iostream>
+#include <string>
 
 class SingletonLazyUnsafe {
 private:
@@ -160,7 +159,7 @@ private:
     std::string name;
 
     SingletonLazyUnsafe(conststd::string& n = "DefaultLazyUnsafe") : name(n) {
-        std::cout `<< "SingletonLazyUnsafe instance created: " << name << std::endl;
+        std::cout << "SingletonLazyUnsafe instance created: " << name << std::endl;
     }
 
     SingletonLazyUnsafe(const SingletonLazyUnsafe&) = delete;
@@ -193,13 +192,13 @@ SingletonLazyUnsafe* SingletonLazyUnsafe::instance = nullptr;
 
 // int main() {
 //     SingletonLazyUnsafe* s1 = SingletonLazyUnsafe::getInstance();
-//     s1->`showMessage();
+//     s1->showMessage();
 
 //     SingletonLazyUnsafe* s2 = SingletonLazyUnsafe::getInstance();
 //     s2->showMessage();
 
 //     if (s1 == s2) {
-//         std::cout `<< "s1 and s2 are the same instance." << std::endl;
+//         std::cout << "s1 and s2 are the same instance." << std::endl;
 //     }
 
 //     SingletonLazyUnsafe::destroyInstance();
@@ -207,14 +206,13 @@ SingletonLazyUnsafe* SingletonLazyUnsafe::instance = nullptr;
 //     return 0;
 // }
 ```
-
 ###### 2.0.1.3. 懒汉式（Lazy Initialization） - 线程安全（双重检查锁定 DCLP）
 为了解决懒汉式的线程安全问题，可以使用双重检查锁定（Double-Checked Locking Pattern, DCLP）。但在C++11之前，DCLP存在内存乱序问题，需要使用内存屏障。C++11及以后，`std::mutex`和`std::atomic`可以确保其正确性。
 
-```plain
-#include <iostream>`
-#include `<string>`
-#include `<mutex>` // For std::mutex
+```cpp
+#include <iostream>
+#include <string>
+#include <mutex> // For std::mutex
 
 class SingletonLazySafeDCLP {
 private:
@@ -223,7 +221,7 @@ private:
     std::string name;
 
     SingletonLazySafeDCLP(conststd::string& n = "DefaultLazySafe") : name(n) {
-        std::cout `<< "SingletonLazySafeDCLP instance created: " << name << std::endl;
+        std::cout << "SingletonLazySafeDCLP instance created: " << name << std::endl;
     }
 
     SingletonLazySafeDCLP(const SingletonLazySafeDCLP&) = delete;
@@ -232,7 +230,7 @@ private:
 public:
     static SingletonLazySafeDCLP* getInstance() {
         if (instance == nullptr) { // 第一次检查：避免每次都加锁
-`std::lock_guard<std::mutex>`lock(mtx); // 加锁
+std::lock_guard<std::mutex>lock(mtx); // 加锁
             if (instance == nullptr) { // 第二次检查：确保只创建一次
                 instance = new SingletonLazySafeDCLP();
             }
@@ -241,7 +239,7 @@ public:
     }
 
     void showMessage() {
-        std::cout `<< "Hello from SingletonLazySafeDCLP: " << name << std::endl;
+        std::cout << "Hello from SingletonLazySafeDCLP: " << name << std::endl;
     }
 
     static void destroyInstance() {
@@ -259,7 +257,7 @@ std::mutex SingletonLazySafeDCLP::mtx;
 
 // int main() {
 //     // 可以在多线程环境下测试其安全性
-//     // std::thread t1([]{ SingletonLazySafeDCLP::getInstance()->`showMessage(); });
+//     // std::thread t1([]{ SingletonLazySafeDCLP::getInstance()->showMessage(); });
 //     // std::thread t2([]{ SingletonLazySafeDCLP::getInstance()->showMessage(); });
 //     // t1.join();
 //     // t2.join();
@@ -270,20 +268,19 @@ std::mutex SingletonLazySafeDCLP::mtx;
 //     return 0;
 // }
 ```
-
 ###### 2.0.1.4. C++11 局部静态变量（推荐）
 C++11标准规定，局部静态变量的初始化是线程安全的。这意味着编译器会保证在多线程环境下，局部静态变量只会被初始化一次。这是实现线程安全懒汉式单例最简洁、最推荐的方式。
 
-```plain
-#include `<iostream>`
-#include `<string>`
+```cpp
+#include <iostream>
+#include <string>
 
 class SingletonModern {
 private:
     std::string name;
 
     SingletonModern(conststd::string& n = "DefaultModern") : name(n) {
-        std::cout `<< "SingletonModern instance created: " << name << std::endl;
+        std::cout << "SingletonModern instance created: " << name << std::endl;
     }
 
     SingletonModern(const SingletonModern&) = delete;
@@ -319,7 +316,6 @@ public:
 //     return 0;
 // }
 ```
-
 使用场景：
 
 + 日志记录器：整个应用程序只需要一个日志实例来记录日志。
@@ -359,9 +355,9 @@ public:
 
 C++代码实现：
 
-```plain
-#include <iostream>`
-#include `<string>`
+```cpp
+#include <iostream>
+#include <string>
 
 // 抽象产品接口
 class Product {
@@ -395,7 +391,7 @@ public:
     // 工厂方法也可以包含一些通用逻辑
     void someOperation() const {
         Product* product = createProduct();
-        std::cout `<< "Creator: Doing some operation with " << product->`getName() `<< std::endl;
+        std::cout << "Creator: Doing some operation with " << product->getName() << std::endl;
         delete product; // 负责销毁产品
     }
 };
@@ -418,7 +414,7 @@ public:
 
 // int main() {
 //     Creator* creatorA = new ConcreteCreatorA();
-//     creatorA->`someOperation(); // 通过工厂方法创建并使用产品A
+//     creatorA->someOperation(); // 通过工厂方法创建并使用产品A
 //     delete creatorA;
 
 //     Creator* creatorB = new ConcreteCreatorB();
@@ -428,7 +424,6 @@ public:
 //     return 0;
 // }
 ```
-
 使用场景：
 
 + 框架设计：当一个类库或框架需要创建某些对象，但又不想在代码中硬编码具体类时，可以使用工厂方法。例如，GUI框架中的按钮、文本框等组件的创建。
@@ -467,9 +462,9 @@ C++代码实现：
 
 假设我们有一个跨平台的GUI库，需要创建不同操作系统风格的按钮和文本框。
 
-```plain
-#include `<iostream>`
-#include `<string>`
+```cpp
+#include <iostream>
+#include <string>
 
 // 抽象产品A：按钮
 class Button {
@@ -482,7 +477,7 @@ public:
 class WindowsButton :public Button {
 public:
     void paint() const override {
-        std::cout `<< "Rendering a Windows Button." << std::endl;
+        std::cout << "Rendering a Windows Button." << std::endl;
     }
 };
 
@@ -549,7 +544,7 @@ public:
 
 // 客户端代码
 void clientCode(GUIFactory* factory) {
-    Button* button = factory->`createButton();
+    Button* button = factory->createButton();
     TextField* textField = factory->createTextField();
 
     button->paint();
@@ -560,7 +555,7 @@ void clientCode(GUIFactory* factory) {
 }
 
 // int main() {
-//     std::cout `<< "Client: Testing with Windows factory." << std::endl;
+//     std::cout << "Client: Testing with Windows factory." << std::endl;
 //     WindowsFactory* windowsFactory = new WindowsFactory();
 //     clientCode(windowsFactory);
 //     delete windowsFactory;
@@ -573,7 +568,6 @@ void clientCode(GUIFactory* factory) {
 //     return 0;
 // }
 ```
-
 使用场景：
 
 + 多平台支持：当系统需要支持多个产品家族，并且这些产品家族中的产品是相互关联的，例如，不同操作系统下的GUI组件（Windows风格、Mac风格）。
@@ -612,10 +606,10 @@ C++代码实现：
 
 假设我们要构建一个复杂的汽车对象，它有引擎、车轮、车身等部件，并且可以有不同的配置（例如，跑车、SUV）。
 
-```plain
-#include <iostream>`
-#include `<string>`
-#include `<vector>`
+```cpp
+#include <iostream>
+#include <string>
+#include <vector>
 
 // 产品：汽车
 class Car {
@@ -624,14 +618,14 @@ public:
         parts.push_back(part);
     }
     void show() const {
-        std::cout `<< "Car parts: ";
+        std::cout << "Car parts: ";
         for (constauto& part : parts) {
             std::cout << part << " ";
         }
         std::cout << std::endl;
     }
 private:
-`std::vector<std::string>`parts;
+std::vector<std::string>parts;
 };
 
 // 抽象建造者
@@ -704,22 +698,21 @@ public:
 //     SportsCarBuilder sportsCarBuilder;
 //     director.construct(&sportsCarBuilder);
 //     Car* sportsCar = sportsCarBuilder.getResult();
-//     std::cout `<< "Constructed Sports Car: ";
-//     sportsCar->`show();
+//     std::cout << "Constructed Sports Car: ";
+//     sportsCar->show();
 //     // 注意：getResult() 返回的是一个指针，需要客户端负责delete
 //     // delete sportsCar; // 实际使用中，智能指针会更好地管理
 
 //     SUVBuilder suvBuilder;
 //     director.construct(&suvBuilder);
 //     Car* suv = suvBuilder.getResult();
-//     std::cout `<< "Constructed SUV: ";
-//     suv->`show();
+//     std::cout << "Constructed SUV: ";
+//     suv->show();
 //     // delete suv; // 实际使用中，智能指针会更好地管理
 
 //     return 0;
 // }
 ```
-
 使用场景：
 
 + 复杂对象的构建：当一个对象的构建过程非常复杂，包含多个步骤，并且这些步骤的顺序或组合方式可能不同时。
@@ -758,10 +751,10 @@ C++代码实现：
 
 假设我们有一个图形编辑器，需要复制各种形状（圆形、矩形等）。
 
-```plain
-#include `<iostream>`
-#include `<string>`
-#include `<map>`
+```cpp
+#include <iostream>
+#include <string>
+#include <map>
 
 // 抽象原型
 class Shape {
@@ -779,7 +772,7 @@ public:
         returnnew Circle(*this); // 调用拷贝构造函数进行深拷贝或浅拷贝
     }
     void draw() const override {
-        std::cout `<< "Drawing a Circle with radius: " << radius << std::endl;
+        std::cout << "Drawing a Circle with radius: " << radius << std::endl;
     }
     void setRadius(int r) { radius = r; }
 private:
@@ -810,7 +803,7 @@ public:
     }
     Shape* createShape(const std::string& key) {
         if (prototypes.count(key)) {
-            return prototypes[key]->`clone();
+            return prototypes[key]->clone();
         }
         returnnullptr;
     }
@@ -820,7 +813,7 @@ public:
         }
     }
 private:
-    ``std::`map`<std::string, Shape*>` prototypes;
+    std::map<std::string, Shape*> prototypes;
 };
 
 // int main() {
@@ -838,7 +831,7 @@ private:
 //     rectangle1->draw();
 
 //     // 修改副本，不影响原型
-//     Circle* circle2 = `static_cast`<Circle*>`(manager.createShape("circle"));
+//     Circle* circle2 = static_cast<Circle*>(manager.createShape("circle"));
 //     circle2->setRadius(15);
 //     circle2->draw();
 
@@ -854,7 +847,6 @@ private:
 //     return 0;
 // }
 ```
-
 使用场景：
 
 + 创建复杂对象：当一个对象的创建过程非常复杂或耗时，但又需要创建大量相似对象时，通过复制现有对象可以提高效率。
@@ -897,9 +889,9 @@ C++代码实现：
 假设我们有一个旧的音频播放器（`OldAudioPlayer`），它只能播放MP3格式。现在我们有一个新的需求，需要播放WAV格式的音频，但我们不想修改旧播放器的代码。我们可以创建一个适配器来解决这个问题。
 
 ###### 3.0.1.1. 对象适配器示例
-```plain
-#include `<iostream>`
-#include `<string>`
+```cpp
+#include <iostream>
+#include <string>
 
 // 目标接口：新播放器期望的接口
 class NewAudioPlayer {
@@ -912,7 +904,7 @@ public:
 class OldAudioPlayer {
 public:
     void playMP3(const std::string& filename) {
-        std::cout `<< "Playing MP3 file: " << filename << std::endl;
+        std::cout << "Playing MP3 file: " << filename << std::endl;
     }
 };
 
@@ -928,7 +920,7 @@ public:
     void playWAV(const std::string& filename) override {
         std::cout << "Adapter converting WAV to MP3..." << std::endl;
         // 在这里进行格式转换（模拟），然后调用旧播放器的MP3播放方法
-        oldPlayer->`playMP3(filename); 
+        oldPlayer->playMP3(filename); 
     }
 };
 
@@ -951,7 +943,6 @@ void clientPlayAudio(NewAudioPlayer* player, const std::string& filename) {
 //     return 0;
 // }
 ```
-
 使用场景：
 
 + 遗留系统集成：当需要集成一个接口不兼容的遗留系统或第三方库时。
@@ -993,9 +984,9 @@ C++代码实现：
 
 假设我们有一个图形绘制系统，图形有不同的形状（圆形、矩形）和不同的绘制API（OpenGL、DirectX）。
 
-```plain
-#include `<iostream>`
-#include `<string>`
+```cpp
+#include <iostream>
+#include <string>
 
 // 实现部分接口：绘制API
 class DrawingAPI {
@@ -1009,7 +1000,7 @@ public:
 class OpenGLAPI :public DrawingAPI {
 public:
     void drawCircle(double x, double y, double radius) override {
-        std::cout `<< "OpenGL: Drawing Circle at (" << x << "," << y << ") with radius " << radius << std::endl;
+        std::cout << "OpenGL: Drawing Circle at (" << x << "," << y << ") with radius " << radius << std::endl;
     }
     void drawRectangle(double x, double y, double width, double height) override {
         std::cout << "OpenGL: Drawing Rectangle at (" << x << "," << y << ") with width " << width << ", height " << height << std::endl;
@@ -1045,7 +1036,7 @@ public:
     CircleShape(double x, double y, double radius, DrawingAPI* api)
         : Shape(api), x(x), y(y), radius(radius) {}
     void draw() override {
-        drawingAPI->`drawCircle(x, y, radius);
+        drawingAPI->drawCircle(x, y, radius);
     }
 };
 
@@ -1074,14 +1065,14 @@ public:
 //     delete rect1;
 //     delete opengl;
 
-//     std::cout `<< "\n";
+//     std::cout << "\n";
 
 //     // 使用DirectX绘制API
 //     DrawingAPI* directx = new DirectXAPI();
 //     Shape* circle2 = new CircleShape(8.0, 9.0, 10.0, directx);
 //     Shape* rect2 = new RectangleShape(11.0, 12.0, 13.0, 14.0, directx);
 
-//     circle2->`draw();
+//     circle2->draw();
 //     rect2->draw();
 
 //     delete circle2;
@@ -1091,7 +1082,6 @@ public:
 //     return 0;
 // }
 ```
-
 使用场景：
 
 + 多维度变化：当一个系统需要在抽象和实现之间有多个独立变化的维度时。例如，操作系统和文件系统，或者消息的发送方式和消息内容。
@@ -1130,11 +1120,11 @@ C++代码实现：
 
 假设我们有一个文件系统，包含文件（叶子）和文件夹（组合）。
 
-```plain
-#include `<iostream>`
-#include `<string>`
-#include `<vector>`
-#include `<algorithm>` // For std::remove
+```cpp
+#include <iostream>
+#include <string>
+#include <vector>
+#include <algorithm> // For std::remove
 
 // 组件接口
 class FileSystemComponent {
@@ -1153,7 +1143,7 @@ private:
 public:
     File(conststd::string& n) : name(n) {}
     void display(int depth = 0) const override {
-        for (int i = 0; i < depth; ++i) std::cout `<< "  ";
+        for (int i = 0; i < depth; ++i) std::cout << "  ";
         std::cout << "- " << name << " (File)" << std::endl;
     }
 };
@@ -1162,7 +1152,7 @@ public:
 class Directory :public FileSystemComponent {
 private:
     std::string name;
-`std::vector<FileSystemComponent*>`children;
+std::vector<FileSystemComponent*>children;
 public:
     Directory(conststd::string& n) : name(n) {}
     ~Directory() {
@@ -1185,10 +1175,10 @@ public:
         returnnullptr;
     }
     void display(int depth = 0) const override {
-        for (int i = 0; i < depth; ++i) std::cout `<< "  ";
+        for (int i = 0; i < depth; ++i) std::cout << "  ";
         std::cout << "+ " << name << " (Directory)" << std::endl;
         for (constauto& comp : children) {
-            comp->`display(depth + 1);
+            comp->display(depth + 1);
         }
     }
 };
@@ -1220,7 +1210,6 @@ public:
 //     return 0;
 // }
 ```
-
 使用场景：
 
 + 部分-整体层次结构：当需要表示对象的部分-整体层次结构时，例如，文件系统中的文件和文件夹、组织结构中的部门和员工、GUI中的容器和组件。
@@ -1261,9 +1250,9 @@ C++代码实现：
 
 假设我们有一个咖啡店系统，咖啡（`Beverage`）可以添加牛奶（`MilkDecorator`）和糖（`SugarDecorator`）。
 
-```plain
-#include `<iostream>`
-#include `<string>`
+```cpp
+#include <iostream>
+#include <string>
 
 // 组件接口：饮料
 class Beverage {
@@ -1331,15 +1320,15 @@ public:
 // int main() {
 //     // 一杯纯浓缩咖啡
 //     Beverage* espresso = new Espresso();
-//     std::cout `<< espresso->`getDescription() `<< " Cost: $" << espresso->`getCost() `<< std::endl;
+//     std::cout << espresso->getDescription() << " Cost: $" << espresso->getCost() << std::endl;
 
 //     // 一杯加牛奶的浓缩咖啡
 //     Beverage* espressoWithMilk = new MilkDecorator(new Espresso());
-//     std::cout << espressoWithMilk->`getDescription() `<< " Cost: $" << espressoWithMilk->`getCost() `<< std::endl;
+//     std::cout << espressoWithMilk->getDescription() << " Cost: $" << espressoWithMilk->getCost() << std::endl;
 
 //     // 一杯加牛奶和糖的美式咖啡
 //     Beverage* americanoWithMilkAndSugar = new SugarDecorator(new MilkDecorator(new Americano()));
-//     std::cout << americanoWithMilkAndSugar->`getDescription() `<< " Cost: $" << americanoWithMilkAndSugar->`getCost() `<< std::endl;
+//     std::cout << americanoWithMilkAndSugar->getDescription() << " Cost: $" << americanoWithMilkAndSugar->getCost() << std::endl;
 
 //     delete espresso;
 //     delete espressoWithMilk;
@@ -1348,7 +1337,6 @@ public:
 //     return 0;
 // }
 ```
-
 使用场景：
 
 + 动态添加功能：当需要在运行时动态地给对象添加或撤销功能时。
@@ -1388,14 +1376,14 @@ C++代码实现：
 
 假设我们有一个家庭影院系统，包含DVD播放器、投影仪、音响等复杂组件。
 
-```plain
-#include <iostream>`
-#include `<string>`
+```cpp
+#include <iostream>
+#include <string>
 
 // 子系统类1：DVD播放器
 class DVDPlayer {
 public:
-    void on() { std::cout `<< "DVD Player On" << std::endl; }
+    void on() { std::cout << "DVD Player On" << std::endl; }
     void off() { std::cout << "DVD Player Off" << std::endl; }
     void play(const std::string& movie) { std::cout << "Playing movie: " << movie << std::endl; }
     void stop() { std::cout << "Movie stopped" << std::endl; }
@@ -1439,7 +1427,7 @@ public:
     // 观看电影的简化操作
     void watchMovie(const std::string& movie) {
         std::cout << "Get ready to watch a movie..." << std::endl;
-        amplifier->`on();
+        amplifier->on();
         amplifier->setVolume(10);
         projector->on();
         projector->wideScreenMode();
@@ -1449,8 +1437,8 @@ public:
 
     // 结束电影的简化操作
     void endMovie() {
-        std::cout `<< "Shutting down home theater..." << std::endl;
-        dvdPlayer->`stop();
+        std::cout << "Shutting down home theater..." << std::endl;
+        dvdPlayer->stop();
         dvdPlayer->off();
         projector->off();
         amplifier->off();
@@ -1461,15 +1449,14 @@ public:
 //     HomeTheaterFacade* homeTheater = new HomeTheaterFacade();
 
 //     homeTheater->watchMovie("The Matrix");
-//     std::cout `<< "\n";
-//     homeTheater->`endMovie();
+//     std::cout << "\n";
+//     homeTheater->endMovie();
 
 //     delete homeTheater;
 
 //     return 0;
 // }
 ```
-
 使用场景：
 
 + 简化复杂子系统：当一个子系统非常复杂，包含大量类和接口，客户端难以理解和使用时。
@@ -1507,10 +1494,10 @@ C++代码实现：
 
 假设我们有一个文本编辑器，需要显示大量字符。每个字符的字体、颜色等是内部状态（可以共享），而字符的位置是外部状态（不能共享）。
 
-```plain
-#include `<iostream>`
-#include `<string>`
-#include `<map>`
+```cpp
+#include <iostream>
+#include <string>
+#include <map>
 
 // 享元接口：字符
 class Character {
@@ -1529,7 +1516,7 @@ private:
 public:
     ConcreteCharacter(char s, conststd::string& f, conststd::string& c)
         : symbol(s), font(f), color(c) {
-        std::cout `<< "Creating ConcreteCharacter: " << symbol << " (" << font << ", " << color << ")" << std::endl;
+        std::cout << "Creating ConcreteCharacter: " << symbol << " (" << font << ", " << color << ")" << std::endl;
     }
 
     void display(int x, int y) const override {
@@ -1546,7 +1533,7 @@ public:
 // 享元工厂：管理和创建享元对象
 class CharacterFactory {
 private:
-`std::map<std::string, Character*>`characters; // 享元池
+std::map<std::string, Character*>characters; // 享元池
 
     // 辅助函数，用于生成享元键
     std::string getKey(char symbol, const std::string& font, const std::string& color) const {
@@ -1589,7 +1576,7 @@ public:
 //     Character* charC1 = factory.getCharacter('C', "Arial", "Black");
 //     charC1->display(70, 20);
 
-//     std::cout `<< "\nTotal number of unique flyweight characters created: " << factory.getNumberOfFlyweights() << std::endl;
+//     std::cout << "\nTotal number of unique flyweight characters created: " << factory.getNumberOfFlyweights() << std::endl;
 
 //     // 预期输出：
 //     // Creating ConcreteCharacter: A (Arial, Black)
@@ -1605,7 +1592,6 @@ public:
 //     return 0;
 // }
 ```
-
 使用场景：
 
 + 大量细粒度对象：当系统中存在大量相似的对象，且这些对象的内部状态可以被共享时。例如，文本编辑器中的字符、游戏中的树木或草地。
@@ -1643,9 +1629,9 @@ C++代码实现：
 
 假设我们有一个图片加载器，加载大图片可能很耗时。我们可以使用代理模式来实现图片的延迟加载。
 
-```plain
-#include <iostream>`
-#include `<string>`
+```cpp
+#include <iostream>
+#include <string>
 
 // 抽象主题：图片接口
 class Image {
@@ -1659,7 +1645,7 @@ class RealImage :public Image {
 private:
     std::string filename;
     void loadImageFromServer() {
-        std::cout `<< "Loading " << filename << " from server... (This takes time)" << std::endl;
+        std::cout << "Loading " << filename << " from server... (This takes time)" << std::endl;
         // 模拟耗时操作
         // std::this_thread::sleep_for(std::chrono::seconds(2));
     }
@@ -1692,7 +1678,7 @@ public:
             // 只有在第一次需要显示时才加载真实图片
             realImage = new RealImage(filename);
         }
-        realImage->`display();
+        realImage->display();
     }
 };
 
@@ -1701,14 +1687,14 @@ public:
 //     Image* image1 = new ProxyImage("photo1.jpg");
 //     Image* image2 = new ProxyImage("photo2.jpg");
 
-//     std::cout `<< "\nFirst call to display image1:" << std::endl;
-//     image1->`display(); // 第一次调用，会加载真实图片
+//     std::cout << "\nFirst call to display image1:" << std::endl;
+//     image1->display(); // 第一次调用，会加载真实图片
 
-//     std::cout `<< "\nSecond call to display image1:" << std::endl;
-//     image1->`display(); // 第二次调用，直接显示，不再加载
+//     std::cout << "\nSecond call to display image1:" << std::endl;
+//     image1->display(); // 第二次调用，直接显示，不再加载
 
-//     std::cout `<< "\nFirst call to display image2:" << std::endl;
-//     image2->`display(); // 第一次调用，会加载真实图片
+//     std::cout << "\nFirst call to display image2:" << std::endl;
+//     image2->display(); // 第一次调用，会加载真实图片
 
 //     delete image1;
 //     delete image2;
@@ -1716,7 +1702,6 @@ public:
 //     return 0;
 // }
 ```
-
 使用场景：
 
 + 远程代理（Remote Proxy）：为远程对象提供本地代理，隐藏远程通信的复杂性。
@@ -1761,9 +1746,9 @@ C++代码实现：
 
 假设我们有一个请假审批系统，不同天数的请假需要不同级别的领导审批。
 
-```plain
-#include `<iostream>`
-#include `<string>`
+```cpp
+#include <iostream>
+#include <string>
 
 // 抽象处理者：审批人
 class Approver {
@@ -1786,12 +1771,12 @@ class TeamLeader :public Approver {
 public:
     void processRequest(int days) override {
         if (days <= 3) {
-            std::cout `<< "Team Leader approved " << days << " days leave." << std::endl;
+            std::cout << "Team Leader approved " << days << " days leave." << std::endl;
         } elseif (nextApprover != nullptr) {
             std::cout << "Team Leader cannot approve " << days << " days leave, passing to Manager." << std::endl;
-            nextApprover->`processRequest(days);
+            nextApprover->processRequest(days);
         } else {
-            std::cout `<< "No one can approve " << days << " days leave." << std::endl;
+            std::cout << "No one can approve " << days << " days leave." << std::endl;
         }
     }
 };
@@ -1804,9 +1789,9 @@ public:
             std::cout << "Manager approved " << days << " days leave." << std::endl;
         } elseif (nextApprover != nullptr) {
             std::cout << "Manager cannot approve " << days << " days leave, passing to Director." << std::endl;
-            nextApprover->`processRequest(days);
+            nextApprover->processRequest(days);
         } else {
-            std::cout `<< "No one can approve " << days << " days leave." << std::endl;
+            std::cout << "No one can approve " << days << " days leave." << std::endl;
         }
     }
 };
@@ -1819,9 +1804,9 @@ public:
             std::cout << "Director approved " << days << " days leave." << std::endl;
         } elseif (nextApprover != nullptr) {
             std::cout << "Director cannot approve " << days << " days leave, passing to CEO." << std::endl;
-            nextApprover->`processRequest(days);
+            nextApprover->processRequest(days);
         } else {
-            std::cout `<< "No one can approve " << days << " days leave." << std::endl;
+            std::cout << "No one can approve " << days << " days leave." << std::endl;
         }
     }
 };
@@ -1832,7 +1817,7 @@ public:
 //     Manager* manager = new Manager();
 //     Director* director = new Director();
 
-//     leader->`setNextApprover(manager);
+//     leader->setNextApprover(manager);
 //     manager->setNextApprover(director);
 //     // director->setNextApprover(nullptr); // 链的末端
 
@@ -1850,7 +1835,6 @@ public:
 //     return 0;
 // }
 ```
-
 使用场景：
 
 + 审批流程：如请假、报销等需要多级审批的流程。
@@ -1894,17 +1878,17 @@ C++代码实现：
 
 假设我们有一个遥控器，可以控制灯的开关。
 
-```plain
-#include `<iostream>`
-#include `<string>`
-#include `<vector>`
-#include `<memory>` // For std::unique_ptr
+```cpp
+#include <iostream>
+#include <string>
+#include <vector>
+#include <memory> // For std::unique_ptr
 
 // 接收者：灯
 class Light {
 public:
     void turnOn() {
-        std::cout `<< "Light is ON" << std::endl;
+        std::cout << "Light is ON" << std::endl;
     }
     void turnOff() {
         std::cout << "Light is OFF" << std::endl;
@@ -1927,7 +1911,7 @@ private:
 public:
     LightOnCommand(Light* l) : light(l) {}
     void execute() override {
-        light->`turnOn();
+        light->turnOn();
     }
     void undo() override {
         light->turnOff(); // 撤销开灯就是关灯
@@ -1952,12 +1936,12 @@ public:
 // 调用者：遥控器
 class RemoteControl {
 private:
-    ``std::`unique_ptr`<Command>` onCommand; // 使用智能指针管理命令对象
-    ``std::`unique_ptr`<Command>` offCommand;
-    ``std::`unique_ptr`<Command>` lastCommand; // 用于撤销
+    std::unique_ptr<Command> onCommand; // 使用智能指针管理命令对象
+    std::unique_ptr<Command> offCommand;
+    std::unique_ptr<Command> lastCommand; // 用于撤销
 
 public:
-    void setCommands(``std::`unique_ptr`<Command>` onCmd, ``std::`unique_ptr`<Command>` offCmd) {
+    void setCommands(std::unique_ptr<Command> onCmd, std::unique_ptr<Command> offCmd) {
         onCommand = std::move(onCmd);
         offCommand = std::move(offCmd);
     }
@@ -1978,8 +1962,8 @@ public:
 
     void pressUndoButton() {
         if (lastCommand) {
-            std::cout `<< "Undo last operation: ";
-            lastCommand->`undo();
+            std::cout << "Undo last operation: ";
+            lastCommand->undo();
             lastCommand.reset(); // 清除记录
         }
     }
@@ -1989,8 +1973,8 @@ public:
 //     Light* livingRoomLight = new Light();
 
 //     // 创建命令对象，并设置接收者
-//     ``std::`unique_ptr`<Command>` lightOn = `std::`make_unique`<LightOnCommand>`(livingRoomLight);
-//     ``std::`unique_ptr`<Command>` lightOff = `std::`make_unique`<LightOffCommand>`(livingRoomLight);
+//     std::unique_ptr<Command> lightOn = std::make_unique<LightOnCommand>(livingRoomLight);
+//     std::unique_ptr<Command> lightOff = std::make_unique<LightOffCommand>(livingRoomLight);
 
 //     // 创建调用者，并设置命令
 //     RemoteControl* remote = new RemoteControl();
@@ -2007,7 +1991,6 @@ public:
 //     return 0;
 // }
 ```
-
 使用场景：
 
 + 菜单系统/按钮点击：将菜单项或按钮点击操作封装为命令，实现解耦。
@@ -2050,17 +2033,17 @@ C++代码实现：
 
 假设我们有一个简单的算术表达式解释器，可以处理加法和减法。
 
-```plain
-#include `<iostream>`
-#include `<string>`
-#include `<map>`
-#include `<stack>`
-#include `<memory>`
+```cpp
+#include <iostream>
+#include <string>
+#include <map>
+#include <stack>
+#include <memory>
 
 // 上下文：存储变量及其值
 class Context {
 private:
-    ``std::`map`<char, int>` variables;
+    std::map<char, int> variables;
 public:
     void assign(char var, int value) {
         variables[var] = value;
@@ -2091,10 +2074,10 @@ public:
 // 非终结符表达式：加法
 class AddExpression :public AbstractExpression {
 private:
-    ``std::`unique_ptr`<AbstractExpression>` left;
-    ``std::`unique_ptr`<AbstractExpression>` right;
+    std::unique_ptr<AbstractExpression> left;
+    std::unique_ptr<AbstractExpression> right;
 public:
-    AddExpression(``std::`unique_ptr`<AbstractExpression>` l, ``std::`unique_ptr`<AbstractExpression>` r)
+    AddExpression(std::unique_ptr<AbstractExpression> l, std::unique_ptr<AbstractExpression> r)
         : left(std::move(l)), right(std::move(r)) {}
     int interpret(Context& context) override {
         return left->interpret(context) + right->interpret(context);
@@ -2104,10 +2087,10 @@ public:
 // 非终结符表达式：减法
 class SubtractExpression :public AbstractExpression {
 private:
-    ``std::`unique_ptr`<AbstractExpression>` left;
-    ``std::`unique_ptr`<AbstractExpression>` right;
+    std::unique_ptr<AbstractExpression> left;
+    std::unique_ptr<AbstractExpression> right;
 public:
-    SubtractExpression(``std::`unique_ptr`<AbstractExpression>` l, ``std::`unique_ptr`<AbstractExpression>` r)
+    SubtractExpression(std::unique_ptr<AbstractExpression> l, std::unique_ptr<AbstractExpression> r)
         : left(std::move(l)), right(std::move(r)) {}
     int interpret(Context& context) override {
         return left->interpret(context) - right->interpret(context);
@@ -2123,34 +2106,33 @@ public:
 
 //     // 构建表达式：a + b - c
 //     // (a + b) - c
-//     ``std::`unique_ptr`<AbstractExpression>` expression = 
-//         `std::`make_unique`<SubtractExpression>`(
-//             `std::`make_unique`<AddExpression>`(
-//                 `std::`make_unique`<VariableExpression>`("a"),
-//                 `std::`make_unique`<VariableExpression>`("b")
+//     std::unique_ptr<AbstractExpression> expression = 
+//         std::make_unique<SubtractExpression>(
+//             std::make_unique<AddExpression>(
+//                 std::make_unique<VariableExpression>("a"),
+//                 std::make_unique<VariableExpression>("b")
 //             ),
-//             `std::`make_unique`<VariableExpression>`("c")
+//             std::make_unique<VariableExpression>("c")
 //         );
 
 //     int result = expression->interpret(context);
-//     std::cout `<< "Result of (a + b - c) is: " << result << std::endl; // 10 + 5 - 2 = 13
+//     std::cout << "Result of (a + b - c) is: " << result << std::endl; // 10 + 5 - 2 = 13
 
 //     // 复杂表达式：(a - c) + b
-//`std::unique_ptr<AbstractExpression>`expression2 = 
-//         `std::`make_unique`<AddExpression>`(
-//             `std::`make_unique`<SubtractExpression>`(
-//                 `std::`make_unique`<VariableExpression>`("a"),
-//                 `std::`make_unique`<VariableExpression>`("c")
+//std::unique_ptr<AbstractExpression>expression2 = 
+//         std::make_unique<AddExpression>(
+//             std::make_unique<SubtractExpression>(
+//                 std::make_unique<VariableExpression>("a"),
+//                 std::make_unique<VariableExpression>("c")
 //             ),
-//             `std::`make_unique`<VariableExpression>`("b")
+//             std::make_unique<VariableExpression>("b")
 //         );
 //     int result2 = expression2->interpret(context);
-//     std::cout `<< "Result of (a - c + b) is: " << result2 << std::endl; // (10 - 2) + 5 = 13
+//     std::cout << "Result of (a - c + b) is: " << result2 << std::endl; // (10 - 2) + 5 = 13
 
 //     return 0;
 // }
 ```
-
 使用场景：
 
 + 特定领域语言（DSL）：当需要为特定领域定义一种简单的语言，并需要解释执行该语言中的表达式时。例如，SQL查询解析、正则表达式解析。
@@ -2191,13 +2173,13 @@ C++代码实现：
 
 假设我们有一个自定义的集合类，需要提供迭代器来遍历其元素。
 
-```plain
-#include <iostream>`
-#include `<vector>`
-#include `<string>`
+```cpp
+#include <iostream>
+#include <vector>
+#include <string>
 
 // 抽象迭代器
-template `<typename T>`
+template <typename T>
 class Iterator {
 public:
     virtual ~Iterator() = default;
@@ -2208,18 +2190,18 @@ public:
 };
 
 // 抽象聚合
-template `<typename T>`
+template <typename T>
 class Aggregate {
 public:
     virtual ~Aggregate() = default;
-    virtual `Iterator`<T>`* createIterator() = 0;
+    virtual Iterator<T>* createIterator() = 0;
 };
 
 // 具体聚合：自定义列表
-template `<typename T>`
-class ConcreteAggregate :public `Aggregate`<T>` {
+template <typename T>
+class ConcreteAggregate :public Aggregate<T> {
 private:
-    ``std::`vector`<T>` items;
+    std::vector<T> items;
 public:
     void add(const T& item) {
         items.push_back(item);
@@ -2231,23 +2213,23 @@ public:
         return items.size();
     }
 
-    `Iterator`<T>`* createIterator() override {
-        returnnew `ConcreteIterator`<T>`(this); // 创建具体迭代器
+    Iterator<T>* createIterator() override {
+        returnnew ConcreteIterator<T>(this); // 创建具体迭代器
     }
 
     // 友元类，允许迭代器访问私有成员
-    friendclass `ConcreteIterator`<T>`;
+    friendclass ConcreteIterator<T>;
 };
 
 // 具体迭代器
-template `<typename T>`
-class ConcreteIterator :public `Iterator`<T>` {
+template <typename T>
+class ConcreteIterator :public Iterator<T> {
 private:
-    `ConcreteAggregate`<T>`* aggregate; // 聚合对象引用
+    ConcreteAggregate<T>* aggregate; // 聚合对象引用
     int currentIndex; // 当前遍历位置
 
 public:
-    ConcreteIterator(`ConcreteAggregate`<T>`* agg) : aggregate(agg), currentIndex(0) {}
+    ConcreteIterator(ConcreteAggregate<T>* agg) : aggregate(agg), currentIndex(0) {}
 
     void first() override {
         currentIndex = 0;
@@ -2264,17 +2246,17 @@ public:
 };
 
 // int main() {
-//     `ConcreteAggregate`<std::string>`* names = new `ConcreteAggregate`<std::string>`();
+//     ConcreteAggregate<std::string>* names = new ConcreteAggregate<std::string>();
 //     names->add("Alice");
 //     names->add("Bob");
 //     names->add("Charlie");
 //     names->add("David");
 
-//     `Iterator`<std::string>`* iterator = names->createIterator();
+//     Iterator<std::string>* iterator = names->createIterator();
 
-//     std::cout `<< "Iterating through names:" << std::endl;
-//     for (iterator->`first(); !iterator->isDone(); iterator->next()) {
-//         std::cout `<< iterator->`currentItem() `<< std::endl;
+//     std::cout << "Iterating through names:" << std::endl;
+//     for (iterator->first(); !iterator->isDone(); iterator->next()) {
+//         std::cout << iterator->currentItem() << std::endl;
 //     }
 
 //     delete iterator;
@@ -2283,7 +2265,6 @@ public:
 //     return 0;
 // }
 ```
-
 使用场景：
 
 + 遍历集合：当需要遍历各种不同的集合对象（如数组、链表、树），但又不想暴露其内部结构时。
@@ -2323,11 +2304,11 @@ C++代码实现：
 
 假设我们有一个聊天室系统，用户之间通过聊天室进行消息发送。
 
-```plain
-#include <iostream>`
-#include `<string>`
-#include `<vector>`
-#include `<algorithm>`
+```cpp
+#include <iostream>
+#include <string>
+#include <vector>
+#include <algorithm>
 
 // 前向声明
 class ChatRoomMediator;
@@ -2354,14 +2335,14 @@ public:
 
     void sendMessage(const std::string& message) override;
     void receiveMessage(const std::string& message) override {
-        std::cout `<< name << " received: " << message << std::endl;
+        std::cout << name << " received: " << message << std::endl;
     }
 };
 
 // 具体中介者：聊天室
 class ChatRoomMediator {
 private:
-`std::vector<User*>`users;
+std::vector<User*>users;
 
 public:
     void addUser(User* user) {
@@ -2379,8 +2360,8 @@ public:
 
 // 解决循环依赖，在ChatRoomMediator定义后实现sendMessage
 void ChatUser::sendMessage(const std::string& message) {
-    std::cout `<< name << " sending: " << message << std::endl;
-    mediator->`sendMessage(message, this);
+    std::cout << name << " sending: " << message << std::endl;
+    mediator->sendMessage(message, this);
 }
 
 // int main() {
@@ -2405,7 +2386,6 @@ void ChatUser::sendMessage(const std::string& message) {
 //     return 0;
 // }
 ```
-
 使用场景：
 
 + GUI组件交互：当多个GUI组件（如按钮、文本框、列表框）之间存在复杂的交互关系时，可以使用中介者来协调它们。
@@ -2444,11 +2424,11 @@ C++代码实现：
 
 假设我们有一个文本编辑器，需要实现撤销功能。
 
-```plain
-#include `<iostream>`
-#include `<string>`
-#include `<vector>`
-#include `<memory>`
+```cpp
+#include <iostream>
+#include <string>
+#include <vector>
+#include <memory>
 
 // 备忘录：存储编辑器状态
 class EditorMemento {
@@ -2470,7 +2450,7 @@ public:
 
     void type(const std::string& text) {
         currentContent += text;
-        std::cout `<< "Current content: " << currentContent << std::endl;
+        std::cout << "Current content: " << currentContent << std::endl;
     }
 
     // 创建备忘录，保存当前状态
@@ -2481,8 +2461,8 @@ public:
 
     // 从备忘录恢复状态
     void restore(EditorMemento* memento) {
-        currentContent = memento->`getSavedContent();
-        std::cout `<< "Restored content: " << currentContent << std::endl;
+        currentContent = memento->getSavedContent();
+        std::cout << "Restored content: " << currentContent << std::endl;
     }
 
     std::string getCurrentContent() const { return currentContent; }
@@ -2491,7 +2471,7 @@ public:
 // 负责人：历史记录管理器
 class HistoryManager {
 private:
-`std::vector<EditorMemento*>`history; // 存储备忘录
+std::vector<EditorMemento*>history; // 存储备忘录
 
 public:
     ~HistoryManager() {
@@ -2538,8 +2518,8 @@ public:
 //     editor->type(" C++");
 
 //     // 撤销到上一个状态
-//     std::cout `<< "\nUndoing..." << std::endl;
-//     history->`removeLastMemento(); // 移除当前状态的备忘录
+//     std::cout << "\nUndoing..." << std::endl;
+//     history->removeLastMemento(); // 移除当前状态的备忘录
 //     editor->restore(history->getLastMemento()); // 恢复到上一个保存的状态
 
 //     delete editor;
@@ -2548,7 +2528,6 @@ public:
 //     return 0;
 // }
 ```
-
 使用场景：
 
 + 撤销/重做功能：实现文本编辑器、图形编辑器等应用程序的撤销和重做功能。
@@ -2588,11 +2567,11 @@ C++代码实现：
 
 假设我们有一个股票行情系统，当股票价格变化时，所有关注该股票的用户都会收到通知。
 
-```plain
-#include `<iostream>`
-#include `<vector>`
-#include `<string>`
-#include `<algorithm>`
+```cpp
+#include <iostream>
+#include <vector>
+#include <string>
+#include <algorithm>
 
 // 抽象观察者
 class Observer {
@@ -2613,7 +2592,7 @@ public:
 // 具体主题：股票
 class Stock :public Subject {
 private:
-    ``std::`vector`<Observer*>` observers;
+    std::vector<Observer*> observers;
     std::string stockName;
     double price;
 
@@ -2622,7 +2601,7 @@ public:
 
     void attach(Observer* observer) override {
         observers.push_back(observer);
-        std::cout `<< observer << " attached to " << stockName << std::endl;
+        std::cout << observer << " attached to " << stockName << std::endl;
     }
     void detach(Observer* observer) override {
         observers.erase(std::remove(observers.begin(), observers.end(), observer), observers.end());
@@ -2630,7 +2609,7 @@ public:
     }
     void notify() override {
         for (Observer* obs : observers) {
-            obs->`update(stockName, price);
+            obs->update(stockName, price);
         }
     }
 
@@ -2653,7 +2632,7 @@ private:
 public:
     Investor(conststd::string& n) : name(n) {}
     void update(const std::string& stockName, double price) override {
-        std::cout `<< name << " received update: " << stockName << " new price is " << price << std::endl;
+        std::cout << name << " received update: " << stockName << " new price is " << price << std::endl;
     }
 };
 
@@ -2664,18 +2643,18 @@ public:
 //     Investor* investor2 = new Investor("Bob");
 //     Investor* investor3 = new Investor("Charlie");
 
-//     googleStock->`attach(investor1);
+//     googleStock->attach(investor1);
 //     googleStock->attach(investor2);
 //     googleStock->attach(investor3);
 
-//     std::cout `<< "\nChanging Google stock price..." << std::endl;
-//     googleStock->`setPrice(1510.5);
+//     std::cout << "\nChanging Google stock price..." << std::endl;
+//     googleStock->setPrice(1510.5);
 
-//     std::cout `<< "\nDetaching Bob..." << std::endl;
-//     googleStock->`detach(investor2);
+//     std::cout << "\nDetaching Bob..." << std::endl;
+//     googleStock->detach(investor2);
 
-//     std::cout `<< "\nChanging Google stock price again..." << std::endl;
-//     googleStock->`setPrice(1505.0);
+//     std::cout << "\nChanging Google stock price again..." << std::endl;
+//     googleStock->setPrice(1505.0);
 
 //     delete googleStock;
 //     delete investor1;
@@ -2685,7 +2664,6 @@ public:
 //     return 0;
 // }
 ```
-
 使用场景：
 
 + GUI事件处理：当用户界面中的某个组件（如按钮）发生事件时，需要通知其他组件进行响应。
@@ -2726,9 +2704,9 @@ C++代码实现：
 
 假设我们有一个电梯系统，电梯有开门、关门、运行、停止等状态。
 
-```plain
-#include `<iostream>`
-#include `<string>`
+```cpp
+#include <iostream>
+#include <string>
 
 // 前向声明
 class Elevator;
@@ -2748,7 +2726,7 @@ class StoppedState :public ElevatorState {
 public:
     void openDoor(Elevator* elevator) override;
     void closeDoor(Elevator* elevator) override {
-        std::cout `<< "Elevator is already stopped, closing door." << std::endl;
+        std::cout << "Elevator is already stopped, closing door." << std::endl;
         // 保持在停止状态
     }
     void run(Elevator* elevator) override;
@@ -2808,7 +2786,7 @@ public:
         currentState = state;
     }
 
-    void openDoor() { currentState->`openDoor(this); }
+    void openDoor() { currentState->openDoor(this); }
     void closeDoor() { currentState->closeDoor(this); }
     void run() { currentState->run(this); }
     void stop() { currentState->stop(this); }
@@ -2816,22 +2794,22 @@ public:
 
 // 解决循环依赖，在Elevator定义后实现状态转换
 void StoppedState::openDoor(Elevator* elevator) {
-    std::cout `<< "Elevator door opened." << std::endl;
-    elevator->`setState(new OpenedState());
+    std::cout << "Elevator door opened." << std::endl;
+    elevator->setState(new OpenedState());
 }
 void StoppedState::run(Elevator* elevator) {
-    std::cout `<< "Elevator started running." << std::endl;
-    elevator->`setState(new RunningState());
+    std::cout << "Elevator started running." << std::endl;
+    elevator->setState(new RunningState());
 }
 
 void OpenedState::closeDoor(Elevator* elevator) {
-    std::cout `<< "Elevator door closed." << std::endl;
-    elevator->`setState(new StoppedState());
+    std::cout << "Elevator door closed." << std::endl;
+    elevator->setState(new StoppedState());
 }
 
 void RunningState::stop(Elevator* elevator) {
-    std::cout `<< "Elevator stopped." << std::endl;
-    elevator->`setState(new StoppedState());
+    std::cout << "Elevator stopped." << std::endl;
+    elevator->setState(new StoppedState());
 }
 
 // int main() {
@@ -2849,7 +2827,6 @@ void RunningState::stop(Elevator* elevator) {
 //     return 0;
 // }
 ```
-
 使用场景：
 
 + 工作流/状态机：当一个对象的行为在不同状态下有显著差异，并且状态之间有明确的转换规则时。例如，订单状态（待支付、已支付、已发货）、游戏角色状态（站立、行走、跳跃）。
@@ -2888,9 +2865,9 @@ C++代码实现：
 
 假设我们有一个电商网站，需要根据不同的促销活动计算商品价格。
 
-```plain
-#include `<iostream>`
-#include `<string>`
+```cpp
+#include <iostream>
+#include <string>
 
 // 抽象策略：价格计算策略
 class PricingStrategy {
@@ -2903,7 +2880,7 @@ public:
 class NormalPricingStrategy :public PricingStrategy {
 public:
     double calculatePrice(double originalPrice) const override {
-        std::cout `<< "Applying normal pricing." << std::endl;
+        std::cout << "Applying normal pricing." << std::endl;
         return originalPrice;
     }
 };
@@ -2929,7 +2906,7 @@ public:
     CouponPricingStrategy(double t, double d) : threshold(t), deduction(d) {}
     double calculatePrice(double originalPrice) const override {
         std::cout << "Applying coupon pricing (Threshold: " << threshold << ", Deduction: " << deduction << ")." << std::endl;
-        if (originalPrice >`= threshold) {
+        if (originalPrice >= threshold) {
             return originalPrice - deduction;
         } else {
             return originalPrice;
@@ -2962,7 +2939,7 @@ public:
         if (strategy) {
             return strategy->calculatePrice(itemPrice);
         } else {
-            std::cout `<< "No pricing strategy set, using original price." << std::endl;
+            std::cout << "No pricing strategy set, using original price." << std::endl;
             return itemPrice;
         }
     }
@@ -2972,27 +2949,26 @@ public:
 //     ShoppingCart* cart = new ShoppingCart(120.0);
 
 //     // 使用正常价格策略
-//     cart->`setPricingStrategy(new NormalPricingStrategy());
-//     std::cout `<< "Final price: $" << cart->`checkout() `<< std::endl; // 120.0
+//     cart->setPricingStrategy(new NormalPricingStrategy());
+//     std::cout << "Final price: $" << cart->checkout() << std::endl; // 120.0
 
 //     std::cout << "\n";
 
 //     // 使用打折策略
-//     cart->`setPricingStrategy(new DiscountPricingStrategy(0.8)); // 8折
-//     std::cout `<< "Final price: $" << cart->`checkout() `<< std::endl; // 96.0
+//     cart->setPricingStrategy(new DiscountPricingStrategy(0.8)); // 8折
+//     std::cout << "Final price: $" << cart->checkout() << std::endl; // 96.0
 
 //     std::cout << "\n";
 
 //     // 使用满减策略
-//     cart->`setPricingStrategy(new CouponPricingStrategy(100.0, 20.0)); // 满100减20
-//     std::cout `<< "Final price: $" << cart->`checkout() `<< std::endl; // 100.0
+//     cart->setPricingStrategy(new CouponPricingStrategy(100.0, 20.0)); // 满100减20
+//     std::cout << "Final price: $" << cart->checkout() << std::endl; // 100.0
 
 //     delete cart;
 
 //     return 0;
 // }
 ```
-
 使用场景：
 
 + 多种算法选择：当一个问题有多种算法实现，并且需要在运行时动态选择时。例如，排序算法（冒泡、快速、归并）、加密算法。
@@ -3030,9 +3006,9 @@ C++代码实现：
 
 假设我们有一个制作饮料的流程，包括烧水、冲泡、倒入杯中、加调料。其中冲泡和加调料的步骤对于咖啡和茶是不同的。
 
-```plain
-#include <iostream>`
-#include `<string>`
+```cpp
+#include <iostream>
+#include <string>
 
 // 抽象类：饮料制作模板
 class BeverageMaker {
@@ -3045,7 +3021,7 @@ public:
         brew(); // 抽象方法，由子类实现
         pourInCup();
         addCondiments(); // 抽象方法，由子类实现
-        std::cout `<< "Beverage is ready!\n" << std::endl;
+        std::cout << "Beverage is ready!\n" << std::endl;
     }
 
 protected:
@@ -3090,11 +3066,11 @@ protected:
 // int main() {
 //     std::cout << "Making coffee:" << std::endl;
 //     CoffeeMaker* coffee = new CoffeeMaker();
-//     coffee->`makeBeverage();
+//     coffee->makeBeverage();
 
-//     std::cout `<< "Making tea:" << std::endl;
+//     std::cout << "Making tea:" << std::endl;
 //     TeaMaker* tea = new TeaMaker();
-//     tea->`makeBeverage();
+//     tea->makeBeverage();
 
 //     delete coffee;
 //     delete tea;
@@ -3102,7 +3078,6 @@ protected:
 //     return 0;
 // }
 ```
-
 使用场景：
 
 + 框架设计：在框架中定义算法的骨架，让开发者通过继承实现特定步骤。
@@ -3144,10 +3119,10 @@ C++代码实现：
 
 假设我们有一个图形结构，包含圆形和矩形。我们需要对这些图形执行不同的操作，例如绘制和计算面积。
 
-```plain
-#include `<iostream>`
-#include `<vector>`
-#include `<string>`
+```cpp
+#include <iostream>
+#include <vector>
+#include <string>
 
 // 前向声明
 class Circle;
@@ -3198,10 +3173,10 @@ public:
 class DrawVisitor :public ShapeVisitor {
 public:
     void visit(Circle* circle) override {
-        std::cout `<< "Drawing Circle with radius: " << circle->`getRadius() `<< std::endl;
+        std::cout << "Drawing Circle with radius: " << circle->getRadius() << std::endl;
     }
     void visit(Rectangle* rectangle) override {
-        std::cout << "Drawing Rectangle with width: " << rectangle->`getWidth() `<< ", height: " << rectangle->`getHeight() `<< std::endl;
+        std::cout << "Drawing Rectangle with width: " << rectangle->getWidth() << ", height: " << rectangle->getHeight() << std::endl;
     }
 };
 
@@ -3209,15 +3184,15 @@ public:
 class AreaVisitor :public ShapeVisitor {
 public:
     void visit(Circle* circle) override {
-        std::cout << "Area of Circle: " << 3.14159 * circle->`getRadius() * circle->getRadius() `<< std::endl;
+        std::cout << "Area of Circle: " << 3.14159 * circle->getRadius() * circle->getRadius() << std::endl;
     }
     void visit(Rectangle* rectangle) override {
-        std::cout << "Area of Rectangle: " << rectangle->`getWidth() * rectangle->getHeight() `<< std::endl;
+        std::cout << "Area of Rectangle: " << rectangle->getWidth() * rectangle->getHeight() << std::endl;
     }
 };
 
 // int main() {
-//`std::vector<Shape*>`shapes;
+//std::vector<Shape*>shapes;
 //     shapes.push_back(new Circle(5.0));
 //     shapes.push_back(new Rectangle(4.0, 6.0));
 //     shapes.push_back(new Circle(3.0));
@@ -3225,14 +3200,14 @@ public:
 //     DrawVisitor* drawVisitor = new DrawVisitor();
 //     AreaVisitor* areaVisitor = new AreaVisitor();
 
-//     std::cout `<< "\n--- Drawing Shapes ---" << std::endl;
+//     std::cout << "\n--- Drawing Shapes ---" << std::endl;
 //     for (Shape* shape : shapes) {
-//         shape->`accept(drawVisitor);
+//         shape->accept(drawVisitor);
 //     }
 
-//     std::cout `<< "\n--- Calculating Areas ---" << std::endl;
+//     std::cout << "\n--- Calculating Areas ---" << std::endl;
 //     for (Shape* shape : shapes) {
-//         shape->`accept(areaVisitor);
+//         shape->accept(areaVisitor);
 //     }
 
 //     // 清理内存

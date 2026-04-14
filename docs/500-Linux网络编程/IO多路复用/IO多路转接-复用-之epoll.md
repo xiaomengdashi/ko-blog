@@ -25,7 +25,7 @@ epoll 全称 eventpoll，是 linux 内核实现IO多路转接/复用（IO multip
 在epoll中一共提供是三个API函数，分别处理不同的操作，函数原型如下：
 
 ```cpp
-#include `<sys/epoll.h>`
+#include <sys/epoll.h>
 // 创建epoll实例，通过一棵红黑树管理待检测集合
 int epoll_create(int size);
 // 管理红黑树上的文件描述符(添加、修改、删除)
@@ -33,7 +33,6 @@ int epoll_ctl(int epfd, int op, int fd, struct epoll_event *event);
 // 检测epoll树中是否有就绪的文件描述符
 int epoll_wait(int epfd, struct epoll_event * events, int maxevents, int timeout);
 ```
-
 select/poll低效的原因之一是将“添加/维护待检测任务”和“阻塞进程/线程”两个步骤合二为一。每次调用select都需要这两步操作，然而大多数应用场景中，需要监视的socket个数相对固定，并不需要每次都修改。epoll将这两个操作分开，先用`epoll_ctl()`维护等待队列，再调用`epoll_wait()`阻塞进程（解耦）。通过下图的对比显而易见，epoll的效率得到了提升。
 
 ![](/img/posts/610557b4d68b4ffff5ffd6e739676af3.png)
@@ -43,7 +42,6 @@ select/poll低效的原因之一是将“添加/维护待检测任务”和“�
 ```cpp
 int epoll_create(int size);
 ```
-
 + 函数参数 size：在Linux内核2.6.8版本以后，这个参数是被忽略的，只需要指定一个大于0的数值就可以了。
 + 函数返回值：
     - 失败：返回-1
@@ -66,7 +64,6 @@ struct epoll_event {
 };
 int epoll_ctl(int epfd, int op, int fd, struct epoll_event *event);
 ```
-
 + 函数参数：
     - epfd：epoll_create() 函数的返回值，通过这个参数找到epoll实例
     - op：这是一个枚举值，控制通过该函数执行什么操作
@@ -89,7 +86,6 @@ int epoll_ctl(int epfd, int op, int fd, struct epoll_event *event);
 ```cpp
 int epoll_wait(int epfd, struct epoll_event * events, int maxevents, int timeout);
 ```
-
 + 函数参数：
     - epfd：epoll_create() 函数的返回值, 通过这个参数找到epoll实例
     - events：传出参数, 这是一个结构体数组的地址, 里边存储了已就绪的文件描述符的信息
@@ -113,32 +109,27 @@ int epoll_wait(int epfd, struct epoll_event * events, int maxevents, int timeout
 ```cpp
 int lfd = socket(AF_INET, SOCK_STREAM, 0);
 ```
-
 2. `设置端口复用（可选）`
 
 ```cpp
 int opt = 1;
 setsockopt(lfd, SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(opt));
 ```
-
 3. `使用本地的IP与端口和监听的套接字进行绑定`
 
 ```cpp
 int ret = bind(lfd, (struct sockaddr*)&serv_addr, sizeof(serv_addr));
 ```
-
 4. `给监听的套接字设置监听`
 
 ```cpp
 listen(lfd, 128);
 ```
-
 5. `创建epoll实例对象`
 
 ```cpp
 int epfd = epoll_create(100);
 ```
-
 6. `将用于监听的套接字添加到epoll实例中`
 
 ```cpp
@@ -147,13 +138,11 @@ ev.events = EPOLLIN;    // 检测lfd读读缓冲区是否有数据
 ev.data.fd = lfd;
 int ret = epoll_ctl(epfd, EPOLL_CTL_ADD, lfd, &ev);
 ```
-
 7. `检测添加到epoll实例中的文件描述符是否已就绪，并将这些已就绪的文件描述符进行处理`
 
 ```cpp
 int num = epoll_wait(epfd, evs, size, -1);
 ```
-
     - `如果是监听的文件描述符，和新客户端建立连接，将得到的文件描述符添加到epoll实例中`
 
 ```cpp
@@ -163,7 +152,6 @@ ev.data.fd = cfd;
 // 新得到的文件描述符添加到epoll模型中, 下一轮循环的时候就可以被检测了
 epoll_ctl(epfd, EPOLL_CTL_ADD, cfd, &ev);
 ```
-
     - `如果是通信的文件描述符，和对应的客户端通信，如果连接已断开，将该文件描述符从epoll实例中删除`
 
 ```cpp
@@ -179,21 +167,20 @@ else if(len > 0)
     send(curfd, buf, len, 0);
 }
 ```
-
 8. 重复第7步的操作
 
 #### 3.2. 示例代码
 ```cpp
-#include `<stdio.h>`
-#include `<ctype.h>`
-#include `<unistd.h>`
-#include `<stdlib.h>`
-#include `<sys/types.h>`
-#include `<sys/stat.h>`
-#include `<string.h>`
-#include `<arpa/inet.h>`
-#include `<sys/socket.h>`
-#include `<sys/epoll.h>`
+#include <stdio.h>
+#include <ctype.h>
+#include <unistd.h>
+#include <stdlib.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <string.h>
+#include <arpa/inet.h>
+#include <sys/socket.h>
+#include <sys/epoll.h>
 
 // server
 int main(int argc, const char* argv[])
@@ -261,7 +248,7 @@ int main(int argc, const char* argv[])
     {
         // 调用一次, 检测一次
         int num = epoll_wait(epfd, evs, size, -1);
-        for(int i=0; `i`<num; ++i)
+        for(int i=0; i<num; ++i)
         {
             // 取出当前的文件描述符
             int curfd = evs[i].data.fd;
@@ -294,7 +281,7 @@ int main(int argc, const char* argv[])
                     epoll_ctl(epfd, EPOLL_CTL_DEL, curfd, NULL);
                     close(curfd);
                 }
-                else if(len >` 0)
+                else if(len > 0)
                 {
                     printf("客户端say: %s\n", buf);
                     send(curfd, buf, len, 0);
@@ -311,14 +298,12 @@ int main(int argc, const char* argv[])
     return 0;
 }
 ```
-
 当在服务器端循环调用`epoll_wait()`的时候，就会得到一个就绪列表，并通过该函数的第二个参数传出：
 
 ```cpp
 struct epoll_event evs[1024];
 int num = epoll_wait(epfd, evs, size, -1);
 ```
-
 每当`epoll_wait()`函数返回一次，在`evs`中最多可以存储`size`个已就绪的文件描述符信息，但是在这个数组中实际存储的有效元素个数为`num`个，如果在这个epoll实例的红黑树中已就绪的文件描述符很多，并且`evs`数组无法将这些信息全部传出，那么这些信息会在下一次`epoll_wait()`函数返回的时候被传出。
 
 通过`evs`数组被传递出的每一个有效元素里边都包含了已就绪的文件描述符的相关信息，这些信息并不是凭空得来的，这取决于我们在往epoll实例中添加节点的时候，往节点中初始化了哪些数据：
@@ -331,7 +316,6 @@ ev.data.fd = lfd;	// 使用了联合体中 fd 成员
 // 添加待检测节点到epoll实例中
 int ret = epoll_ctl(epfd, EPOLL_CTL_ADD, lfd, &ev);
 ```
-
 在添加节点的时候，需要对这个`struct epoll_event`类型的节点进行初始化，当这个节点对应的文件描述符变为已就绪状态，这些被传入的初始化信息就会被原样传出，这个对应关系必须要搞清楚。
 
 ### 4. epoll的工作模式
@@ -377,12 +361,11 @@ int ret = epoll_ctl(epfd, EPOLL_CTL_ADD, lfd, &ev);
 struct epoll_event ev;
 ev.events = EPOLLIN | EPOLLET;	// 设置边沿模式
 ```
-
 示例代码如下：
 
 ```cpp
 int num = epoll_wait(epfd, evs, size, -1);
-for(int i=0; i`<num; ++i)
+for(int i=0; i<num; ++i)
 {
     // 取出当前的文件描述符
     int curfd = evs[i].data.fd;
@@ -405,7 +388,6 @@ for(int i=0; i`<num; ++i)
     }
 }
 ```
-
 ##### 4.2.2. 设置非阻塞
 对于写事件的触发一般情况下是不需要进行检测的，因为写缓冲区大部分情况下都是有足够的空间可以进行数据的写入。对于读事件的触发就必须要检测了，因为服务器也不知道客户端什么时候发送数据，如果使用epoll的边沿模式进行读事件的检测，有新数据达到只会通知一次，那么必须要保证得到通知后将数据全部从读缓冲区中读出。那么，应该如何读这些数据呢？
 
@@ -416,12 +398,11 @@ for(int i=0; i`<num; ++i)
 
 ```cpp
 int len = 0;
-while((len = recv(curfd, buf, sizeof(buf), 0)) >` 0)
+while((len = recv(curfd, buf, sizeof(buf), 0)) > 0)
 {
     // 数据处理...
 }
 ```
-
 这样做也是有弊端的，因为套接字操作默认是阻塞的，当读缓冲区数据被读完之后，读操作就阻塞了也就是调用的`read()/recv()`函数被阻塞了，当前进程/线程被阻塞之后就无法处理其他操作了。
 
 要解决阻塞问题，就需要将套接字默认的阻塞行为修改为非阻塞，需要使用`fcntl()`函数进行处理：
@@ -432,7 +413,6 @@ int flag = fcntl(cfd, F_GETFL);
 flag |= O_NONBLOCK;                                                        
 fcntl(cfd, F_SETFL, flag);
 ```
-
 [fcntl函数的使用详解](https://subingwen.cn/linux/fcntl-dup2/#3-fcntl)
 
 通过上述分析就可以得出一个结论：epoll在边沿模式下，必须要将套接字设置为非阻塞模式，但是，这样就会引发另外的一个bug，在非阻塞模式下，循环地将读缓冲区数据读到本地内存中，当缓冲区数据被读完了，调用的`read()/recv()`函数还会继续从缓冲区中读数据，此时函数调用就失败了，返回-1，对应的全局变量 errno 值为 `EAGAIN` 或者 `EWOULDBLOCK`如果打印错误信息会得到如下的信息：`Resource temporarily unavailable`
@@ -453,21 +433,20 @@ if(len == -1)
     }
 }
 ```
-
 ##### 4.2.3. 示例代码
 ```cpp
-#include `<stdio.h>`
-#include `<ctype.h>`
-#include `<unistd.h>`
-#include `<stdlib.h>`
-#include `<sys/types.h>`
-#include `<sys/stat.h>`
-#include `<string.h>`
-#include `<arpa/inet.h>`
-#include `<sys/socket.h>`
-#include `<sys/epoll.h>`
-#include `<fcntl.h>`
-#include `<errno.h>`
+#include <stdio.h>
+#include <ctype.h>
+#include <unistd.h>
+#include <stdlib.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <string.h>
+#include <arpa/inet.h>
+#include <sys/socket.h>
+#include <sys/epoll.h>
+#include <fcntl.h>
+#include <errno.h>
 
 // server
 int main(int argc, const char* argv[])
@@ -540,7 +519,7 @@ int main(int argc, const char* argv[])
         int num = epoll_wait(epfd, evs, size, -1);
         printf("==== num: %d\n", num);
 
-        for(int i=0; `i`<num; ++i)
+        for(int i=0; i<num; ++i)
         {
             // 取出当前的文件描述符
             int curfd = evs[i].data.fd;
@@ -577,7 +556,7 @@ int main(int argc, const char* argv[])
                     int len = recv(curfd, buf, sizeof(buf), 0);
                     if(len == 0)
                     {
-                        // 非阻塞模式下和阻塞模式是一样的 =>` 判断对方是否断开连接
+                        // 非阻塞模式下和阻塞模式是一样的 => 判断对方是否断开连接
                         printf("客户端断开了连接...\n");
                         // 将这个文件描述符从epoll模型中删除
                         epoll_ctl(epfd, EPOLL_CTL_DEL, curfd, NULL);

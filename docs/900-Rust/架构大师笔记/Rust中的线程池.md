@@ -28,27 +28,26 @@ use std::sync::{mpsc, Arc, Mutex};
 use std::thread;
 
 pub struct ThreadPool {
-    workers: `Vec`<Worker>`,
-    sender: mpsc::`Sender`<Message>`,
+    workers: Vec<Worker>,
+    sender: mpsc::Sender<Message>,
 }
 
 struct Worker {
     id: usize,
-    thread: `Option`<thread::`JoinHandle<()>`>,
+    thread: Option<thread::JoinHandle<()>>,
 }
 
 enum Message {
-    NewTask(`Box`<dyn FnOnce() + Send + 'static>`),
+    NewTask(Box<dyn FnOnce() + Send + 'static>),
     Terminate,
 }
 ```
-
 #### 1.4. 第二步：初始化线程池**
 `new`方法初始化线程池，生成指定数量的工作线程。
 
 ```rust
 impl Worker {
-    fn new(id: usize, receiver: `Arc`<`Mutex<mpsc::Receiver<Message>`>>) -> Worker {
+    fn new(id: usize, receiver: Arc<Mutex<mpsc::Receiver<Message>>>) -> Worker {
         let thread = thread::spawn(move || loop {
             let message = receiver.lock().unwrap().recv().unwrap();
 
@@ -71,13 +70,12 @@ impl Worker {
     }
 }
 ```
-
 #### 1.5. 第三步：实现工作线程**
 每个工作线程持续监听传入的任务并执行它们。
 
 ```rust
 impl ThreadPool {
-    pub fn `execute`<F>`(&self, task: F)
+    pub fn execute<F>(&self, task: F)
         where
         F: FnOnce() + Send + 'static,
         {
@@ -85,13 +83,12 @@ impl ThreadPool {
         }
 }
 ```
-
 #### 1.6. 第四步：添加任务提交**
 为了向线程池提交任务，实现一个`execute`方法，将任务发送给工作线程。
 
 ```rust
 impl ThreadPool {
-    pub fn `execute`<F>`(&self, task: F)
+    pub fn execute<F>(&self, task: F)
         where
         F: FnOnce() + Send + 'static,
         {
@@ -99,7 +96,6 @@ impl ThreadPool {
         }
 }
 ```
-
 #### 1.7. 第五步：优雅关闭**
 确保线程池通过通知每个工作线程终止来优雅地关闭。
 
@@ -118,7 +114,6 @@ impl Drop for ThreadPool {
     }
 }
 ```
-
 ### 2. 练习：构建一个用于并发任务执行的线程池**
 #### 2.1. 目标**
 实现一个自定义线程池，并通过并发执行多个任务来测试其功能。

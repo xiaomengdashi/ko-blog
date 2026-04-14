@@ -14,7 +14,7 @@ slug: /Rust/架构大师笔记/Rust开发笔记-LinkedList-双向链表
 use std::collections::LinkedList;
 
 fn main() {
-    let mut list: `LinkedList`<i32>` = LinkedList::new();
+    let mut list: LinkedList<i32> = LinkedList::new();
     list.push_back(1);
     list.push_back(2);
     list.push_back(3);
@@ -24,7 +24,6 @@ fn main() {
     }
 }
 ```
-
 上面的例子中，我们创建了一个存储`i32`类型数据的链表，并向其中添加了三个元素。最后，我们迭代链表并打印每个元素的值。
 
 ### 1. LinkedList的基本操作**
@@ -35,7 +34,7 @@ fn main() {
 use std::collections::LinkedList;
 
 fn main() {
-    let mut list: `LinkedList`<i32>` = LinkedList::new();
+    let mut list: LinkedList<i32> = LinkedList::new();
     list.push_front(1); // 在头部插入
     list.push_back(2);  // 在尾部插入
     list.push_front(3); // 在头部插入
@@ -45,7 +44,6 @@ fn main() {
     }
 }
 ```
-
 运行结果为：
 
 ```rust
@@ -53,7 +51,6 @@ fn main() {
 1
 2
 ```
-
 #### 1.2. 删除操作**
 类似地，`LinkedList`也提供了从头部和尾部删除元素的方法：`pop_front`和`pop_back`。
 
@@ -61,7 +58,7 @@ fn main() {
 use std::collections::LinkedList;
 
 fn main() {
-    let mut list: `LinkedList`<i32>` = LinkedList::new();
+    let mut list: LinkedList<i32> = LinkedList::new();
     list.push_back(1);
     list.push_back(2);
     list.push_back(3);
@@ -74,13 +71,11 @@ fn main() {
     }
 }
 ```
-
 运行结果为：
 
 ```rust
 2
 ```
-
 ### 2. LinkedList的高级操作**
 #### 2.1. 迭代器**
 Rust中的`LinkedList`提供了多种迭代器，允许我们以不同的方式遍历链表。除了常规的不可变迭代器外，还有可变迭代器和消费性迭代器。
@@ -89,7 +84,7 @@ Rust中的`LinkedList`提供了多种迭代器，允许我们以不同的方式�
 use std::collections::LinkedList;
 
 fn main() {
-    let mut list: `LinkedList`<i32>` = LinkedList::new();
+    let mut list: LinkedList<i32> = LinkedList::new();
     list.push_back(1);
     list.push_back(2);
     list.push_back(3);
@@ -110,7 +105,6 @@ fn main() {
     }
 }
 ```
-
 #### 2.2. 索引操作**
 尽管链表的索引操作是O(n)复杂度，但我们仍然可以通过遍历获取指定索引处的元素：
 
@@ -118,7 +112,7 @@ fn main() {
 use std::collections::LinkedList;
 
 fn main() {
-    let mut list: `LinkedList`<i32>` = LinkedList::new();
+    let mut list: LinkedList<i32> = LinkedList::new();
     list.push_back(1);
     list.push_back(2);
     list.push_back(3);
@@ -131,7 +125,6 @@ fn main() {
     }
 }
 ```
-
 #### 2.3. 性能比较**
 与其他数据结构相比，链表在某些操作上有其独特的优势。比如，在需要频繁插入和删除操作的场景中，链表的表现优于数组。然而，由于链表的随机访问性能不佳，在需要频繁索引操作的场合，数组可能是更好的选择。
 
@@ -142,16 +135,16 @@ fn main() {
 首先，我们定义一个节点结构，每个节点包含一个值和一个指向下一个节点的可选指针：
 
 ```rust
-struct `Node`<T>` {
+struct Node<T> {
     value: T,
-    next: `Option`<`Box<Node<T>`>>,
+    next: Option<Box<Node<T>>>,
 }
 
-struct `LinkedList`<T>` {
-    head: `Option`<`Box<Node<T>`>>,
+struct LinkedList<T> {
+    head: Option<Box<Node<T>>>,
 }
 
-`impl`<T>` `LinkedList`<T>` {
+impl<T> LinkedList<T> {
     fn new() -> Self {
         LinkedList { head: None }
     }
@@ -164,7 +157,7 @@ struct `LinkedList`<T>` {
         self.head = Some(new_node);
     }
 
-    fn pop_front(&mut self) -> `Option`<T>` {
+    fn pop_front(&mut self) -> Option<T> {
         self.head.take().map(|node| {
             self.head = node.next;
             node.value
@@ -172,7 +165,6 @@ struct `LinkedList`<T>` {
     }
 }
 ```
-
 在上述代码中，我们定义了一个泛型节点结构`Node`，并定义了链表`LinkedList`。链表提供了两个基本操作：在头部插入元素和从头部删除元素。
 
 #### 3.2. 使用手动实现的链表**
@@ -190,7 +182,6 @@ fn main() {
     }
 }
 ```
-
 运行结果为：
 
 ```rust
@@ -198,23 +189,22 @@ fn main() {
 2
 1
 ```
-
 #### 3.3. 双向链表的实现**
 相比单向链表，双向链表具有更多的灵活性，因为它允许我们在链表的两端进行操作。我们可以进一步扩展我们的链表实现，使其成为双向链表。
 
 ```rust
-struct `DNode`<T>` {
+struct DNode<T> {
     value: T,
-    next: `Option`<`Box<DNode<T>`>>,
-    prev: `Option`<*mut `DNode<T>`>,
+    next: Option<Box<DNode<T>>>,
+    prev: Option<*mut DNode<T>>,
 }
 
-struct `DoublyLinkedList`<T>` {
-    head: `Option`<`Box<DNode<T>`>>,
-    tail: `Option`<*mut `DNode<T>`>,
+struct DoublyLinkedList<T> {
+    head: Option<Box<DNode<T>>>,
+    tail: Option<*mut DNode<T>>,
 }
 
-`impl`<T>` `DoublyLinkedList`<T>` {
+impl<T> DoublyLinkedList<T> {
     fn new() -> Self {
         DoublyLinkedList { head: None, tail: None }
     }
@@ -255,7 +245,7 @@ struct `DoublyLinkedList`<T>` {
         self.tail = Some(node_ptr);
     }
 
-    fn pop_front(&mut self) -> `Option`<T>` {
+    fn pop_front(&mut self) -> Option<T> {
         self.head.take().map(|mut node| {
             if let Some(next) = node.next.take() {
                 self.head = Some(next);
@@ -267,7 +257,7 @@ struct `DoublyLinkedList`<T>` {
         })
     }
 
-    fn pop_back(&mut self) -> `Option`<T>` {
+    fn pop_back(&mut self) -> Option<T> {
         self.tail.take().map(|tail| {
             let tail = unsafe { Box::from_raw(tail) };
             if let Some(prev) = tail.prev {
@@ -281,7 +271,6 @@ struct `DoublyLinkedList`<T>` {
     }
 }
 ```
-
 #### 3.4. 使用双向链表**
 我们可以通过以下示例代码使用我们手动实现的双向链表：
 
@@ -297,7 +286,6 @@ fn main() {
     }
 }
 ```
-
 运行结果为：
 
 ```rust

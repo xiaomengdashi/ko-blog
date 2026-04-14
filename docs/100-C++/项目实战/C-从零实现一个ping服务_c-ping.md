@@ -117,7 +117,6 @@ uint8_t    id_data[1];
 #define	icmp_data	icmp_dun.id_data
 };
 ```
-
 ### 3. Ping服务实现
 #### 3.1. 系统调用函数
 **原始套接字**
@@ -130,7 +129,6 @@ int socket(int domain, int type, int protocol);
 
 int _sockfd = socket(AF_INET, SOCK_RAW, IPPROTO_ICMP);  //使用原始套接字
 ```
-
 **信号转换**
 
 在Linux中的ping服务一般通过ctl+c来实现终止，所以得要将信号执行函数替换成自己的函数。
@@ -147,7 +145,6 @@ signal(SIGINT, [](int sig)
     printf("sig:%d", sig);
 } );
 ```
-
 **「域名转换为IP地址」**
 
 在Linux中将域名转成ip地址的函数有gethostbyname，但其在新版本的linux中已经被废弃，所以这里使用较新的getaddrinfo。
@@ -170,26 +167,25 @@ const char *restrict service,            //DNS服务器地址，可为空
 const struct addrinfo *restrict hints,   //用于限定获取的数据
 struct addrinfo **restrict res);         //结果存放的指针
 ```
-
 #### 3.2. 具体实现
 ping服务的实现使用了类来进行封装，从而使得其更简洁易懂。
 
 **头文件声明**
 
 ```cpp
-#include `<netdb.h>`
-#include `<sys/socket.h>`
-#include `<netinet/in.h>`
-#include `<arpa/inet.h>`
-#include `<signal.h>`
-#include `<unistd.h>`
-#include `<stdlib.h>`
-#include `<string.h>`
-#include `<netinet/ip_icmp.h>`
-#include `<string>`
-#include `<iostream>`
-#include `<format>`
-#include `<thread>`
+#include <netdb.h>
+#include <sys/socket.h>
+#include <netinet/in.h>
+#include <arpa/inet.h>
+#include <signal.h>
+#include <unistd.h>
+#include <stdlib.h>
+#include <string.h>
+#include <netinet/ip_icmp.h>
+#include <string>
+#include <iostream>
+#include <format>
+#include <thread>
 
 
 class PingServer
@@ -229,27 +225,26 @@ std::chrono::system_clock::time_point PingServer::_oldTime = std::chrono::system
 int PingServer::_sendSeq = 0;
 int PingServer::_recvSeq = 0;
 ```
-
 > 介绍完类的成员，也该到其实现了⬇️。
 >
 
 ```cpp
-#include `<netdb.h>`
-#include `<sys/socket.h>`
-#include `<netinet/in.h>`
-#include `<arpa/inet.h>`
-#include `<signal.h>`
-#include `<unistd.h>`
-#include `<stdlib.h>`
-#include `<assert.h>`
-#include `<stdio.h>`
-#include `<string.h>`
-#include `<netinet/ip_icmp.h>`
-#include `<string>`
-#include `<iostream>`
-#include `<format>`
-#include `<future>`
-#include `<thread>`
+#include <netdb.h>
+#include <sys/socket.h>
+#include <netinet/in.h>
+#include <arpa/inet.h>
+#include <signal.h>
+#include <unistd.h>
+#include <stdlib.h>
+#include <assert.h>
+#include <stdio.h>
+#include <string.h>
+#include <netinet/ip_icmp.h>
+#include <string>
+#include <iostream>
+#include <format>
+#include <future>
+#include <thread>
 
 
 //TODO chrono时钟实现超时
@@ -272,10 +267,10 @@ public:
     static void TimeEnd()
     {
         auto now = std::chrono::system_clock::now();
-        auto sum = std::chrono::`duration_cast`<std::chrono::milliseconds>`(now-_oldTime).count();
+        auto sum = std::chrono::duration_cast<std::chrono::milliseconds>(now-_oldTime).count();
         int loss = ((double)(_sendSeq - _recvSeq) / _sendSeq) * 100;
 
-        std::cout `<< std::format("\n{} packets transimitted, {} received, {}% packet loss, time {}ms", _sendSeq, _recvSeq, loss, sum) << std::endl;
+        std::cout << std::format("\n{} packets transimitted, {} received, {}% packet loss, time {}ms", _sendSeq, _recvSeq, loss, sum) << std::endl;
     }
 
 private:
@@ -297,7 +292,7 @@ private:
             exit(EXIT_FAILURE);
         }
 
-        sockaddr_in* ipv4 = (sockaddr_in*)res->`ai_addr;  //转换成sockaddr_in结构 sockaddr->sockaddr_in
+        sockaddr_in* ipv4 = (sockaddr_in*)res->ai_addr;  //转换成sockaddr_in结构 sockaddr->sockaddr_in
         memcpy(&_destAddr, ipv4, sizeof(sockaddr_in));
     }
 
@@ -319,7 +314,7 @@ private:
 
             if(sendto(_sockfd, &icmphdr, sizeof(icmphdr), 0, (struct sockaddr*)&_destAddr, sizeof(_destAddr)) <= 0)
             {   //发送数据
-                std::cout `<< "send data fail " << _ip << std::endl;
+                std::cout << "send data fail " << _ip << std::endl;
                 exit(EXIT_FAILURE);
             }
 
@@ -334,26 +329,26 @@ private:
             sockaddr_in addr{};
             socklen_t fromLen = sizeof(_destAddr);
             ssize_t n = recvfrom(_sockfd, _recvData, sizeof(_recvData), 0, (sockaddr*)&addr, &fromLen);
-            if(n >` 0)
+            if(n > 0)
             {   
                 struct ip* ip_hdr = (struct ip*)_recvData;  
                 // 获取ICMP报文位置，IP头部计算为首部字段长度*4;
-                struct icmp* icmp_hdr = (struct icmp*)(_recvData + (ip_hdr->ip_hl `<< 2));   
+                struct icmp* icmp_hdr = (struct icmp*)(_recvData + (ip_hdr->ip_hl << 2));   
 
-                if (icmp_hdr->`icmp_type == ICMP_ECHOREPLY && icmp_hdr->icmp_id == _id)  //筛选
+                if (icmp_hdr->icmp_type == ICMP_ECHOREPLY && icmp_hdr->icmp_id == _id)  //筛选
                 {
                     ++_recvSeq;
                     //计算耗时
                     auto now = std::chrono::system_clock::now();
                     auto data = (std::chrono::system_clock::time_point*)icmp_hdr->icmp_data;
-                    auto sum = std::chrono::`duration_cast`<std::chrono::milliseconds>`(now - *data).count();
+                    auto sum = std::chrono::duration_cast<std::chrono::milliseconds>(now - *data).count();
 
-                    std::cout `<< std::format("{} bytes from {}: icmp_seq={} ttl={} time={}ms",
-                        n, inet_ntoa(_destAddr.sin_addr), icmp_hdr->`icmp_seq, ip_hdr->ip_ttl, sum) `<< std::endl;
+                    std::cout << std::format("{} bytes from {}: icmp_seq={} ttl={} time={}ms",
+                        n, inet_ntoa(_destAddr.sin_addr), icmp_hdr->icmp_seq, ip_hdr->ip_ttl, sum) << std::endl;
                 }
                 // else 
                 // {
-                //     std::cout << std::format("icmp_type: {}, icmp_ip: {}, icmp_code: {}", icmp_hdr->`icmp_type, icmp_hdr->icmp_id, icmp_hdr->icmp_code) `<< std::endl;
+                //     std::cout << std::format("icmp_type: {}, icmp_ip: {}, icmp_code: {}", icmp_hdr->icmp_type, icmp_hdr->icmp_id, icmp_hdr->icmp_code) << std::endl;
                 // }
             }
             else if(n <= 0)
@@ -371,7 +366,7 @@ private:
         unsigned sum = 0;
 
         // 计算数据的和
-        while(len >` 1)
+        while(len > 1)
         {
             sum += *buf++;
             len -= 2;
@@ -407,7 +402,6 @@ std::chrono::system_clock::time_point PingServer::_oldTime = std::chrono::system
 int PingServer::_sendSeq = 0;
 int PingServer::_recvSeq = 0;
 ```
-
 **main函数**
 
 ```cpp
@@ -417,7 +411,7 @@ int PingServer::_recvSeq = 0;
 
 void Usage()
 {
-    std::cout `<< "ping <ip/hostname>`" `<< std::endl;
+    std::cout << "ping <ip/hostname>" << std::endl;
 }
 
 int main(int argc, char* argv[])
@@ -441,7 +435,6 @@ int main(int argc, char* argv[])
     return 0;
 }
 ```
-
 #### 3.3. 运行测试
 **CMakeList**
 

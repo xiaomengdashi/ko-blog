@@ -47,13 +47,13 @@ boost::lockfree::queue特别适合以下场景：
 int main()
 {
     // 创建一个容量为100的固定大小无锁队列
-    boost::lockfree::`queue`<int>` queue(100);
+    boost::lockfree::queue<int> queue(100);
 
     // 入队操作
     int value = 42;
     bool success = queue.push(value);
     if (success) {
-        std::cout `<< "成功将 " << value << " 入队\n";
+        std::cout << "成功将 " << value << " 入队\n";
     } else {
         std::cout << "入队失败，队列可能已满\n";
     }
@@ -69,32 +69,30 @@ int main()
     return 0;
 }
 ```
-
 **4.2 固定大小与动态大小队列**
 
 ```cpp
-#include <boost/lockfree/queue.hpp>`
-#include `<iostream>`
+#include <boost/lockfree/queue.hpp>
+#include <iostream>
 
 int main()
 {
     // 固定大小队列 - 构造时指定容量
-    boost::lockfree::`queue`<int>` fixed_queue(100);
+    boost::lockfree::queue<int> fixed_queue(100);
 
     // 动态大小队列 - 使用模板参数指定
-    boost::lockfree::`queue`<int, boost::lockfree::`capacity<0>`> dynamic_queue;
+    boost::lockfree::queue<int, boost::lockfree::capacity<0>> dynamic_queue;
 
     // 或使用fixed_sized标志禁用动态大小
-    boost::lockfree::`queue`<int, boost::lockfree::`fixed_sized<false>`> another_dynamic_queue;
+    boost::lockfree::queue<int, boost::lockfree::fixed_sized<false>> another_dynamic_queue;
 
     // 检查队列是否为固定大小
-    std::cout `<< "固定队列是固定大小: " << fixed_queue.is_lock_free() << std::endl;
+    std::cout << "固定队列是固定大小: " << fixed_queue.is_lock_free() << std::endl;
     std::cout << "动态队列是固定大小: " << dynamic_queue.is_lock_free() << std::endl;
 
     return 0;
 }
 ```
-
 值得注意的是，动态大小队列内部使用了节点分配器，可能导致在某些操作中发生内存分配，这可能影响实时性能。
 
 **4.3 多生产者多消费者模式**
@@ -102,16 +100,16 @@ int main()
 这是boost::lockfree::queue最常见的使用场景：
 
 ```cpp
-#include <boost/lockfree/queue.hpp>`
-#include `<iostream>`
-#include `<thread>`
-#include `<vector>`
-#include `<atomic>`
+#include <boost/lockfree/queue.hpp>
+#include <iostream>
+#include <thread>
+#include <vector>
+#include <atomic>
 
-boost::lockfree::`queue`<int>` queue(1000);
-`std::`atomic`<bool>` done(false);
-`std::`atomic`<int>` produced_count(0);
-`std::`atomic`<int>` consumed_count(0);
+boost::lockfree::queue<int> queue(1000);
+std::atomic<bool> done(false);
+std::atomic<int> produced_count(0);
+std::atomic<int> consumed_count(0);
 
 void producer(int id)
 {
@@ -133,7 +131,7 @@ void consumer()
             consumed_count.fetch_add(1);
             // 处理value，这里只是简单打印
             if (consumed_count % 1000 == 0) {
-                std::cout `<< "已消费: " << consumed_count << " 项\n";
+                std::cout << "已消费: " << consumed_count << " 项\n";
             }
         } else {
             std::this_thread::yield();
@@ -144,13 +142,13 @@ void consumer()
 int main()
 {
     // 创建生产者线程
-`std::vector<std::thread>`producers;
+std::vector<std::thread>producers;
     for (int i = 0; i < 4; ++i) {
         producers.push_back(std::thread(producer, i));
     }
 
     // 创建消费者线程
-    ``std::`vector`<std::thread>` consumers;
+    std::vector<std::thread> consumers;
     for (int i = 0; i < 2; ++i) {
         consumers.push_back(std::thread(consumer));
     }
@@ -168,38 +166,37 @@ int main()
         t.join();
     }
 
-    std::cout `<< "生产项总数: " << produced_count << std::endl;
+    std::cout << "生产项总数: " << produced_count << std::endl;
     std::cout << "消费项总数: " << consumed_count << std::endl;
 
     return 0;
 }
 ```
-
 **4.4 批量操作**
 
 boost::lockfree::queue提供了批量入队和出队操作，可以提高性能：
 
 ```cpp
-#include <boost/lockfree/queue.hpp>`
-#include `<iostream>`
-#include `<vector>`
+#include <boost/lockfree/queue.hpp>
+#include <iostream>
+#include <vector>
 
 int main()
 {
-    boost::lockfree::`queue`<int>` queue(100);
+    boost::lockfree::queue<int> queue(100);
 
     // 准备批量入队的数据
-    ``std::`vector`<int>` items_to_push = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
+    std::vector<int> items_to_push = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
 
     // 批量入队
     size_t pushed = queue.push(items_to_push.begin(), items_to_push.end());
-    std::cout `<< "成功入队 " << pushed << " 个元素\n";
+    std::cout << "成功入队 " << pushed << " 个元素\n";
 
     // 批量出队
-`std::vector<int>`results(10);
+std::vector<int>results(10);
     size_t popped = queue.pop(results.begin(), results.end());
 
-    std::cout `<< "成功出队 " << popped << " 个元素: ";
+    std::cout << "成功出队 " << popped << " 个元素: ";
     for (size_t i = 0; i < popped; ++i) {
         std::cout << results[i] << " ";
     }
@@ -208,19 +205,18 @@ int main()
     return 0;
 }
 ```
-
 **4.5 消费者遍历**
 
 可以使用consume_one和consume_all函数结合回调函数处理队列中的元素：
 
 ```cpp
-#include <boost/lockfree/queue.hpp>`
-#include `<iostream>`
-#include `<functional>`
+#include <boost/lockfree/queue.hpp>
+#include <iostream>
+#include <functional>
 
 int main()
 {
-    boost::lockfree::`queue`<int>` queue(100);
+    boost::lockfree::queue<int> queue(100);
 
     // 添加一些元素
     for (int i = 0; i < 10; ++i) {
@@ -229,7 +225,7 @@ int main()
 
     // 使用consume_one处理单个元素
     bool consumed = queue.consume_one([](int value) {
-        std::cout `<< "consume_one处理元素: " << value << std::endl;
+        std::cout << "consume_one处理元素: " << value << std::endl;
     });
 
     std::cout << "consume_one " << (consumed ? "成功" : "失败") << std::endl;
@@ -244,18 +240,17 @@ int main()
     return 0;
 }
 ```
-
 **4.6 队列容量与状态查询**
 
 boost::lockfree::queue提供了查询队列状态的方法：
 
 ```cpp
-#include <boost/lockfree/queue.hpp>`
-#include `<iostream>`
+#include <boost/lockfree/queue.hpp>
+#include <iostream>
 
 int main()
 {
-    boost::lockfree::`queue`<int>` queue(10);
+    boost::lockfree::queue<int> queue(10);
 
     // 填充队列
     for (int i = 0; i < 5; ++i) {
@@ -263,7 +258,7 @@ int main()
     }
 
     // 检查队列是否为空
-    std::cout `<< "队列是否为空: " << (queue.empty() ? "是" : "否") << std::endl;
+    std::cout << "队列是否为空: " << (queue.empty() ? "是" : "否") << std::endl;
 
     // 获取队列当前大小（近似值）
     // 注意：在并发环境中这个值只是一个估计
@@ -276,36 +271,35 @@ int main()
     return 0;
 }
 ```
-
 **4.7 高级配置选项**
 
 boost::lockfree::queue提供了多种配置选项来满足不同需求：
 
 ```cpp
-#include <boost/lockfree/queue.hpp>`
- #include `<iostream>`
- #include `<boost/pool/pool_alloc.hpp>`
+#include <boost/lockfree/queue.hpp>
+ #include <iostream>
+ #include <boost/pool/pool_alloc.hpp>
  
  // 自定义分配器
- typedef boost::`fast_pool_allocator`<int>` pool_allocator;
+ typedef boost::fast_pool_allocator<int> pool_allocator;
  
  int main()
  {
      // 使用自定义分配器的队列
-     boost::lockfree::`queue`<int, boost::lockfree::`allocator<pool_allocator>`> custom_alloc_queue(100);
+     boost::lockfree::queue<int, boost::lockfree::allocator<pool_allocator>> custom_alloc_queue(100);
      
      // 配置固定大小
-     boost::lockfree::`queue`<int, boost::lockfree::`fixed_sized<true>`> fixed_queue(100);
+     boost::lockfree::queue<int, boost::lockfree::fixed_sized<true>> fixed_queue(100);
      
      // 自定义内存对齐
-     boost::lockfree::`queue`<int, boost::lockfree::`alignment<16>`> aligned_queue(100);
+     boost::lockfree::queue<int, boost::lockfree::alignment<16>> aligned_queue(100);
      
      // 组合多个选项
-     boost::lockfree::`queue<
+     boost::lockfree::queue<
          int,
-         boost::lockfree::capacity`<1000>`,        // 固定容量
-         boost::lockfree::`fixed_sized`<true>`,     // 固定大小
-         boost::lockfree::`allocator`<pool_allocator>` // 自定义分配器
+         boost::lockfree::capacity<1000>,        // 固定容量
+         boost::lockfree::fixed_sized<true>,     // 固定大小
+         boost::lockfree::allocator<pool_allocator> // 自定义分配器
      > advanced_queue;
      
      // 测试队列功能
@@ -318,36 +312,35 @@ boost::lockfree::queue提供了多种配置选项来满足不同需求：
      
      int value;
      while (custom_alloc_queue.pop(value)) {
-         std::cout `<< "自定义分配器队列元素: " << value << std::endl;
+         std::cout << "自定义分配器队列元素: " << value << std::endl;
      }
      
      return 0;
  }
 ```
-
 **4.8 性能优化与最佳实践**
 
 在使用boost::lockfree::queue时，以下最佳实践可以帮助您获得最佳性能：
 
 ```cpp
-#include <boost/lockfree/queue.hpp>`
-#include `<iostream>`
-#include `<thread>`
-#include `<vector>`
-#include `<chrono>`
-#include `<atomic>`
+#include <boost/lockfree/queue.hpp>
+#include <iostream>
+#include <thread>
+#include <vector>
+#include <chrono>
+#include <atomic>
 
 // 性能测试示例
 void performance_test()
 {
     // 使用合适的队列大小，避免频繁的内存分配
     constexpr size_t QUEUE_SIZE = 10000;
-    boost::lockfree::`queue`<int, boost::lockfree::`fixed_sized<true>`> queue(QUEUE_SIZE);
+    boost::lockfree::queue<int, boost::lockfree::fixed_sized<true>> queue(QUEUE_SIZE);
 
-    `std::`atomic`<bool>` start{false};
-    `std::`atomic`<int>` ready_producers{0};
-    `std::`atomic`<int>` ready_consumers{0};
-    `std::`atomic`<bool>` done{false};
+    std::atomic<bool> start{false};
+    std::atomic<int> ready_producers{0};
+    std::atomic<int> ready_consumers{0};
+    std::atomic<bool> done{false};
 
     // 生产者
     auto producer = [&](int id, int items) {
@@ -360,7 +353,7 @@ void performance_test()
             int value = id * 1000000 + i;
             // 使用批量入队来提高性能
             if (i % 100 == 0 && i > 0) {
-                ``std::`vector`<int>` batch;
+                std::vector<int> batch;
                 for (int j = 0; j < 100; ++j) {
                     batch.push_back(value - 100 + j);
                 }
@@ -370,7 +363,7 @@ void performance_test()
                 int retry = 0;
                 while (!queue.push(value)) {
                     if (++retry > 10) {
-                        std::this_thread::sleep_for(std::chrono::microseconds(1 `<< std::min(retry, 10)));
+                        std::this_thread::sleep_for(std::chrono::microseconds(1 << std::min(retry, 10)));
                     } else {
                         std::this_thread::yield();
                     }
@@ -386,7 +379,7 @@ void performance_test()
             std::this_thread::yield(); // 等待开始信号
         }
 
-`std::vector<int>`batch(100);
+std::vector<int>batch(100);
         int value;
 
         while (!done || !queue.empty()) {
@@ -412,8 +405,8 @@ void performance_test()
     constexpr int NUM_CONSUMERS = 4;
     constexpr int ITEMS_PER_PRODUCER = 100000;
 
-    ``std::`vector`<std::thread>` producers;
-    ``std::`vector`<std::thread>` consumers;
+    std::vector<std::thread> producers;
+    std::vector<std::thread> consumers;
 
     for (int i = 0; i < NUM_PRODUCERS; ++i) {
         producers.emplace_back(producer, i, ITEMS_PER_PRODUCER);
@@ -448,9 +441,9 @@ void performance_test()
     }
     
     auto end_time = std::chrono::high_resolution_clock::now();
-    auto duration = std::chrono::`duration_cast`<std::chrono::milliseconds>`(end_time - start_time);
+    auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end_time - start_time);
     
-    std::cout `<< "处理 " << NUM_PRODUCERS * ITEMS_PER_PRODUCER 
+    std::cout << "处理 " << NUM_PRODUCERS * ITEMS_PER_PRODUCER 
               << " 项数据耗时: " << duration.count() << " 毫秒" << std::endl;
     std::cout << "每秒处理约 " 
               << (NUM_PRODUCERS * ITEMS_PER_PRODUCER * 1000.0 / duration.count())
@@ -463,30 +456,29 @@ int main()
     return 0;
 }
 ```
-
 **4.9 与其他Boost组件结合使用**
 
 boost::lockfree::queue可以与其他Boost组件结合使用，实现更复杂的功能：
 
 ```cpp
-#include <boost/lockfree/queue.hpp>`
-#include `<boost/asio.hpp>`
-#include `<boost/bind/bind.hpp>`
-#include `<iostream>`
-#include `<thread>`
-#include `<functional>`
+#include <boost/lockfree/queue.hpp>
+#include <boost/asio.hpp>
+#include <boost/bind/bind.hpp>
+#include <iostream>
+#include <thread>
+#include <functional>
 
 // 任务队列类示例
 class TaskQueue {
 private:
-boost::lockfree::queue`<`std::function<void()>`*> task_queue{1000};
+boost::lockfree::queue<std::function<void()>*> task_queue{1000};
 boost::asio::io_context io_context;
-``std::`unique_ptr`<boost::asio::io_context::work>` work;
-``std::`vector`<std::thread>` worker_threads;
-`std::`atomic`<bool>` running{false};
+std::unique_ptr<boost::asio::io_context::work> work;
+std::vector<std::thread> worker_threads;
+std::atomic<bool> running{false};
 
 public:
-TaskQueue(int num_threads = 4) : work(`std::`make_unique`<boost::asio::io_context::work>`(io_context)) {
+TaskQueue(int num_threads = 4) : work(std::make_unique<boost::asio::io_context::work>(io_context)) {
     running = true;
 
     // 启动工作线程
@@ -494,7 +486,7 @@ TaskQueue(int num_threads = 4) : work(`std::`make_unique`<boost::asio::io_contex
         worker_threads.emplace_back([this]() {
             while (running) {
                 // 尝试从队列中获取任务
-                ``std::`function`<void()>`* task = nullptr;
+                std::function<void()>* task = nullptr;
                 if (task_queue.pop(task)) {
                     if (task) {
                         // 执行任务
@@ -516,9 +508,9 @@ TaskQueue(int num_threads = 4) : work(`std::`make_unique`<boost::asio::io_contex
 }
 
 // 提交任务
-`template`<typename F>`
+template<typename F>
 bool submit(F&& task) {
-    auto* task_ptr = new ``std::`function`<void()>`(`std::`forward`<F>`(task));
+    auto* task_ptr = new std::function<void()>(std::forward<F>(task));
     bool success = task_queue.push(task_ptr);
     if (!success) {
         delete task_ptr;
@@ -527,11 +519,11 @@ bool submit(F&& task) {
 }
 
 // 定时任务
-`template`<typename F>`
+template<typename F>
 void schedule_after(int milliseconds, F&& task) {
-    auto timer = `std::`make_shared`<boost::asio::steady_timer>`(io_context);
+    auto timer = std::make_shared<boost::asio::steady_timer>(io_context);
     timer->expires_after(std::chrono::milliseconds(milliseconds));
-    timer->async_wait([timer, task = `std::`forward`<F>`(task)](const boost::system::error_code& ec) {
+    timer->async_wait([timer, task = std::forward<F>(task)](const boost::system::error_code& ec) {
         if (!ec) {
             task();
         }
@@ -554,7 +546,7 @@ void stop() {
         worker_threads.clear();
 
         // 清空剩余任务
-        ``std::`function`<void()>`* task = nullptr;
+        std::function<void()>* task = nullptr;
         while (task_queue.pop(task)) {
             delete task;
         }
@@ -569,7 +561,7 @@ int main() {
     // 提交普通任务
     for (int i = 0; i < 10; ++i) {
         task_queue.submit([i]() {
-            std::cout `<< "执行任务 " << i << " 在线程 " 
+            std::cout << "执行任务 " << i << " 在线程 " 
                 << std::this_thread::get_id() << std::endl;
         });
     }

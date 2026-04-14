@@ -38,7 +38,6 @@ poll可以监听多个文件描述符，直到条件满足或超时的时候，�
 ```cpp
 int poll(struct pollfd *fds, nfds_t nfds, int timeout);
 ```
-
 fds：这是一个数组，每一个数组元素表示要监听的文件描述符以及相应的事件
 
 nfds：数组的个数
@@ -56,7 +55,6 @@ struct pollfd {
     short revents;   
 };
 ```
-
 对于events和revents部分取值如下
 
    
@@ -72,9 +70,9 @@ struct pollfd {
 
 
 ```cpp
-#include `<stdio.h>`
-#include `<poll.h>`
-#include `<string.h>`
+#include <stdio.h>
+#include <poll.h>
+#include <string.h>
 
 #define MAX_FD  100
 
@@ -121,7 +119,6 @@ int main(int argc, char* argv[])
     return 0;
 }
 ```
-
 #### 1.2. poll机制内核源码分析
 由上面的应用程序可知，poll调用传递三个参数，`pollfd数组`，`数组数量`，`超时时间`
 
@@ -131,13 +128,11 @@ int main(int argc, char* argv[])
 SYSCALL_DEFINE3(poll, struct pollfd __user *, ufds, unsigned int, nfds,
 		long, timeout_msecs)
 ```
-
 这是内核的一个宏定义，展开后变成
 
 ```cpp
 long sys_poll(struct pollfd __user * ufds, unsigned int nfds, long timeout_msecs)
 ```
-
 下面我们来好好分析这个函数
 
 ```cpp
@@ -155,7 +150,6 @@ SYSCALL_DEFINE3(poll, struct pollfd __user *, ufds, unsigned int, nfds,
     return ret;
 }
 ```
-
 下面分析`do_sys_poll`函数
 
 ```cpp
@@ -193,7 +187,6 @@ int do_sys_poll(struct pollfd __user *ufds, unsigned int nfds,
     return fdcount;
 }
 ```
-
 由于内容非常多，所以下面按行号来进行说明
 
 + 4：在栈上定义一段内存
@@ -210,7 +203,6 @@ struct poll_list {
 	struct pollfd entries[0]; 
 };
 ```
-
 也是到这里你还有一点不明白，那么看一看下面这张图也许就明白了
 
 ![](/img/posts/eb7b3cdb4daeef0e95431292fb02c669.png)
@@ -251,7 +243,6 @@ static int do_poll(unsigned int nfds,  struct poll_list *list,
     return count;
 }
 ```
-
 + 7-10：遍历所有的pollfd，调用do_pollfd函数，如果放回值不为0，表示条件满足，count++
 
 看看fo_pollfd函数做了什么
@@ -266,7 +257,6 @@ static inline unsigned int do_pollfd(struct pollfd *pollfd, poll_table *pwait)
     return mask;
 }
 ```
-
 来看一看驱动程序一般都是怎么实现poll的
 
 ```cpp
@@ -284,7 +274,6 @@ static unsigned int button_poll(struct file *fp, poll_table * wait)
 	return mask;
 }
 ```
-
 看看poll_wait做了什么
 
 ```cpp
@@ -294,7 +283,6 @@ static inline void poll_wait(struct file * filp, wait_queue_head_t * wait_addres
 		p->qproc(filp, wait_address, p);
 }
 ```
-
 其中p->qproc在`do_sys_poll`中的`poll_initwait(&table)`被赋值为`__pollwait`函数
 
 看看`__pollwait`做了什么

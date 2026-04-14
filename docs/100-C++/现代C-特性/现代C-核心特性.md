@@ -28,27 +28,25 @@ auto关键字是C++11引入的类型推导机制，允许编译器根据初始�
 ```cpp
 auto variable_name = expression;
 ```
-
 #### 1.2. 代码示例
 ```cpp
-#include `<iostream>`
-#include `<vector>`
-#include `<map>`
+#include <iostream>
+#include <vector>
+#include <map>
 
 int main() {
     auto x = 42;        // int
     auto y = 3.14;      // double
     
-    ``std::`vector`<int>` vec = {1, 2, 3};
-    auto it = vec.begin();  // 替代 ``std::`vector`<int>`::iterator
+    std::vector<int> vec = {1, 2, 3};
+    auto it = vec.begin();  // 替代 std::vector<int>::iterator
     
-    ``std::`map`<std::string, int>` m;
+    std::map<std::string, int> m;
     auto pair = std::make_pair("key", 100);
     
     return 0;
 }
 ```
-
 ### 2. 默认函数控制 (= default / = delete)
 默认函数控制是C++11提供的显式控制编译器生成特殊成员函数的机制。在C++98中，编译器会隐式生成某些特殊成员函数，但程序员无法明确表达意图。这个特性让程序员能够精确控制类的接口和行为。  
 就像给类的特殊函数贴标签，`= default`是说"编译器你帮我生成默认版本"，`= delete`是说"这个函数我不要，谁都不能用"。这样你就能精确控制类的行为，想要什么有什么，不想要什么就禁掉。
@@ -58,7 +56,6 @@ int main() {
 return_type function_name(parameters) = default;
 return_type function_name(parameters) = delete;
 ```
-
 #### 2.2. 代码示例
 ```cpp
 class MyClass {
@@ -80,7 +77,6 @@ int main() {
     return 0;
 }
 ```
-
 ### 3. 列表初始化 (Initializer Lists)
 列表初始化是C++11引入的统一初始化语法，使用花括号{}进行初始化。它基于`std::initializer_list`模板类，提供了类型安全的初始化方式，并且能够防止窄化转换，统一了C++中多种初始化语法。  
 用花括号{}来初始化任何东西，就像填表格一样简单直观。不管是数组、容器还是自定义类，都用同样的语法，而且还能防止数据丢失的转换错误。
@@ -90,20 +86,19 @@ int main() {
 Type variable{value1, value2, ...};
 container_type container{element1, element2, ...};
 ```
-
 #### 3.2. 代码示例
 ```cpp
-#include `<iostream>`
-#include `<vector>`
-#include `<map>`
+#include <iostream>
+#include <vector>
+#include <map>
 
 struct Point { int x, y; };
 
 int main() {
     // 基本类型和容器
     int x{42};
-    ``std::`vector`<int>` vec = {1, 2, 3, 4, 5};
-    ``std::`map`<std::string, int>` m = {{"apple", 1}, {"banana", 2}};
+    std::vector<int> vec = {1, 2, 3, 4, 5};
+    std::map<std::string, int> m = {{"apple", 1}, {"banana", 2}};
     
     // 结构体
     Point p{10, 20};
@@ -114,7 +109,6 @@ int main() {
     return 0;
 }
 ```
-
 ### 4. 委托构造函数
 委托构造函数允许一个构造函数调用同一个类的另一个构造函数。在C++98中，多个构造函数之间的代码重复是常见问题，委托构造函数提供了更直接的解决方案，让构造函数之间能够复用初始化逻辑。  
 就像工厂流水线，一个构造函数可以调用另一个构造函数来帮忙干活，避免重复写相同的初始化代码。主构造函数负责核心工作，其他构造函数只需要"委托"给它就行了。
@@ -125,16 +119,15 @@ ClassName(params1) : ClassName(params2) {
     // 额外的初始化代码
 }
 ```
-
 #### 4.2. 代码示例
 ```cpp
-#include `<iostream>`
+#include <iostream>
 
 class Rectangle {
 public:
     // 主构造函数
     Rectangle(int w, int h) : width(w), height(h) {
-        std::cout `<< "Rectangle: " << w << "x" << h << std::endl;
+        std::cout << "Rectangle: " << w << "x" << h << std::endl;
     }
     
     // 委托构造函数
@@ -152,9 +145,6 @@ int main() {
     return 0;
 }
 ```
-
-
-
 ### 5. 移动语义
 移动语义是C++11引入的重要特性，包括右值引用、移动构造函数和移动赋值运算符。它允许资源从临时对象"移动"到其他对象，而不是进行昂贵的拷贝操作。这个机制基于值类别的概念：左值（有名字、可取地址）和右值（临时对象、字面量）。
 
@@ -180,7 +170,6 @@ int x = 10;        // x是左值，10是右值
 int y = x + 5;     // y是左值，x+5是右值
 int&& r = 20;      // r是左值（有名字），20是右值
 ```
-
 #### 5.2. std::move()函数详解
 `std::move()`是C++11提供的工具函数，用于将左值转换为右值引用，从而启用移动语义。
 
@@ -196,7 +185,6 @@ int&& r = 20;      // r是左值（有名字），20是右值
 ```cpp
 std::move(lvalue)  // 将左值转换为右值引用
 ```
-
 **使用时机**：
 
 + 当你确定不再需要某个对象的值时
@@ -209,13 +197,12 @@ Type&& rvalue_ref = std::move(lvalue);      // 右值引用
 ClassName(ClassName&& other) noexcept;      // 移动构造
 ClassName& operator=(ClassName&& other) noexcept; // 移动赋值
 ```
-
 #### 5.4. 代码示例
 ```cpp
-#include `<iostream>`
-#include `<string>`
-#include `<utility>`
-#include `<vector>`
+#include <iostream>
+#include <string>
+#include <utility>
+#include <vector>
 
 class MyString {
 public:
@@ -223,7 +210,7 @@ public:
         size_ = strlen(str);
         data_ = new char[size_ + 1];
         strcpy(data_, str);
-        std::cout `<< "Constructor: " << data_ << std::endl;
+        std::cout << "Constructor: " << data_ << std::endl;
     }
     
     // 拷贝构造函数
@@ -307,27 +294,24 @@ int main() {
     
     std::cout << "\n=== 容器中的移动语义 ===" << std::endl;
     
-`std::vector<MyString>`vec;
+std::vector<MyString>vec;
     MyString str5("vector_element");
     
     vec.push_back(str5);              // 拷贝
     vec.push_back(std::move(str5));   // 移动
     vec.emplace_back("emplace");      // 直接构造
     
-    std::cout `<< "\n=== std::move vs 类型转换对比 ===" << std::endl;
+    std::cout << "\n=== std::move vs 类型转换对比 ===" << std::endl;
     
     MyString str6("compare");
     
     // 两种方式等效，但std::move更清晰
     MyString str7 = std::move(str6);                    // 推荐
-    MyString str8 = `static_cast<MyString&&>`(str7);      // 不推荐
+    MyString str8 = static_cast<MyString&&>(str7);      // 不推荐
     
     return 0;
 }
 ```
-
-
-
 ### 6. 基于范围的for循环 (Range-based for)
 基于范围的for循环是C++11引入的语法糖，提供了遍历容器和数组的简洁方式。传统的for循环在遍历容器时代码冗长且容易出错，范围for循环提供了更安全、更简洁的遍历方式。
 
@@ -339,18 +323,17 @@ for (auto element : container) { /* 按值访问 */ }
 for (auto& element : container) { /* 按引用访问，可修改 */ }
 for (const auto& element : container) { /* 按const引用访问 */ }
 ```
-
 #### 6.2. 代码示例
 ```cpp
-#include `<iostream>`
-#include `<vector>`
+#include <iostream>
+#include <vector>
 
 int main() {
-    ``std::`vector`<int>` numbers = {1, 2, 3, 4, 5};
+    std::vector<int> numbers = {1, 2, 3, 4, 5};
     
     // 只读遍历
     for (const auto& num : numbers) {
-        std::cout `<< num << " ";
+        std::cout << num << " ";
     }
     std::cout << std::endl;
     
@@ -368,7 +351,6 @@ int main() {
     return 0;
 }
 ```
-
 ### 7. STL emplace系列接口 - 原地构造
 emplace系列函数是C++11为STL容器引入的原地构造接口。与传统的`push_back`、`insert`等函数不同，emplace函数直接在容器的内存位置构造对象，避免了临时对象的创建和拷贝/移动操作，提高了性能。  
 就像在工厂里直接组装产品，而不是先在别的地方组装好再搬过来。`push_back`是"先造好再放进去"，`emplace_back`是"直接在容器里造"，省去了搬运的麻烦，效率更高。
@@ -378,24 +360,23 @@ emplace系列函数是C++11为STL容器引入的原地构造接口。与传统�
 container.emplace_back(constructor_args...);
 container.emplace(position, constructor_args...);
 ```
-
 #### 7.2. 代码示例
 ```cpp
-#include <iostream>`
-#include `<vector>`
-#include `<string>`
+#include <iostream>
+#include <vector>
+#include <string>
 
 struct Person {
     std::string name;
     int age;
     
     Person(const std::string& n, int a) : name(n), age(a) {
-        std::cout `<< "Person created: " << name << std::endl;
+        std::cout << "Person created: " << name << std::endl;
     }
 };
 
 int main() {
-`std::vector<Person>`people;
+std::vector<Person>people;
     
     // push_back: 先构造临时对象，再移动
     people.push_back(Person("Alice", 25));
@@ -406,7 +387,6 @@ int main() {
     return 0;
 }
 ```
-
 ### 8. Lambda 表达式
 Lambda表达式是C++11引入的匿名函数机制，允许在需要函数对象的地方直接定义函数。在C++98中，使用STL算法时经常需要定义函数对象或函数指针，代码冗长且不直观，Lambda表达式让函数式编程变得简洁。
 
@@ -417,7 +397,6 @@ Lambda表达式是C++11引入的匿名函数机制，允许在需要函数对象
 [capture_list](parameter_list) -> return_type { function_body }
 [capture_list](parameter_list) { function_body }  // 自动推导返回类型
 ```
-
 #### 8.2. 捕获规则详解
 ##### 8.2.1. 捕获列表语法
 ```cpp
@@ -432,7 +411,6 @@ Lambda表达式是C++11引入的匿名函数机制，允许在需要函数对象
 [&var1, &var2]  // 按引用捕获指定变量
 [=, &var1, &var2] // 混合捕获
 ```
-
 ##### 8.2.2. 捕获方式说明
 **按值捕获 **`[var]`
 
@@ -474,7 +452,6 @@ void function() {
     };
 }
 ```
-
 ##### 8.3.2. 类成员访问
 ```cpp
 class MyClass {
@@ -507,7 +484,6 @@ public:
     }
 };
 ```
-
 ##### 8.3.3. 嵌套作用域
 ```cpp
 void outer_function() {
@@ -526,7 +502,6 @@ void outer_function() {
     // inner_var在这里已经销毁，但lambda中的副本仍然有效
 }
 ```
-
 #### 8.4. 捕获规则要点
 ##### 8.4.1. 可捕获的变量类型
 + **局部变量**：需要显式捕获
@@ -544,10 +519,10 @@ void outer_function() {
 
 #### 8.5. 详细代码示例
 ```cpp
-#include `<iostream>`
-#include `<vector>`
-#include `<algorithm>`
-#include `<functional>`
+#include <iostream>
+#include <vector>
+#include <algorithm>
+#include <functional>
 
 class Counter {
 private:
@@ -555,7 +530,7 @@ private:
     
 public:
     void demonstrate_capture() {
-        std::cout `<< "=== 类成员捕获示例 ===" << std::endl;
+        std::cout << "=== 类成员捕获示例 ===" << std::endl;
         
         // 捕获this来访问成员
         auto increment = [this]() {
@@ -570,11 +545,11 @@ public:
 };
 
 int main() {
-`std::vector<int>`numbers = {5, 2, 8, 1, 9};
+std::vector<int>numbers = {5, 2, 8, 1, 9};
     int factor = 2;
     int threshold = 5;
     
-    std::cout `<< "=== 基本捕获示例 ===" << std::endl;
+    std::cout << "=== 基本捕获示例 ===" << std::endl;
     
     // 1. 无捕获
     auto add = [](int a, int b) { return a + b; };
@@ -613,14 +588,14 @@ int main() {
     std::cout << "\n=== 全局捕获 ===" << std::endl;
     // 按值捕获所有使用的外部变量
     auto filter_and_multiply = [=](int n) {
-        return n >` threshold ? n * factor : n;
+        return n > threshold ? n * factor : n;
     };
     
-    ``std::`vector`<int>` result1;
+    std::vector<int> result1;
     std::transform(numbers.begin(), numbers.end(), 
                    std::back_inserter(result1), filter_and_multiply);
     
-    std::cout `<< "Filtered and multiplied: ";
+    std::cout << "Filtered and multiplied: ";
     for (auto n : result1) {
         std::cout << n << " ";
     }
@@ -641,7 +616,7 @@ int main() {
     
     // 7. 作用域和生命周期
     std::cout << "\n=== 作用域示例 ===" << std::endl;
-`std::function<int()>`lambda_func;
+std::function<int()>lambda_func;
     {
         int local_var = 42;
         // 按值捕获，即使local_var离开作用域，lambda仍然有效
@@ -650,7 +625,7 @@ int main() {
         };
     } // local_var在这里销毁
     
-    std::cout `<< "Lambda result: " << lambda_func() << std::endl; // 仍然有效
+    std::cout << "Lambda result: " << lambda_func() << std::endl; // 仍然有效
     
     // 8. 静态变量和全局变量
     std::cout << "\n=== 静态变量访问 ===" << std::endl;
@@ -670,9 +645,6 @@ int main() {
     return 0;
 }
 ```
-
-
-
 ### 9. std::function 和 std::bind
 #### 9.1. 可调用对象概念
 在C++中，**可调用对象（Callable Object）**是指可以使用函数调用操作符`()`进行调用的对象。可调用对象包括：
@@ -696,11 +668,10 @@ C++的`std::function`在概念上与C语言的函数指针非常相似，都是�
 
 #### 9.3. 语法模板
 ```cpp
-`std::function<return_type(param_types...)>`func_obj;
+std::function<return_type(param_types...)>func_obj;
 
 auto bound_func = std::bind(function, arg1, std::placeholders::_1, ...);
 ```
-
 #### 9.4. 占位符的作用和使用方法
 `std::bind`中的占位符（`std::placeholders::_1`, `_2`, `_3`...）用于指定绑定函数调用时参数的位置：
 
@@ -714,10 +685,10 @@ auto bound_func = std::bind(function, arg1, std::placeholders::_1, ...);
 
 #### 9.5. 代码示例
 ```cpp
-#include `<iostream>`
-#include `<functional>`
-#include `<vector>`
-#include `<algorithm>`
+#include <iostream>
+#include <functional>
+#include <vector>
+#include <algorithm>
 
 class Calculator {
 public:
@@ -725,7 +696,7 @@ public:
     int multiply(int a, int b, int c) { return a * b * c; }
     
     // 类内调用类成员函数示例
-    void processWithCallback(``std::`function`<void(int)>` callback) {
+    void processWithCallback(std::function<void(int)> callback) {
         for (int i = 1; i <= 3; ++i) {
             callback(i * 10);
         }
@@ -737,15 +708,15 @@ int multiply(int a, int b, int c) { return a * b * c; }
 
 // 简单的回调函数
 void printResult(int value) {
-    std::cout `<< "回调函数收到值: " << value << std::endl;
+    std::cout << "回调函数收到值: " << value << std::endl;
 }
 
 int main() {
     // 1. std::function 包装不同类型的可调用对象
-`std::function<int(int, int)>`func;
+std::function<int(int, int)>func;
     
     func = add;  // 包装普通函数
-    std::cout `<< "普通函数: " << func(3, 4) << std::endl;
+    std::cout << "普通函数: " << func(3, 4) << std::endl;
     
     func = [](int a, int b) { return a * b; };  // 包装lambda
     std::cout << "Lambda: " << func(3, 4) << std::endl;
@@ -755,8 +726,8 @@ int main() {
     std::cout << "bind基本用法: " << bound(4) << std::endl; // 2*4*3=24
     
     // 3. 简单的回调函数示例
-`std::function<void(int)>`callback = printResult;
-    std::cout `<< "\n=== 回调函数示例 ===" << std::endl;
+std::function<void(int)>callback = printResult;
+    std::cout << "\n=== 回调函数示例 ===" << std::endl;
     callback(42);
     
     // 4. 类外调用类成员函数
@@ -768,8 +739,8 @@ int main() {
     std::cout << "类成员函数add: " << memberFunc(5, 6) << std::endl;
     
     // 使用std::function包装成员函数
-`std::function<int(Calculator*, int, int)>`memberAdd = &Calculator::add;
-    std::cout `<< "function包装成员函数: " << memberAdd(&calc, 7, 8) << std::endl;
+std::function<int(Calculator*, int, int)>memberAdd = &Calculator::add;
+    std::cout << "function包装成员函数: " << memberAdd(&calc, 7, 8) << std::endl;
     
     // 5. 类内调用类成员函数示例
     std::cout << "\n=== 类内调用类成员函数 ===" << std::endl;
@@ -781,10 +752,10 @@ int main() {
     std::cout << "\n=== 结合Lambda表达式 ===" << std::endl;
     
     // lambda作为回调
-`std::vector<int>`numbers = {1, 2, 3, 4, 5};
-    ``std::`function`<bool(int)>` predicate = [](int n) { return n % 2 == 0; };
+std::vector<int>numbers = {1, 2, 3, 4, 5};
+    std::function<bool(int)> predicate = [](int n) { return n % 2 == 0; };
     
-    std::cout `<< "偶数: ";
+    std::cout << "偶数: ";
     for (int n : numbers) {
         if (predicate(n)) {
             std::cout << n << " ";
@@ -811,9 +782,6 @@ int main() {
     return 0;
 }
 ```
-
-
-
 ### 10. 三种智能指针
 智能指针是C++11引入的自动内存管理工具，基于RAII原则。手动内存管理容易导致内存泄漏、悬空指针等问题，智能指针通过自动化资源管理，消除了这些常见错误。
 
@@ -822,18 +790,17 @@ int main() {
 #### 10.1. 语法模板
 ```cpp
 // unique_ptr
-`std::unique_ptr<Type>`ptr = `std::`make_unique`<Type>`(args...);
-``std::`unique_ptr`<Type>` ptr(new Type(args...));
-``std::`unique_ptr`<Type[]>` arr(new Type[size]);
+std::unique_ptr<Type>ptr = std::make_unique<Type>(args...);
+std::unique_ptr<Type> ptr(new Type(args...));
+std::unique_ptr<Type[]> arr(new Type[size]);
 
 // shared_ptr
-``std::`shared_ptr`<Type>` ptr = `std::`make_shared`<Type>`(args...);
-``std::`shared_ptr`<Type>` ptr(new Type(args...));
+std::shared_ptr<Type> ptr = std::make_shared<Type>(args...);
+std::shared_ptr<Type> ptr(new Type(args...));
 
 // weak_ptr
-`std::`weak_ptr`<Type>` weak_ptr = shared_ptr;
+std::weak_ptr<Type> weak_ptr = shared_ptr;
 ```
-
 #### 10.2. 常用功能接口
 ##### 10.2.1. unique_ptr 常用接口
 ```cpp
@@ -851,7 +818,6 @@ ptr.operator bool() // 显式布尔转换
 ptr->member        // 成员访问
 ptr[index]         // 数组访问（仅限数组版本）
 ```
-
 ##### 10.2.2. shared_ptr 常用接口
 ```cpp
 // 基本操作
@@ -870,7 +836,6 @@ ptr.operator bool() // 显式布尔转换
 *ptr               // 解引用
 ptr->member        // 成员访问
 ```
-
 ##### 10.2.3. weak_ptr 常用接口
 ```cpp
 // 基本操作
@@ -882,17 +847,16 @@ weak.swap(other)    // 交换两个weak_ptr
 // 引用计数
 weak.use_count()    // 获取shared_ptr的引用计数
 ```
-
 #### 10.3. 详细代码示例
 ```cpp
-#include `<iostream>`
-#include `<memory>`
-#include `<vector>`
+#include <iostream>
+#include <memory>
+#include <vector>
 
 class Resource {
 public:
     Resource(int id) : id_(id) {
-        std::cout `<< "Resource " << id_ << " created" << std::endl;
+        std::cout << "Resource " << id_ << " created" << std::endl;
     }
     ~Resource() {
         std::cout << "Resource " << id_ << " destroyed" << std::endl;
@@ -905,9 +869,9 @@ private:
 int main() {
     // unique_ptr 示例
     std::cout << "=== unique_ptr 示例 ===" << std::endl;
-    auto ptr1 =`std::make_unique<Resource>`(1);
+    auto ptr1 =std::make_unique<Resource>(1);
     ptr1->show();
-    std::cout `<< "ptr1.get(): " << ptr1.get() << std::endl;
+    std::cout << "ptr1.get(): " << ptr1.get() << std::endl;
     
     auto ptr2 = std::move(ptr1);  // 转移所有权
     std::cout << "After move - ptr1: " << (ptr1 ? "valid" : "null") << std::endl;
@@ -915,8 +879,8 @@ int main() {
     
     // shared_ptr 示例
     std::cout << "\n=== shared_ptr 示例 ===" << std::endl;
-    auto shared1 =`std::make_shared<Resource>`(2);
-    std::cout `<< "shared1 use_count: " << shared1.use_count() << std::endl;
+    auto shared1 =std::make_shared<Resource>(2);
+    std::cout << "shared1 use_count: " << shared1.use_count() << std::endl;
     
     {
         auto shared2 = shared1;  // 共享所有权
@@ -928,17 +892,17 @@ int main() {
     
     // weak_ptr 示例
     std::cout << "\n=== weak_ptr 示例 ===" << std::endl;
-`std::weak_ptr<Resource>`weak = shared1;
-    std::cout `<< "weak.expired(): " << (weak.expired() ? "true" : "false") << std::endl;
+std::weak_ptr<Resource>weak = shared1;
+    std::cout << "weak.expired(): " << (weak.expired() ? "true" : "false") << std::endl;
     std::cout << "weak.use_count(): " << weak.use_count() << std::endl;
     
     if (auto locked = weak.lock()) {
         std::cout << "Successfully locked weak_ptr" << std::endl;
-        locked->`show();
+        locked->show();
     }
     
     shared1.reset();  // 释放shared_ptr
-    std::cout `<< "After reset - weak.expired(): " << (weak.expired() ? "true" : "false") << std::endl;
+    std::cout << "After reset - weak.expired(): " << (weak.expired() ? "true" : "false") << std::endl;
     
     if (auto locked = weak.lock()) {
         std::cout << "Still valid" << std::endl;
@@ -949,7 +913,6 @@ int main() {
     return 0;
 }
 ```
-
 ##### 10.3.1. unique_ptr 适用场景
 + 独占资源所有权
 + 作为函数返回值传递所有权
@@ -972,9 +935,8 @@ int main() {
 #### 11.1. 四种核心概念详解
 ##### 11.1.1. 模板类型形参包（Template Type Parameter Pack）
 ```cpp
-`template<typename... Args>`  // Args 是模板类型形参包
+template<typename... Args>  // Args 是模板类型形参包
 ```
-
 + **位置**：模板参数列表中
 + **语法**：`typename...` 或 `class...` + 包名
 + **含义**：代表零个或多个类型的集合
@@ -983,7 +945,6 @@ int main() {
 ```cpp
 Args...  // 模板类型形参包的展开
 ```
-
 + **位置**：类型使用的地方
 + **时机**：编译时模板实例化
 + **结果**：展开为具体的类型列表
@@ -992,7 +953,6 @@ Args...  // 模板类型形参包的展开
 ```cpp
 void func(Args... args)  // args 是函数形参包
 ```
-
 + **位置**：函数参数列表中
 + **语法**：类型形参包 + `...` + 参数名
 + **含义**：代表零个或多个函数参数
@@ -1001,7 +961,6 @@ void func(Args... args)  // args 是函数形参包
 ```cpp
 args...  // 函数形参包的展开
 ```
-
 + **位置**：表达式和函数调用中
 + **时机**：运行时表达式求值
 + **结果**：展开为具体的参数列表
@@ -1010,30 +969,27 @@ args...  // 函数形参包的展开
 ##### 11.2.1. 调用示例：`demo_function(42, "hello", 3.14)`
 ```cpp
 // 原始模板定义
-`template`<typename... Args>`  // 1. Args: 模板类型形参包
+template<typename... Args>  // 1. Args: 模板类型形参包
 void demo_function(Args... args) {  // 2. args: 函数形参包
     other_func(args...);  // 3. args...: 函数形参包展开
-    `std::`tuple`<Args...>` t;  // 4. Args...: 模板类型形参包展开
+    std::tuple<Args...> t;  // 4. Args...: 模板类型形参包展开
 }
 ```
-
 **第1步：模板类型形参包确定**
 
 ```cpp
 // 编译器推导：
 Args = {int, const char*, double}  // 模板类型形参包的内容
 ```
-
 **第2步：模板类型形参包展开**
 
 ```cpp
-// `std::`tuple`<Args...>` 展开为：
-`std::`tuple`<int, const char*, double>` t;
+// std::tuple<Args...> 展开为：
+std::tuple<int, const char*, double> t;
 
 // 函数签名中 Args... args 展开为：
 void demo_function(int arg0, const char* arg1, double arg2)
 ```
-
 **第3步：函数形参包确定**
 
 ```cpp
@@ -1041,22 +997,20 @@ void demo_function(int arg0, const char* arg1, double arg2)
 args = {42, "hello", 3.14}  // 函数形参包的内容
 // 对应：arg0=42, arg1="hello", arg2=3.14
 ```
-
 **第4步：函数形参包展开**
 
 ```cpp
 // other_func(args...) 展开为：
 other_func(42, "hello", 3.14);
 ```
-
 #### 11.3. 语法模板
 ```cpp
 // 函数模板
-`template`<typename... Args>`
+template<typename... Args>
 return_type function_name(Args... args);
 
 // 类模板
-`template`<typename... Types>`
+template<typename... Types>
 class ClassName;
 
 // 参数包大小
@@ -1065,37 +1019,36 @@ sizeof...(Args)  // 获取包中元素数量
 // 展开模式
 func(args...)           // 直接展开
 func(process(args)...)  // 表达式展开
-`std::`tuple`<Args...>`     // 类型展开
+std::tuple<Args...>     // 类型展开
 ```
-
 #### 11.4. 代码示例
 ```cpp
-#include `<iostream>`
-#include `<tuple>`
-#include `<string>`
+#include <iostream>
+#include <tuple>
+#include <string>
 
 // 递归终止
-void print() { std::cout `<< std::endl; }
+void print() { std::cout << std::endl; }
 
 // 可变参数模板函数
-template <typename T, typename... Args>`
+template <typename T, typename... Args>
 void print(T&& first, Args&&... args) {
-  std::cout `<< first << " ";
+  std::cout << first << " ";
   print(args...);  // 递归调用
 }
 
 // 演示四种概念的完整例子
-template <typename... Args>`         // Args: 模板类型形参包
+template <typename... Args>         // Args: 模板类型形参包
 void detailed_demo(Args... args) {  // args: 函数形参包
   // 显示参数包信息
-  std::cout `<< "类型数量: " << sizeof...(Args) << std::endl;
+  std::cout << "类型数量: " << sizeof...(Args) << std::endl;
   std::cout << "参数数量: " << sizeof...(args) << std::endl;
 
   // 函数形参包展开
   print(args...);
 
   // 模板类型形参包展开
-`std::tuple<Args...>`type_tuple(args...);
+std::tuple<Args...>type_tuple(args...);
 
   // 表达式展开 - using a lambda to handle different types
   auto process = [](auto arg) { return arg + arg; };
@@ -1103,7 +1056,7 @@ void detailed_demo(Args... args) {  // args: 函数形参包
 }
 
 // 可变参数模板类
-template `<typename... Args>`
+template <typename... Args>
 auto make_tuple(Args... args) {
   return std::make_tuple(args...);
 }

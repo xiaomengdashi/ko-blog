@@ -30,7 +30,6 @@ fn main() {
     }
 }
 ```
-
 不需要做其它的处理，直接cargo run 就可以运行。
 
 #### 2. 自定义的C库-以windows平台为例
@@ -48,7 +47,6 @@ build="build.rs"
 libc ="0.2"
 cc ="1.0"
 ```
-
 有一些依赖和说明。  
 3、ctools.c
 
@@ -64,7 +62,6 @@ int three_times(int input){
     return input*3;
 }
 ```
-
 4、build.rs文件
 
 ```rust
@@ -74,18 +71,16 @@ fn main(){
     cc::Build::new().file("../c_part/ctools.c").compile("libctools.a");
 }
 ```
-
 cc::Build::new().file(“…/c_part/ctools.c”).compile(“libctools.a”);的作用是使用 cc crate 编译 …/c_part/ctools.c文件，并将生成的静态库命名为 libctools.a。
 
 (1)需要注意的是，生成的静态库或动态库的命名和文件格式可能会因操作系统和编译器的不同而有所区别。例如，在 Windows 系统上，静态库的命名通常是 libctools.a，而动态库的命名通常是 ctools.dll。生成静态库或动态库后，就可以使用 Rust 的 #[link(name = “ctools”)] 属性来链接库文件并在 Rust 代码中调用 C 函数了。  
 如果没有在 Rust 代码中使用 #[link(name = “ctools”)] 属性来指定链接的库的名称，[Rust 编译器](https://so.csdn.net/so/search?q=Rust%20%E7%BC%96%E8%AF%91%E5%99%A8&spm=1001.2101.3001.7020)会默认按照一定的规则搜索系统默认的库文件路径来查找库文件。具体来说，Rust 编译器会按照以下顺序搜索库文件：
 
-```plain
+```cpp
 在系统默认的库搜索路径中查找：Rust 编译器会搜索系统默认的库文件路径，例如 /usr/lib 和 /usr/local/lib 等目录。
 在 Rust 代码所在的目录中查找：如果 Rust 代码和库文件在同一个目录中，Rust 编译器会在该目录中查找库文件。
 在指定的搜索路径中查找：如果在编译 Rust 代码时使用了 -L 参数指定了库文件搜索路径，Rust 编译器会在这些路径中查找库文件。
 ```
-
 注：此部分内容来源以下链接，在此特别说明。
 
 > https://vincebye.github.io/posts/rust%E8%B0%83%E7%94%A8c%E4%BB%A3%E7%A0%81/
@@ -114,7 +109,6 @@ fn main() {
     println!("threetimes_value: {:?}",threetimes_value);
 }
 ```
-
 引入libc库，以及c_int类型。
 
 6、cargo build  
@@ -140,7 +134,6 @@ edition = "2021"
 build   ="build.rs"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 ```
-
 2、准备生成相应的静态库供调用  
 在cpart目录下，有ctools.c文件  
 ![](/img/posts/bac5626e7939ca560b617584ae91414c.png)  
@@ -150,7 +143,6 @@ build   ="build.rs"
 gcc -c ctools.c -o crust.o
 ar -cr libcrust.a crust.o
 ```
-
 如果发现在对应目录下，已经生成libcrust.a文件，证明已经成功。
 
 3、build.rs  
@@ -162,7 +154,6 @@ fn main(){
     println!(r"cargo:rustc-link-search=native=/home/songroom/ffi/cpart");
 }
 ```
-
 值得说明一下，build.rs中println!中"cargo:"的输出，是一种类“告示”通信方式，并不是一种简单的常规的打印。这个是告诉编译器，你去帮我这么干，没有这些，链接就不会成功，绝对不是或有或无的。
 
 4、main.rs
@@ -190,33 +181,29 @@ fn main() {
     println!("threetimes_value: {:?}",threetimes_value);
 }
 ```
-
 5、配置路径
 
 ```bash
-export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:`pwd`
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:pwd
 ```
-
 6、在build.rs的目录下cargo build
 
 ```rust
 root@DESKTOP-MEDPUTU:/home/songroom/ffi/myffi/src# cargo build
     Finished dev [unoptimized + debuginfo] target(s) in 0.00s
 ```
-
 7、cargo run
 
 ```rust
 root@DESKTOP-MEDPUTU:/home/songroom/ffi/myffi/src# cargo run
    Compiling myffi v0.1.0 (/home/songroom/ffi/myffi)
     Finished dev [unoptimized + debuginfo] target(s) in 0.44s
-     Running `/home/songroom/ffi/myffi/target/debug/myffi`
+     Running /home/songroom/ffi/myffi/target/debug/myffi
 Hi guys, welcome rust ffi !
 twotimes_value  : -16
 add_value       : 5
 threetimes_value: 9
 ```
-
 ##### 3.2. 在windows平台
 
 静态文件需要在window上编译，编程结果为.lib文件，注意是X86还是X64。
@@ -241,7 +228,6 @@ pub extern "C" fn rfn_for_c(){
     println!("call from rust fn sqrt :{}",unsafe{sqrt(36.0)});
 }
 ```
-
 这个lib.rs中一方面引用了C库中 的两个函数，另一方面， rfn_for_c函数也输出给C调用。  
 3、rustoc下toml文件  
 在这里，lib项选择了dylib（动态链接库方式）,当然也可以选择staticlib（静态链接库）项。
@@ -250,21 +236,20 @@ pub extern "C" fn rfn_for_c(){
 [package]
 name = "rusttoc"
 version = "0.1.0"
-authors = ["songroom `<sognroom@qq.com>`"]
+authors = ["songroom <sognroom@qq.com>"]
 edition = "2018"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 [lib]
 crate-type =["dylib"]
 [dependencies]
 ```
-
 4、在rusttoc文件夹下，cargo build  
 查看一下，是否生成相关的.so文件。这个文件后面需要被.c文件调用。
 
 5、c_call文件夹下，建立一个callrust.c文件
 
 ```rust
-#include `<stdio.h>`
+#include <stdio.h>
 extern void rfn_for_c(void);
 int main(){
     printf("hello,c call rust !\n");
@@ -272,14 +257,12 @@ int main(){
     return 0;
 }
 ```
-
 6、c_call文件夹下gcc,并设置.so文件相应的路径临时变量
 
 ```rust
 songroom@staff-NB-146:~/myffi/c_call$ gcc callrust.c -o callrust -lrusttoc -L../rusttoc/target/debug
 songroom@staff-NB-146:~/myffi/c_call$ export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:../rusttoc/target/debug
 ```
-
 关于“-lrusttoc -L…/rusttoc/target/debug”：  
 （1）-lrusttoc：是指链接rustoc.so  
 （2）-L…/rusttoc/target/debug：是在“…/rusttoc/target/debug”路径上搜索相应的文件。  

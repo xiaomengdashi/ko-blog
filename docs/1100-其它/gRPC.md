@@ -30,7 +30,7 @@ git clone --recurse-submodules -b v1.68.0 --depth 1 --shallow-submodules https:/
 
 进行如下两项配置，否则在配置、生成项目时会出现警告。
 
-```plain
+```cpp
 CMake Warning at cmake/ssl.cmake:37 (message):
   Disabling SSL assembly support because NASM could not be found
 Call Stack (most recent call first):
@@ -44,12 +44,12 @@ Call Stack (most recent call first):
 # 将 nasm.exe 所在目录添加到 CMAKE_ASM_NASM_COMPILER 环境变量
 ```
 
-```plain
+```cpp
 CMake Deprecation Warning at third_party/cares/cares/CMakeLists.txt:1 (CMAKE_MINIMUM_REQUIRED):
   Compatibility with CMake < 3.5 will be removed from a future version of
   CMake.
 
-  Update the VERSION argument `<min>` value or use a ...`<max>` suffix to tell
+  Update the VERSION argument <min> value or use a ...<max> suffix to tell
   CMake that the project does not need compatibility with older versions.
 
 
@@ -58,7 +58,6 @@ CMake Deprecation Warning at third_party/cares/cares/CMakeLists.txt:1 (CMAKE_MIN
 # 查看自己使用的是 cmake 是 3.29.5 版本
 # 将第一行 CMAKE_MINIMUM_REQUIRED (VERSION 3.1.0) 修改为 CMAKE_MINIMUM_REQUIRED (VERSION 3.29.5)
 ```
-
 使用 cmake 打开项目，按照下图进行配置：
 
 ![](/img/posts/5ed0f4499596e9fe07c3f725dafa24c6.png)
@@ -111,7 +110,6 @@ where grpc_cpp_plugin
 
 protoc --cpp_out=. --grpc_out=. --plugin=protoc-gen-grpc="C:\Users\china\Desktop\grpc\install\bin\grpc_cpp_plugin.exe" greeter.proto
 ```
-
 ### 3. 服务端
 服务端核心的程序代码包含：
 
@@ -120,8 +118,8 @@ protoc --cpp_out=. --grpc_out=. --plugin=protoc-gen-grpc="C:\Users\china\Desktop
 
 ```cpp
 #define _CRT_SECURE_NO_WARNINGS
-#include `<iostream>`
-#include `<cstdio>`
+#include <iostream>
+#include <cstdio>
 #include "greeter.grpc.pb.h"
 #include "grpcpp/grpcpp.h"
 
@@ -132,9 +130,9 @@ class MyGreeterService : public Greeter::Service
 public:
 	virtual grpc::Status sayHello(::grpc::ServerContext* context, const ::Request* request, ::Response* response)
 	{
-		std::cout `<< "Name:" << request->`name() `<< " Age:" << request->`age() `<< std::endl;
+		std::cout << "Name:" << request->name() << " Age:" << request->age() << std::endl;
 		std::ostringstream message;
-		message << "SayHello Name:" << request->`name() `<< " Age:" << request->`age();
+		message << "SayHello Name:" << request->name() << " Age:" << request->age();
 		response->set_message(message.str());
 
 		return grpc::Status::OK;
@@ -152,7 +150,7 @@ void runServer()
 	builder.RegisterService(&service);
 
 	// 创建服务器
-	``std::`unique_ptr`<grpc::Server>` server = builder.BuildAndStart();
+	std::unique_ptr<grpc::Server> server = builder.BuildAndStart();
 	server->Wait();
 }
 
@@ -163,7 +161,6 @@ int main()
 	return 0;
 }
 ```
-
 ### 4. 客户端
 客户端的核心程序代码包含：
 
@@ -171,7 +168,7 @@ int main()
 + 调用服务函数
 
 ```cpp
-#include `<iostream>`
+#include <iostream>
 #include "grpcpp/grpcpp.h"
 #include "greeter.grpc.pb.h"
 
@@ -179,9 +176,9 @@ int main()
 void runClient()
 {	
 	// 构建远程连接通道
-	``std::`shared_ptr`<grpc::Channel>` channel = grpc::CreateChannel("127.0.0.1:50052", grpc::InsecureChannelCredentials());
+	std::shared_ptr<grpc::Channel> channel = grpc::CreateChannel("127.0.0.1:50052", grpc::InsecureChannelCredentials());
 	// 创建远程调用代理
-	`std::unique_ptr< Greeter::Stub>`stub = Greeter::NewStub(channel);
+	std::unique_ptr< Greeter::Stub>stub = Greeter::NewStub(channel);
 
 	// 传递额外信息
 	grpc::ClientContext context;
@@ -199,7 +196,7 @@ void runClient()
 
 	if (status.ok())
 	{
-		std::cout `<< "调用结果:" << result.message() << std::endl;
+		std::cout << "调用结果:" << result.message() << std::endl;
 	}
 	else
 	{

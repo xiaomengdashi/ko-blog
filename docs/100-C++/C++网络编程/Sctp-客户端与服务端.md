@@ -24,17 +24,17 @@ slug: /C++/C++网络编程/Sctp-客户端与服务端
  *  http://stackoverflow.com/questions/6342617/sctp-multihoming
  */
 
-#include `<sys/types.h>`
-#include `<sys/socket.h>`
-#include `<signal.h>`
-#include `<netinet/in.h>`
-#include `<netinet/sctp.h>`
-#include `<arpa/inet.h>`
-#include `<string.h>`
-#include `<stdio.h>`
-#include `<net/if.h>`
-#include `<stdlib.h>`
-#include `<unistd.h>`
+#include <sys/types.h>
+#include <sys/socket.h>
+#include <signal.h>
+#include <netinet/in.h>
+#include <netinet/sctp.h>
+#include <arpa/inet.h>
+#include <string.h>
+#include <stdio.h>
+#include <net/if.h>
+#include <stdlib.h>
+#include <unistd.h>
 
 #define BUFFER_SIZE	65535
 
@@ -187,7 +187,6 @@ void handle_signal(int signum) {
     exit(0);
 }
 ```
-
 客户端
 
 ```c
@@ -200,17 +199,17 @@ void handle_signal(int signum) {
  *  http://stackoverflow.com/questions/6342617/sctp-multihoming
  */
 
-#include `<sys/types.h>`
-#include `<sys/socket.h>`
-#include `<signal.h>`
-#include `<netinet/in.h>`
-#include `<netinet/sctp.h>`
-#include `<arpa/inet.h>`
-#include `<string.h>`
-#include `<unistd.h>`
-#include `<stdio.h>`
-#include `<stdlib.h>`
-#include `<sys/ioctl.h>`
+#include <sys/types.h>
+#include <sys/socket.h>
+#include <signal.h>
+#include <netinet/in.h>
+#include <netinet/sctp.h>
+#include <arpa/inet.h>
+#include <string.h>
+#include <unistd.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <sys/ioctl.h>
 
 #define PORT 11000
 #define MSG_SIZE 1000

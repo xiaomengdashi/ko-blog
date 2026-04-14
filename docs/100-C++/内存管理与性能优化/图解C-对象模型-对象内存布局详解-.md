@@ -53,7 +53,6 @@ ptr1->print(); //调用Base::print()
 prt2->print();//调用Drive1::print()
 prt3->print();//调用Drive2::print()
 ```
-
 ![](/img/posts/a33d4861a9967063828086f96fa7dfb1.png)
 
 这是一种运行期多态，即父类指针唯有在程序运行时才能知道所指的真正类型是什么。这种运行期决议，是通过虚函数表来实现的。
@@ -70,7 +69,7 @@ public:
     Base(int i) :baseI(i){};
 
 
-    virtual void print(void){ cout `<< "调用了虚函数Base::print()"; }
+    virtual void print(void){ cout << "调用了虚函数Base::print()"; }
 
 
     virtual void setI(){cout<<"调用了虚函数Base::setI()";}
@@ -87,7 +86,6 @@ private:
 
 };
 ```
-
 ![](/img/posts/9a85fa7610a90083a97598438e121efd.png)
 
 当一个类本身定义了虚函数，或其父类有虚函数时，为了支持多态机制，编译器将为该类添加一个虚函数指针（vptr）。虚函数指针一般都放在对象内存布局的第一个位置上，这是为了保证在多层继承或多重继承的情况下能以最高效率取到虚函数表。
@@ -99,7 +97,6 @@ Base b(1000);
 int * vptrAdree = (int *)(&b);  
 cout << "虚函数指针（vprt）的地址是：\t"<<vptrAdree << endl;
 ```
-
 我们运行代码出结果：
 
 ![](/img/posts/49b695bd5a71a42fcfd1787ff340e62a.jpeg)
@@ -113,7 +110,6 @@ cout << "第一个虚函数的地址是：" << (int *)*(int*)(&b) << endl;
 cout << "通过地址，调用虚函数Base::print()：";
 vfunc();
 ```
-
 + 我们把虚表指针的值取出来： ＊(int＊)(&b)，它是一个地址，虚函数表的地址
 + 把虚函数表的地址强制转换成 int* : ( int ＊) ＊( int＊ )( &b )
 + 再把它转化成我们Fun指针类型 ： (Fun )＊(int ＊)＊(int＊)(&b)
@@ -128,7 +124,6 @@ vfunc();
 ```cpp
 (int * )(*(int*)(&b)+1)
 ```
-
 同样可以通过函数指针访问它，这里留给读者自己试验。
 
 到目前为止，我们知道了类中虚表指针vprt的由来，知道了虚函数表中的内容，以及如何通过指针访问虚函数表。下面的文章中将常使用指针访问对象内存来验证我们的C++对象模型，以及讨论在各种继承情况下虚表指针的变化，先把这部分的内容消化完再接着看下面的内容。
@@ -174,7 +169,6 @@ private:
     static int baseS;
 };
 ```
-
 ![](/img/posts/4d10422cb5b772d42d4aceed5f0bb2ad.png)
 
 那么，这个类在内存中将被如何表示？5种数据都是连续存放的吗？如何布局才能支持C++多态？ 我们的C++标准与编译器将如何塑造出各种数据成员与成员函数呢？
@@ -205,7 +199,6 @@ private:
 ```cpp
 Base b(1000);
 ```
-
 ![](/img/posts/717a76d63460bf50e32e3739141a1777.png)
 
 可见对象b含有一个vfptr，即vprt。并且只有nonstatic数据成员被放置于对象内。我们展开vfprt：
@@ -225,9 +218,9 @@ void testBase( Base&p)
 
 
 
-    string classname(str.pTypeDescriptor->`name);
+    string classname(str.pTypeDescriptor->name);
     classname = classname.substr(4, classname.find("@@") - 4);
-    cout `<<  "根据type_info信息输出类名:"<< classname << endl;
+    cout <<  "根据type_info信息输出类名:"<< classname << endl;
 
 
     cout << "虚函数表地址:" << (int *)(&p) << endl;
@@ -266,7 +259,6 @@ void testBase( Base&p)
 Base b(1000);
 testBase(b);
 ```
-
 ![](/img/posts/0ffa99fcec8d2591c8986334fbc9f09c.png)
 
 **结果分析：**
@@ -298,7 +290,6 @@ private:
 int DeriveI;
 };
 ```
-
 继承类图为：
 
 ![](/img/posts/212e2fea1d3198f6d03790de44e2f618.png)
@@ -354,7 +345,6 @@ int main()
     getchar();
 }
 ```
-
 运行结果：
 
 ![](/img/posts/12c224b037b35e659f75316e826df94b.png)
@@ -446,7 +436,6 @@ private:
     int Drive_multyBaseI;
 };
 ```
-
 继承类图为：
 
 ![](/img/posts/ce93ec68cda744c96d59643f8b9df7bc.png)
@@ -530,7 +519,6 @@ int main()
     getchar();
 }
 ```
-
 运行结果：
 
 ![](/img/posts/5bc988ec6b27c40af9d339d6f5a242ab.png)
@@ -590,7 +578,6 @@ public:
     virtual void Df() { cout << "D::Df()" << endl; }
 };
 ```
-
 这时，根据单继承，我们可以分析出B1，B2类继承于B类时的内存布局。又根据一般多继承，我们可以分析出D类的内存布局。我们可以得出D类子对象的内存布局如下图：
 
 ![](/img/posts/04d8d4af71d6bd89cd21706edc722886.png)
@@ -609,7 +596,6 @@ d.B1::ib = 1;           //正确
 
 d.B2::ib = 1;           //正确
 ```
-
 尽管我们可以通过明确指明调用路径以消除二义性，但二义性的潜在性还没有消除，我们可以通过虚继承来使D类只拥有一个ib实体。
 
 ### 6. 6.虚继承
@@ -638,7 +624,6 @@ d.B2::ib = 1;           //正确
 class B{...}
 class B1 : virtual public B
 ```
-
 ![](/img/posts/0f6137b8bdc34d70d2d386e2d3082ceb.png)
 
 根据我们前面对虚继承的派生类的内存布局的分析，B1类的对象模型应该是这样的：
@@ -719,7 +704,6 @@ B1 a;
     cout << "\t地址: " << (int *)(&a) + 5;
     cout << endl;
 ```
-
 运行结果：
 
 ![](/img/posts/e81ef5313e94e525523de038780ff2fe.png)
@@ -740,7 +724,6 @@ class B1: virtual public  B{...}
 class B2: virtual public  B{...}
 class D : public B1,public B2{...}
 ```
-
 类图如下所示：
 
 ![](/img/posts/d213819b31cbfd7a0fa61a0ad5af36f0.png)
@@ -762,7 +745,7 @@ class D : public B1,public B2{...}
 int main()
 {
     D d;
-    cout `<< "D对象内存大小为：" << sizeof(d) << endl;
+    cout << "D对象内存大小为：" << sizeof(d) << endl;
 
 
     //取得B1的虚函数表
@@ -878,7 +861,6 @@ int main()
     getchar();
 }
 ```
-
 查看运行结果：
 
 ### 7. 7.一些问题解答
@@ -896,16 +878,14 @@ typedef struct Point3
     float z;
 } Point3;
 ```
-
 为了打印这个Point3d，我们可以定义一个函数：
 
 ```cpp
 void Point3d_print(const Point3d *pd)
 {
-    printf("(%f,%f,%f)",pd->`x,pd->y,pd_z);
+    printf("(%f,%f,%f)",pd->x,pd->y,pd_z);
 }
 ```
-
 而在C++中，我们更倾向于定义一个Point3d类，以ADT来实现上面的操作:
 
 ```cpp
@@ -929,13 +909,12 @@ class Point3d
 
 
     inline ostream&
-    operator`<<(ostream &os, const Point3d &pt)
+    operator<<(ostream &os, const Point3d &pt)
     {
         os<<"("<<pr.x()<<","
             <<pt.y()<<","<<pt.z()<<")";
     }
 ```
-
 看到这段代码，很多人第一个疑问可能是：加上了封装，布局成本增加了多少？答案是class Point3d并没有增加成本。学过了C++对象模型，我们知道，Point3d类对象的内存中，只有三个数据成员。
 
 上面的类声明中，三个数据成员直接内含在每一个Point3d对象中，而成员函数虽然在类中声明，却不出现在类对象（object）之中，这些函数(non-inline)属于类而不属于类对象，只会为类产生唯一的函数实例。
@@ -970,7 +949,6 @@ void TestPoint3Member(const Point3d& p)
     Point3d a(1,2,3);
     TestPoint3Member(a);
 ```
-
 运行结果：
 
 ![](/img/posts/435b57d043b334745031683801e91fb6.png)

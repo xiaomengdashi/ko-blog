@@ -34,7 +34,7 @@ Muduo，由陈硕大佬精心开发，是一个基于非阻塞IO和事件驱动�
 > + 每个 `EventLoop` 运行在 **单独的线程**，通常一个线程只有一个 `EventLoop`。
 >
 
-```plain
+```cpp
 EventLoop
  ├── Poller（封装 epoll）
  ├── TimerQueue（管理定时器）
@@ -75,20 +75,19 @@ public:
       
 private:  
     // 原子变量，用于指示事件循环是否应该退出  
-    `std::`atomic`<bool>` quit_;
+    std::atomic<bool> quit_;
       
     // 指向Poller对象的智能指针，Poller负责轮询I/O事件
-    ``std::`unique_ptr`<Poller>` poller_;  
+    std::unique_ptr<Poller> poller_;  
       
     // 互斥锁，用于保护多线程访问共享数据  
     mutable MutexLock mutex_;  
       
     // 存储待执行函数的向量，这些函数将在事件循环的某个点被执行
-    ``std::`vector`<Functor>` pendingFunctors_ GUARDED_BY(mutex_);  
+    std::vector<Functor> pendingFunctors_ GUARDED_BY(mutex_);  
 };  
 
 ```
-
 > **2. **`**TcpServer**`**（TCP 服务器）**
 >
 > **作用**：
@@ -97,7 +96,7 @@ private:
 > + 通过 `Acceptor` 处理新连接，通过 `TcpConnection` 处理数据收发。
 >
 
-```plain
+```cpp
 TcpServer
  ├── EventLoop（事件循环）
  ├── Acceptor（管理新连接）
@@ -106,17 +105,17 @@ TcpServer
 ```
 
 ```cpp
-#include `<memory>`  
-#include `<functional>`  
-#include `<string>`  
+#include <memory>  
+#include <functional>  
+#include <string>  
 #include "muduo/net/EventLoop.h"  
 #include "muduo/net/InetAddress.h"  
 #include "muduo/net/Timestamp.h"  
 #include "muduo/net/Buffer.h"  
   
-typedef ``std::`shared_ptr`<TcpConnection>` TcpConnectionPtr;  
-typedef ``std::`function`<void(const TcpConnectionPtr&)>` ConnectionCallback;  
-typedef ``std::`function`<void(const TcpConnectionPtr&, Buffer*, Timestamp)>` MessageCallback;  
+typedef std::shared_ptr<TcpConnection> TcpConnectionPtr;  
+typedef std::function<void(const TcpConnectionPtr&)> ConnectionCallback;  
+typedef std::function<void(const TcpConnectionPtr&, Buffer*, Timestamp)> MessageCallback;  
   
 class InetAddress : public muduo::copyable {  
 public:  
@@ -157,7 +156,7 @@ private:
 
 ```cpp
 class TcpConnection : noncopyable,  
-                      public `std::`enable_shared_from_this`<TcpConnection>`  
+                      public std::enable_shared_from_this<TcpConnection>  
 {  
 public:  
     // 构造函数，用于创建TcpConnection对象  
@@ -233,7 +232,6 @@ private:
  
 };
 ```
-
 > **3. **`**TcpClient**`**（TCP 客户端）**
 >
 > **作用**：
@@ -242,7 +240,7 @@ private:
 > + 通过 `TcpConnection` 进行读写数据。
 >
 
-```plain
+```cpp
 TcpClient
  ├── EventLoop（事件循环）
  ├── TcpConnection（管理连接）
@@ -339,7 +337,6 @@ private:
     int count_ GUARDED_BY(mutex_); // 计数器，表示需要等待的操作数量  
 };
 ```
-
 > `**4. Buffer**`**（数据缓冲区）**
 >
 > **作用**：
@@ -347,7 +344,7 @@ private:
 > + 处理 TCP 数据收发，支持**零拷贝**优化。
 >
 
-```plain
+```cpp
 ThreadPool
  ├── Thread（线程管理）
  ├── TaskQueue（任务队列）
@@ -481,13 +478,12 @@ public:
     void prepend(const void* /*restrict*/ data, size_t len);  
   
 private:  
-    ``std::`vector`<char>` buffer_; // 存储字节数据的向量。  
+    std::vector<char> buffer_; // 存储字节数据的向量。  
     size_t readerIndex_; // 读索引，指向下一个可读字节的位置。  
     size_t writerIndex_; // 写索引，指向下一个可写字节的位置。  
     static const char kCRLF[]; // 可能的行结束符，如 "\r\n"。  
 };
 ```
-
 > `**5.ThreadPool**`**（线程池）**
 >
 > **作用**：
@@ -495,13 +491,13 @@ private:
 > + 用于多线程任务调度，避免线程创建销毁的开销。
 >
 
-```plain
+```cpp
 ThreadPool
  ├── Thread（线程管理）
  ├── TaskQueue（任务队列）
 ```
 
-```plain
+```cpp
 Muduo
  ├── muduo::base  （基础工具库）
  │   ├── ThreadPool      （线程池）
@@ -522,16 +518,15 @@ Muduo
      ├── HttpRequest
      ├── HttpResponse
 ```
-
 ##### 2. 1.Muduo实现字典服务端
 ```cpp
-#`include`<muduo/net/TcpServer.h>`
-#`include`<muduo/net/EventLoop.h>`
-#`include`<muduo/net/TcpConnection.h>`
-#`include`<muduo/net/Buffer.h>`
-#`include`<iostream>`
-#`include`<string>`
-#`include`<unordered_map>`
+#include<muduo/net/TcpServer.h>
+#include<muduo/net/EventLoop.h>
+#include<muduo/net/TcpConnection.h>
+#include<muduo/net/Buffer.h>
+#include<iostream>
+#include<string>
+#include<unordered_map>
  
 class DictServer
 {
@@ -541,7 +536,7 @@ public:
     {
         //设置回调函数 
         //需要的参数类型 void setConnectionCallback(const ConnectionCallback& cb)
-        //typedef ``std::`function`<void (const TcpConnectionPtr&)>` ConnectionCallback;
+        //typedef std::function<void (const TcpConnectionPtr&)> ConnectionCallback;
         //TcpConnectionPtr&就是onConnection函数的参数，但onConnection是类成员函数带有this指针
         //用bind先绑定this指针(最先bind)，其它参数按顺序传
         _server.setConnectionCallback(std::bind(&DictServer::onConnection,this,std::placeholders::_1));
@@ -557,15 +552,15 @@ private:
     void onConnection(const muduo::net::TcpConnectionPtr&conn) //连接建立/断开的回调函数
     {
         if(conn->connected())//判断连接是否存在
-            `std::`cout`<<"连接建立"<<std::endl;
+            std::cout<<"连接建立"<<std::endl;
         else 
-            `std::`cout<<"连接断开"<<std::endl;
+            std::cout<<"连接断开"<<std::endl;
     }
     //接收到消息的回调函数
     void onMessage(const muduo::net::TcpConnectionPtr&conn,
         muduo::net::Buffer *buf,muduo::Timestamp)
     {
-        static std::unordered_map<std::string,std::string>` dict_map={
+        static std::unordered_map<std::string,std::string> dict_map={
             {"hello","你好"},
             {"coke","小猫"},
         };
@@ -589,7 +584,6 @@ int main()
     return 0;
 }
 ```
-
 > **1.设置回调函数时，为什么bind要传this?**
 >
 > _**_server.setConnectionCallback(std::bind(&DictServer::onConnection, this, std::placeholders::_1));**_
@@ -624,10 +618,9 @@ server: server.cpp
 clean:
 	rm -f server
 ```
-
 > `**CXXFLAGS** `**C++ 编译选项 **
 >
-> -I../../build/release-install-cpp11/include/ **指定额外的头文件搜索路径**,确保能找到#`include`&lt;muduo/net/Buffer.h>`等相关头文件。
+> -I../../build/release-install-cpp11/include/ **指定额外的头文件搜索路径**,确保能找到 `#include <muduo/net/Buffer.h>` 等相关头文件。
 >
 > `**LDFLAGS**`** 链接选项**
 >
@@ -639,7 +632,7 @@ clean:
 > + `-lmuduo_base`：链接 `libmuduo_base.a` 或 `libmuduo_base.so`
 > + `**-lxxx**`** 表示链接 **`**libxxx.so**`** 或 **`**libxxx.a**`，前缀 `lib` 可以省略。
 >
-> **#include" " #include&lt;&gt;查找方式**
+> **`#include ""` 与 `#include <>` 查找方式**
 >
 
 
@@ -647,7 +640,7 @@ clean:
 | 方式 | 作用 |
 | --- | --- |
 | `#include "file.h"` | **先查找当前目录，再查找 **`**-I**`<br/>** 目录，最后查找系统路径** |
-| `#include `&lt;file.h&gt;` | **只查找 **`**-I**`<br/>** 目录和系统路径**，不查找当前目录 |
+| `#include <file.h>` | **只查找 **`**-I**`<br/>** 目录和系统路径**，不查找当前目录 |
 | `-I/path/to/include` | 添加额外头文件目录 |
 
 
@@ -674,14 +667,14 @@ clean:
 >
 
 ```cpp
-#include `<muduo/net/TcpClient.h>`
-#include `<muduo/net/EventLoop.h>`
-#include `<muduo/net/TcpConnection.h>`
-#include `<muduo/net/EventLoopThread.h>`
-#include `<muduo/net/Buffer.h>`
-#include `<muduo/base/CountDownLatch.h>`
-#include `<iostream>`
-#include `<string>`
+#include <muduo/net/TcpClient.h>
+#include <muduo/net/EventLoop.h>
+#include <muduo/net/TcpConnection.h>
+#include <muduo/net/EventLoopThread.h>
+#include <muduo/net/Buffer.h>
+#include <muduo/base/CountDownLatch.h>
+#include <iostream>
+#include <string>
 
 class DictClient
 {
@@ -715,10 +708,10 @@ bool send(const std::string &msg)
 {
     if (_conn->connected() == false)
     {
-        std::cout `<< "连接断开" << std::endl;
+        std::cout << "连接断开" << std::endl;
         return false;
     }
-    _conn->`send(msg);
+    _conn->send(msg);
     return true;
 }
 
@@ -727,7 +720,7 @@ void onConnection(const muduo::net::TcpConnectionPtr &conn) // 连接建立/断�
 {
     if (conn->connected()) // 判断连接是否存在
     {
-        std::cout `<< "连接建立" << std::endl;
+        std::cout << "连接建立" << std::endl;
         _conn = conn;
         _downlactch.countDown(); // 计数-- =0 唤醒wait
     }
@@ -738,13 +731,13 @@ void onConnection(const muduo::net::TcpConnectionPtr &conn) // 连接建立/断�
 void onMessage(const muduo::net::TcpConnectionPtr &conn,
 muduo::net::Buffer *buf, muduo::Timestamp)
 {
-    std::string res=buf->`retrieveAllAsString();
-    `std::`cout`<<`res<<std::endl;
+    std::string res=buf->retrieveAllAsString();
+    std::cout<<res<<std::endl;
 }
 
 private:
 muduo::net::TcpConnectionPtr _conn;
-muduo::CountDownLatch _downlactch; // 做计数同步的类 void wait()计数>`0阻塞 countDown()-- 计数=0唤醒wait
+muduo::CountDownLatch _downlactch; // 做计数同步的类 void wait()计数>0阻塞 countDown()-- 计数=0唤醒wait
 muduo::net::EventLoopThread _loopthread; //实例化后自动创建一个线程执行loop
 muduo::net::EventLoop* _baseloop;
 muduo::net::TcpClient _client;
@@ -762,7 +755,6 @@ int main()
     return 0;
 }
 ```
-
 > makefile
 >
 
@@ -787,4 +779,3 @@ clean:
 
 > 来自: [C++ Json-Rpc框架-1准备工作(JsonCpp Muduo 异步操作)-CSDN博客](https://blog.csdn.net/wws7920/article/details/146352849)
 >
-

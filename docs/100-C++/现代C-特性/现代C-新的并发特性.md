@@ -35,16 +35,15 @@ thread_obj.request_stop();            // 请求停止
 thread_obj.get_stop_token();          // 获取停止令牌
 thread_obj.get_stop_source();         // 获取停止源
 ```
-
 ##### 1.1.3. 具体使用
 ```cpp
-#include `<thread>`
-#include `<iostream>`
-#include `<chrono>`
+#include <thread>
+#include <iostream>
+#include <chrono>
 
 // 基本使用
 std::jthread t1([]() {
-    std::cout `<< "Hello from jthread!" << std::endl;
+    std::cout << "Hello from jthread!" << std::endl;
 });
 
 // 带参数的线程
@@ -62,13 +61,12 @@ std::jthread t3([](std::stop_token stoken) {
     }
 });
 ```
-
 ##### 1.1.4. 示例代码
 ```cpp
-#include <iostream>`
-#include `<thread>`
-#include `<chrono>`
-#include `<vector>`
+#include <iostream>
+#include <thread>
+#include <chrono>
+#include <vector>
 
 class WorkerPool {
 public:
@@ -76,7 +74,7 @@ public:
         for(int i = 0; i < count; ++i) {
             workers.emplace_back([this, i](std::stop_token stoken) {
                 while(!stoken.stop_requested()) {
-                    std::cout `<< "Worker " << i << " is working..." << std::endl;
+                    std::cout << "Worker " << i << " is working..." << std::endl;
                     std::this_thread::sleep_for(std::chrono::seconds(1));
                 }
                 std::cout << "Worker " << i << " stopped." << std::endl;
@@ -92,7 +90,7 @@ public:
     }
     
 private:
-`std::vector<std::jthread>`workers;
+std::vector<std::jthread>workers;
 };
 
 int main() {
@@ -105,7 +103,6 @@ int main() {
     return 0;
 }
 ```
-
 #### 1.2. std::atomic_flag
 ##### 1.2.1. 概念
 `std::atomic_flag`是C++11引入的最简单的原子类型，在C++20中得到了重大扩展。它表示一个原子布尔标志，主要功能包括：
@@ -119,7 +116,7 @@ int main() {
 
 ##### 1.2.2. 常用API和通用使用模板
 ```cpp
-#include `<atomic>`
+#include <atomic>
 
 // 声明和初始化
 std::atomic_flag flag = ATOMIC_FLAG_INIT;  // C++11方式，初始化为false
@@ -140,19 +137,18 @@ flag.wait(bool expected, std::memory_order);           // 带内存序的版本
 flag.notify_one();                                     // 通知一个等待的线程
 flag.notify_all();                                     // 通知所有等待的线程
 ```
-
 ##### 1.2.3. 具体使用
 ```cpp
-#include `<atomic>`
-#include `<iostream>`
-#include `<thread>`
+#include <atomic>
+#include <iostream>
+#include <thread>
 
 // 基本操作
 std::atomic_flag flag{};
 
 // C++11 操作
 if (!flag.test_and_set()) {
-    std::cout `<< "Flag was false, now set to true" << std::endl;
+    std::cout << "Flag was false, now set to true" << std::endl;
 }
 flag.clear();
 
@@ -171,14 +167,13 @@ flag.clear(std::memory_order_release);
 flag.test(std::memory_order_relaxed);
 flag.wait(true, std::memory_order_acquire);
 ```
-
 ##### 1.2.4. 示例代码
 ```cpp
-#include <iostream>`
-#include `<thread>`
-#include `<vector>`
-#include `<atomic>`
-#include `<chrono>`
+#include <iostream>
+#include <thread>
+#include <vector>
+#include <atomic>
+#include <chrono>
 
 // 使用C++20新特性的改进版自旋锁
 class ModernSpinLock {
@@ -251,7 +246,7 @@ int shared_counter = 0;
 
 void modern_worker(int id) {
     // 等待事件信号
-    std::cout `<< "Worker " << id << " waiting for event..." << std::endl;
+    std::cout << "Worker " << id << " waiting for event..." << std::endl;
     event.wait();
     std::cout << "Worker " << id << " received event signal!" << std::endl;
     
@@ -279,7 +274,7 @@ void modern_worker(int id) {
 }
 
 int main() {
-`std::vector<std::thread>`workers;
+std::vector<std::thread>workers;
     
     // 启动工作线程
     for (int i = 0; i < 3; ++i) {
@@ -288,7 +283,7 @@ int main() {
     
     // 等待一段时间后发送事件信号
     std::this_thread::sleep_for(std::chrono::seconds(1));
-    std::cout `<< "\n=== Setting event signal ===\n" << std::endl;
+    std::cout << "\n=== Setting event signal ===\n" << std::endl;
     event.set();
     
     // 等待所有工作线程完成
@@ -302,9 +297,6 @@ int main() {
     return 0;
 }
 ```
-
-
-
 #### 1.3. 信号量（Semaphore）
 ##### 1.3.1. 概念
 信号量是C++20引入的同步原语，用于控制对有限资源的访问。主要功能：
@@ -316,30 +308,29 @@ int main() {
 
 ##### 1.3.2. 常用API和通用使用模板
 ```cpp
-#include <semaphore>`
+#include <semaphore>
 
 // 声明信号量
-`std::`counting_semaphore`<max_count>` sem(initial_count);
-std::binary_semaphore binary_sem(initial_count);  // `等价于counting_semaphore`<1>`
+std::counting_semaphore<max_count> sem(initial_count);
+std::binary_semaphore binary_sem(initial_count);  // 等价于counting_semaphore<1>
 
 // 主要API
 sem.acquire();                    // 获取资源（阻塞）
 bool success = sem.try_acquire(); // 尝试获取资源（非阻塞）
 sem.release(count = 1);           // 释放资源
 ```
-
 ##### 1.3.3. 具体使用
 ```cpp
-#include `<semaphore>`
-#include `<iostream>`
+#include <semaphore>
+#include <iostream>
 
 // 创建信号量
-`std::`counting_semaphore`<10>` resource_sem(3);  // 最多3个资源
+std::counting_semaphore<10> resource_sem(3);  // 最多3个资源
 std::binary_semaphore mutex_sem(1);           // 二进制信号量
 
 // 获取资源
 resource_sem.acquire();
-std::cout `<< "Resource acquired" << std::endl;
+std::cout << "Resource acquired" << std::endl;
 
 // 尝试获取资源
 if (resource_sem.try_acquire()) {
@@ -350,15 +341,14 @@ if (resource_sem.try_acquire()) {
 // 释放资源
 resource_sem.release();
 ```
-
 ##### 1.3.4. 示例代码
 ```cpp
-#include <iostream>`
-#include `<thread>`
-#include `<vector>`
-#include `<semaphore>`
-#include `<chrono>`
-#include `<random>`
+#include <iostream>
+#include <thread>
+#include <vector>
+#include <semaphore>
+#include <chrono>
+#include <random>
 
 class ResourcePool {
 public:
@@ -367,26 +357,26 @@ public:
     void use_resource(int worker_id) {
         semaphore.acquire();  // 获取资源
         
-        std::cout `<< "Worker " << worker_id << " acquired resource" << std::endl;
+        std::cout << "Worker " << worker_id << " acquired resource" << std::endl;
         
         // 模拟使用资源
         std::random_device rd;
         std::mt19937 gen(rd());
-        std::uniform_int_distribution<>` dis(1, 3);
+        std::uniform_int_distribution<> dis(1, 3);
         std::this_thread::sleep_for(std::chrono::seconds(dis(gen)));
         
-        std::cout `<< "Worker " << worker_id << " releasing resource" << std::endl;
+        std::cout << "Worker " << worker_id << " releasing resource" << std::endl;
         
         semaphore.release();  // 释放资源
     }
     
 private:
-`std::counting_semaphore<10>`semaphore;
+std::counting_semaphore<10>semaphore;
 };
 
 int main() {
     ResourcePool pool(2);  // 只有2个资源
-    ``std::`vector`<std::thread>` workers;
+    std::vector<std::thread> workers;
     
     // 创建5个工作线程竞争2个资源
     for (int i = 0; i < 5; ++i) {
@@ -402,7 +392,6 @@ int main() {
     return 0;
 }
 ```
-
 #### 1.4. 闩锁（Latch）
 ##### 1.4.1. 概念
 闩锁是C++20引入的一次性同步原语，用于等待一组操作完成。主要功能：
@@ -414,7 +403,7 @@ int main() {
 
 ##### 1.4.2. 常用API和通用使用模板
 ```cpp
-#include `<latch>`
+#include <latch>
 
 // 声明闩锁
 std::latch latch_obj(count);
@@ -425,18 +414,17 @@ latch_obj.wait();                     // 等待计数归零
 bool ready = latch_obj.try_wait();    // 非阻塞检查是否归零
 latch_obj.arrive_and_wait(n = 1);     // count_down + wait的组合
 ```
-
 ##### 1.4.3. 具体使用
 ```cpp
-#include `<latch>`
-#include `<iostream>`
+#include <latch>
+#include <iostream>
 
 // 创建闩锁
 std::latch start_latch(3);  // 等待3个事件
 
 // 减少计数
 start_latch.count_down();
-std::cout `<< "One task completed" << std::endl;
+std::cout << "One task completed" << std::endl;
 
 // 等待所有任务完成
 start_latch.wait();
@@ -445,15 +433,14 @@ std::cout << "All tasks completed!" << std::endl;
 // 组合操作
 start_latch.arrive_and_wait();  // 等价于count_down() + wait()
 ```
-
 ##### 1.4.4. 示例代码
 ```cpp
-#include <iostream>`
-#include `<thread>`
-#include `<vector>`
-#include `<latch>`
-#include `<chrono>`
-#include `<random>`
+#include <iostream>
+#include <thread>
+#include <vector>
+#include <latch>
+#include <chrono>
+#include <random>
 
 class TaskCoordinator {
 public:
@@ -465,7 +452,7 @@ public:
         std::mt19937 gen(rd());
         std::uniform_int_distribution<> dis(1, 5);
         
-        std::cout `<< "Task " << task_id << " starting..." << std::endl;
+        std::cout << "Task " << task_id << " starting..." << std::endl;
         std::this_thread::sleep_for(std::chrono::seconds(dis(gen)));
         std::cout << "Task " << task_id << " completed!" << std::endl;
         
@@ -486,7 +473,7 @@ private:
 int main() {
     const int num_tasks = 4;
     TaskCoordinator coordinator(num_tasks);
-`std::vector<std::thread>`task_threads;
+std::vector<std::thread>task_threads;
     
     // 启动所有任务
     for (int i = 0; i < num_tasks; ++i) {
@@ -503,11 +490,10 @@ int main() {
         t.join();
     }
     
-    std::cout `<< "Program finished." << std::endl;
+    std::cout << "Program finished." << std::endl;
     return 0;
 }
 ```
-
 #### 1.5. 屏障（Barrier）
 ##### 1.5.1. 概念
 屏障是C++20引入的可重用同步原语，用于多个线程的周期性同步。主要功能：
@@ -519,11 +505,11 @@ int main() {
 
 ##### 1.5.2. 常用API和通用使用模板
 ```cpp
-#include <barrier>`
+#include <barrier>
 
 // 声明屏障
 std::barrier<> barrier_obj(thread_count);
-`std::`barrier`<CompletionFunction>` barrier_with_func(thread_count, completion_func);
+std::barrier<CompletionFunction> barrier_with_func(thread_count, completion_func);
 
 // 主要API
 auto token = barrier_obj.arrive();        // 到达屏障，返回令牌
@@ -531,49 +517,47 @@ barrier_obj.wait(token);                  // 使用令牌等待
 barrier_obj.arrive_and_wait();            // arrive + wait的组合
 barrier_obj.arrive_and_drop();            // 到达并永久离开屏障
 ```
-
 ##### 1.5.3. 具体使用
 ```cpp
-#include `<barrier>`
-#include `<iostream>`
+#include <barrier>
+#include <iostream>
 
 // 创建屏障
 std::barrier sync_point(3);  // 3个线程的同步点
 
 // 到达屏障并等待
 sync_point.arrive_and_wait();
-std::cout `<< "All threads synchronized!" << std::endl;
+std::cout << "All threads synchronized!" << std::endl;
 
 // 分步操作
 auto token = sync_point.arrive();
 // 做其他工作...
 sync_point.wait(token);
 ```
-
 ##### 1.5.4. 示例代码
 ```cpp
-#include <iostream>`
-#include `<thread>`
-#include `<vector>`
-#include `<barrier>`
-#include `<chrono>`
-#include `<random>`
+#include <iostream>
+#include <thread>
+#include <vector>
+#include <barrier>
+#include <chrono>
+#include <random>
 
 class ParallelProcessor {
 public:
     ParallelProcessor(int worker_count, int phases) 
         : phase_barrier(worker_count, [this]() noexcept {
-            std::cout `<< "=== Phase " << ++current_phase << " completed by all workers ===" << std::endl;
+            std::cout << "=== Phase " << ++current_phase << " completed by all workers ===" << std::endl;
         }), num_phases(phases), current_phase(0) {}
     
     void worker_function(int worker_id) {
         std::random_device rd;
         std::mt19937 gen(rd());
-        std::uniform_int_distribution<>` dis(1, 3);
+        std::uniform_int_distribution<> dis(1, 3);
         
         for (int phase = 1; phase <= num_phases; ++phase) {
             // 模拟工作
-            std::cout `<< "Worker " << worker_id << " working on phase " << phase << std::endl;
+            std::cout << "Worker " << worker_id << " working on phase " << phase << std::endl;
             std::this_thread::sleep_for(std::chrono::seconds(dis(gen)));
             std::cout << "Worker " << worker_id << " finished phase " << phase << std::endl;
             
@@ -587,9 +571,9 @@ public:
     }
     
 private:
-`std::barrier<`std::function<void()>`> phase_barrier;
+std::barrier<std::function<void()>> phase_barrier;
     int num_phases;
-    `std::`atomic`<int>` current_phase;
+    std::atomic<int> current_phase;
 };
 
 int main() {
@@ -597,7 +581,7 @@ int main() {
     const int num_phases = 3;
     
     ParallelProcessor processor(num_workers, num_phases);
-    ``std::`vector`<std::thread>` workers;
+    std::vector<std::thread> workers;
     
     std::cout << "Starting " << num_workers << " workers for " << num_phases << " phases" << std::endl;
     

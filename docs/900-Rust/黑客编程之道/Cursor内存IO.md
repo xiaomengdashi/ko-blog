@@ -17,7 +17,7 @@ slug: /Rust/黑客编程之道/Cursor内存IO
 
 📌 什么是Cursor？
 
-Cursor是Rust标准库提供的一个内存游标结构体，`它可以将字节数组或Vec`&lt;u8>`包装成一个可以读写的游标。简单来说，它就像一个指针，可以在内存缓冲区中自由移动，进行读写操作。
+Cursor是Rust标准库提供的一个内存游标结构体，`它可以将字节数组或Vec<u8>`包装成一个可以读写的游标。简单来说，它就像一个指针，可以在内存缓冲区中自由移动，进行读写操作。
 
 🔍 Cursor的核心特征
 
@@ -32,8 +32,8 @@ Cursor实现了多个重要的trait：
 ```rust
 use std::io::Cursor;
 use std::io::{Read, Write, Seek, SeekFrom};
-fn basic_usage() -> std::io::`Result`<()>` {
-    // 创建一个Cursor，`包装Vec`<u8>`
+fn basic_usage() -> std::io::Result<()> {
+    // 创建一个Cursor，包装Vec<u8>
     let mut cursor = Cursor::new(Vec::new());
     // 写入数据
     cursor.write_all(b"Hello, Rust!")?;
@@ -48,12 +48,11 @@ fn basic_usage() -> std::io::`Result`<()>` {
     Ok(())
 }
 ```
-
 #### 1.2. 机访问示例
 ```rust
 use std::io::Cursor;
 use std::io::{Seek, SeekFrom, Write};
-fn random_access() -> std::io::`Result`<()>` {
+fn random_access() -> std::io::Result<()> {
     let mut cursor = Cursor::new(vec![0; 8]);
     // 写入不同位置
     cursor.seek(SeekFrom::Start(4))?;
@@ -67,7 +66,6 @@ fn random_access() -> std::io::`Result`<()>` {
     Ok(())
 }
 ```
-
 ### 2. 高级应用场景
 #### 2.1. 内存缓存序列化
 ```rust
@@ -79,7 +77,7 @@ struct Person {
     name: String,
     age: u32,
 }
-fn serialize_to_memory() -> std::io::`Result`<()>` {
+fn serialize_to_memory() -> std::io::Result<()> {
     let person = Person {
         name: "Alice".to_string(),
         age: 30,
@@ -95,12 +93,11 @@ fn serialize_to_memory() -> std::io::`Result`<()>` {
     Ok(())
 }
 ```
-
 #### 2.2. 高效的数据处理管道
 ```rust
 use std::io::Cursor;
 use std::io::{Read, Write};
-fn process_data_pipeline() -> std::io::`Result`<()>` {
+fn process_data_pipeline() -> std::io::Result<()> {
     // 模拟数据源
     let source_data = b"Hello, World!".to_vec();
     let mut cursor = Cursor::new(source_data);
@@ -115,7 +112,7 @@ fn process_data_pipeline() -> std::io::`Result`<()>` {
             let upper = chunk[..n]
                 .iter()
                 .map(|&b| b.to_ascii_uppercase())
-                .collect::`<`Vec<_>`>();
+                .collect::<Vec<_>>();
             writer.write_all(&upper)?;
         }
     }
@@ -124,13 +121,12 @@ fn process_data_pipeline() -> std::io::`Result`<()>` {
     Ok(())
 }
 ```
-
 ### 3. 性能优化技巧
 #### 3.1. 预分配缓冲区
 ```rust
 use std::io::Cursor;
 use std::io::Write;
-fn optimized_buffer() -> std::io::`Result`<()>` {
+fn optimized_buffer() -> std::io::Result<()> {
     // 预分配缓冲区
     let mut cursor = Cursor::new(Vec::with_capacity(1024));
     // 批量写入
@@ -142,12 +138,11 @@ fn optimized_buffer() -> std::io::`Result`<()>` {
     Ok(())
 }
 ```
-
 #### 3.2. 零拷贝读取
 ```rust
 use std::io::Cursor;
 use std::io::{Read, Write};
-fn zero_copy_reading() -> std::io::`Result`<()>` {
+fn zero_copy_reading() -> std::io::Result<()> {
     let data = b"Large data block".to_vec();
     let cursor = Cursor::new(data);
     // 获取引用而不是拷贝数据
@@ -156,13 +151,12 @@ fn zero_copy_reading() -> std::io::`Result`<()>` {
     Ok(())
 }
 ```
-
 ### 4. 性能对比
 ```rust
 use std::io::Cursor;
 use std::io::{Read, Write};
 use std::time::Instant;
-fn performance_comparison() -> std::io::`Result`<()>` {
+fn performance_comparison() -> std::io::Result<()> {
     let size = 1_000_000;
     let data = vec![1u8; size];
     // 使用Vec直接操作

@@ -72,7 +72,6 @@ curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
 // if you are in windows see more installation method here
 https://forge.rust-lang.org/infra/other-installation-methods.html
 ```
-
 + **React**: Ensure that your environment is ready for React development; use one of the below commands to install React if you don’t already have it: 
 
 ```rust
@@ -83,7 +82,6 @@ nvm install v14.10.0
 // on windows you can download nodejs installer here
 https://nodejs.org/en/download/
 ```
-
 Next, run the following commands to verify that everything is installed and working properly:
 
 ```rust
@@ -92,7 +90,6 @@ cargo --version
 node --version
 npm --version
 ```
-
 ### 5. Designing the real-time chat app architecture
 Let’s create some design architecture for our real-time chat application. We’ll build a simple server; our application’s architecture will cover the following features:
 
@@ -135,7 +132,6 @@ rand = "0.8.5"
 serde = "1.0.147"
 serde_json = "1.0.88"
 ```
-
 Now, install `diesel_cli`; we’ll use this as our ORM:
 
 :::info
@@ -163,7 +159,6 @@ Here’s how the structure of the project should look:
 └── static
 └── ui
 ```
-
 Now, here’s a bit of information about the folders:
 
 + `src`: This folder contains all of our Rust code
@@ -191,10 +186,10 @@ mod schema;
 mod server;
 mod session;
 #[actix_web::main]
-async fn main() -> std::io::`Result`<()>` {
+async fn main() -> std::io::Result<()> {
     let server = server::ChatServer::new().start();
     let conn_spec = "chat.db";
-    let manager = ConnectionManager::`<SqliteConnection>`::new(conn_spec);
+    let manager = ConnectionManager::<SqliteConnection>::new(conn_spec);
     let pool = r2d2::Pool::builder().build(manager).expect("Failed to create pool.");
     let server_addr = "127.0.0.1";
     let server_port = 8080;
@@ -226,7 +221,6 @@ async fn main() -> std::io::`Result`<()>` {
     app.await
 }
 ```
-
 Here’s some information about the packages we’re using:
 
 + `actix_cors`: Will be used to debug the UI; we’ll accept POST and GET requests from `localhost:3000` or `localhost:8080`
@@ -257,9 +251,8 @@ use crate::db;
 use crate::models;
 use crate::server;
 use crate::session;
-type DbPool = r2d2::`Pool`<`ConnectionManager<SqliteConnection>`>;
+type DbPool = r2d2::Pool<ConnectionManager<SqliteConnection>>;
 ```
-
 Then, add a route for embedding the home page to the root URL:
 
 ```rust
@@ -268,7 +261,6 @@ pub async fn index() -> impl Responder {
     NamedFile::open_async("./static/index.html").await.unwrap()
 }
 ```
-
 This is the entry point for our WebSocket server. Right now it’s on `/ws` routes, but you can change it to whatever route name you like. Since we already registered all the dependencies we need in the `main.rs` file, we can just pass the dependency to the function parameter, like so:
 
 ```rust
@@ -276,9 +268,9 @@ This is the entry point for our WebSocket server. Right now it’s on `/ws` rout
 pub async fn chat_server(
     req: HttpRequest,
     stream: web::Payload,
-    pool: web::`Data`<DbPool>`,
-    srv: web::`Data`<`Addr<server::ChatServer>`>,
-) -> `Result`<HttpResponse, Error>` {
+    pool: web::Data<DbPool>,
+    srv: web::Data<Addr<server::ChatServer>>,
+) -> Result<HttpResponse, Error> {
     ws::start(
         session::WsChatSession {
             id: 0,
@@ -293,16 +285,15 @@ pub async fn chat_server(
     )
 }
 ```
-
 Next, we need to add a REST API to our route in order to get the necessary data to make our chat work:
 
 ```rust
 // src/routes.rs
 #[post("/users/create")]
 pub async fn create_user(
-    pool: web::`Data`<DbPool>`,
-    form: web::`Json`<models::NewUser>`,
-) -> `Result`<HttpResponse, Error>` {
+    pool: web::Data<DbPool>,
+    form: web::Json<models::NewUser>,
+) -> Result<HttpResponse, Error> {
     let user = web::block(move || {
         let mut conn = pool.get()?;
         db::insert_new_user(&mut conn, &form.username, &form.phone)
@@ -313,9 +304,9 @@ pub async fn create_user(
 }
 #[get("/users/{user_id}")]
 pub async fn get_user_by_id(
-    pool: web::`Data`<DbPool>`,
-    id: web::`Path`<Uuid>`,
-) -> `Result`<HttpResponse, Error>` {
+    pool: web::Data<DbPool>,
+    id: web::Path<Uuid>,
+) -> Result<HttpResponse, Error> {
     let user_id = id.to_owned();
     let user = web::block(move || {
         let mut conn = pool.get()?;
@@ -338,9 +329,9 @@ pub async fn get_user_by_id(
 }
 #[get("/conversations/{uid}")]
 pub async fn get_conversation_by_id(
-    pool: web::`Data`<DbPool>`,
-    uid: web::`Path`<Uuid>`,
-) -> `Result`<HttpResponse, Error>` {
+    pool: web::Data<DbPool>,
+    uid: web::Path<Uuid>,
+) -> Result<HttpResponse, Error> {
     let room_id = uid.to_owned();
     let conversations = web::block(move || {
         let mut conn = pool.get()?;
@@ -363,9 +354,9 @@ pub async fn get_conversation_by_id(
 }
 #[get("/users/phone/{user_phone}")]
 pub async fn get_user_by_phone(
-    pool: web::`Data`<DbPool>`,
-    phone: web::`Path`<String>`,
-) -> `Result`<HttpResponse, Error>` {
+    pool: web::Data<DbPool>,
+    phone: web::Path<String>,
+) -> Result<HttpResponse, Error> {
     let user_phone = phone.to_string();
     let user = web::block(move || {
         let mut conn = pool.get()?;
@@ -388,8 +379,8 @@ pub async fn get_user_by_phone(
 }
 #[get("/rooms")]
 pub async fn get_rooms(
-    pool: web::`Data`<DbPool>`,
-) -> `Result`<HttpResponse, Error>` {
+    pool: web::Data<DbPool>,
+) -> Result<HttpResponse, Error> {
     let rooms = web::block(move || {
         let mut conn = pool.get()?;
         db::get_all_rooms(&mut conn)
@@ -410,7 +401,6 @@ pub async fn get_rooms(
     }
 }
 ```
-
 Now, let’s handle the WebSocket connection. First, let’s import all the packages we need again:
 
 ```rust
@@ -426,7 +416,7 @@ pub struct Message(pub String);
 #[derive(Message)]
 #[rtype(usize)]
 pub struct Connect {
-    pub addr: `Recipient`<Message>`,
+    pub addr: Recipient<Message>,
 }
 #[derive(Message)]
 #[rtype(result = "()")]
@@ -442,7 +432,7 @@ pub struct ClientMessage {
 }
 pub struct ListRooms;
 impl actix::Message for ListRooms {
-    type Result = `Vec`<String>`;
+    type Result = Vec<String>;
 }
 #[derive(Message)]
 #[rtype(result = "()")]
@@ -451,15 +441,14 @@ pub struct Join {
     pub name: String,
 }
 ```
-
 Next, let’s implement the trait to manage the WebSocket connections. This code will handle all the messages coming from users and send them back to participants in the chat room:
 
 ```rust
 // src/server.rs
 #[derive(Debug)]
 pub struct ChatServer {
-    sessions: `HashMap`<usize, `Recipient<Message>`>,
-    rooms: `HashMap`<String, `HashSet<usize>`>,
+    sessions: HashMap<usize, Recipient<Message>>,
+    rooms: HashMap<String, HashSet<usize>>,
     rng: ThreadRng,
 }
 impl ChatServer {
@@ -485,12 +474,12 @@ impl ChatServer {
     }
 }
 impl Actor for ChatServer {
-    type Context = `Context`<Self>`;
+    type Context = Context<Self>;
 }
-impl `Handler`<Connect>` for ChatServer {
+impl Handler<Connect> for ChatServer {
     type Result = usize;
-    fn handle(&mut self, msg: Connect, _: &mut `Context`<Self>`) -> Self::Result {
-        let id = self.rng.gen::`<usize>`();
+    fn handle(&mut self, msg: Connect, _: &mut Context<Self>) -> Self::Result {
+        let id = self.rng.gen::<usize>();
         self.sessions.insert(id, msg.addr);
         self.rooms
             .entry("main".to_string())
@@ -503,10 +492,10 @@ impl `Handler`<Connect>` for ChatServer {
         id
     }
 }
-impl `Handler`<Disconnect>` for ChatServer {
+impl Handler<Disconnect> for ChatServer {
     type Result = ();
     fn handle(&mut self, msg: Disconnect, _: &mut Self::Context) -> Self::Result {
-        let mut rooms: `Vec`<String>` = vec![];
+        let mut rooms: Vec<String> = vec![];
         if self.sessions.remove(&msg.id).is_some() {
             for (name, sessions) in &mut self.rooms {
                 if sessions.remove(&msg.id) {
@@ -523,14 +512,14 @@ impl `Handler`<Disconnect>` for ChatServer {
         }
     }
 }
-impl `Handler`<ClientMessage>` for ChatServer {
+impl Handler<ClientMessage> for ChatServer {
     type Result = ();
     fn handle(&mut self, msg: ClientMessage, _: &mut Self::Context) -> Self::Result {
         self.send_message(&msg.room, &msg.msg, msg.id);
     }
 }
-impl `Handler`<ListRooms>` for ChatServer {
-    type Result = `MessageResult`<ListRooms>`;
+impl Handler<ListRooms> for ChatServer {
+    type Result = MessageResult<ListRooms>;
     fn handle(&mut self, _: ListRooms, _: &mut Self::Context) -> Self::Result {
         let mut rooms = vec![];
         for key in self.rooms.keys() {
@@ -539,7 +528,7 @@ impl `Handler`<ListRooms>` for ChatServer {
         MessageResult(rooms)
     }
 }
-impl `Handler`<Join>` for ChatServer {
+impl Handler<Join> for ChatServer {
     type Result = ();
     fn handle(&mut self, msg: Join, _: &mut Self::Context) -> Self::Result {
         let Join {id, name} = msg;
@@ -563,7 +552,6 @@ impl `Handler`<Join>` for ChatServer {
     }
 }
 ```
-
 #### 6.2. Handling the user session
 Now, let’s address the user session. Here we’ll receive a message, save it to the database, and then send it back to the participant in the chat room.
 
@@ -584,16 +572,14 @@ use crate::db;
 use crate::models::NewConversation;
 use crate::server;
 ```
-
 You can change the duration of the connection to the WebSocket here. So the `HEARTBEAT` is the duration to keep the connection alive with the client. And `CLIENT_TIMEOUT` is the duration to check if the client is still connected:
 
 ```rust
 // src/session.rs
 const HEARBEET: Duration = Duration::from_secs(5);
 const CLIENT_TIMEOUT: Duration = Duration::from_secs(10);
-type DbPool = r2d2::`Pool`<`ConnectionManager<SqliteConnection>`>;
+type DbPool = r2d2::Pool<ConnectionManager<SqliteConnection>>;
 ```
-
 Now let’s create some structs to store all the data we need:
 
 ```rust
@@ -603,9 +589,9 @@ pub struct WsChatSession {
     pub id: usize,
     pub hb: Instant,
     pub room: String,
-    pub name: `Option`<String>`,
-    pub addr: `Addr`<server::ChatServer>`,
-    pub db_pool: web::`Data`<DbPool>`,
+    pub name: Option<String>,
+    pub addr: Addr<server::ChatServer>,
+    pub db_pool: web::Data<DbPool>,
 }
 #[derive(PartialEq, Serialize, Deserialize)]
 pub enum ChatType {
@@ -617,13 +603,12 @@ pub enum ChatType {
 #[derive(Serialize, Deserialize)]
 struct ChatMessage {
     pub chat_type: ChatType,
-    pub value: `Vec`<String>`,
+    pub value: Vec<String>,
     pub room_id: String,
     pub user_id: String,
     pub id: usize,
 }
 ```
-
 This struct will be used for the following:
 
 + `WsChatSession`: To make a custom implementation of the Actix Web actor
@@ -634,7 +619,7 @@ Now, let’s implement our session’s `Actor` and stream `Handler`:
 ```rust
 // src/session.rs
 impl Actor for WsChatSession {
-    type Context = ws::`WebsocketContext`<Self>`;
+    type Context = ws::WebsocketContext<Self>;
     fn started(&mut self, ctx: &mut Self::Context) {
         self.hb(ctx);
         let addr = ctx.address();
@@ -657,14 +642,14 @@ impl Actor for WsChatSession {
         Running::Stop
     }
 }
-impl `Handler`<server::Message>` for WsChatSession {
+impl Handler<server::Message> for WsChatSession {
     type Result = ();
     fn handle(&mut self, msg: server::Message, ctx: &mut Self::Context) -> Self::Result {
         ctx.text(msg.0);
     }
 }
-impl `StreamHandler`<`Result<ws::Message, ws::ProtocolError>`> for WsChatSession {
-    fn handle(&mut self, item: `Result`<ws::Message, ws::ProtocolError>`, ctx: &mut Self::Context) {
+impl StreamHandler<Result<ws::Message, ws::ProtocolError>> for WsChatSession {
+    fn handle(&mut self, item: Result<ws::Message, ws::ProtocolError>, ctx: &mut Self::Context) {
         let msg = match item {
             Err(_) => {
                 ctx.stop();
@@ -681,7 +666,7 @@ impl `StreamHandler`<`Result<ws::Message, ws::ProtocolError>`> for WsChatSession
                 self.hb = Instant::now();
             }
             ws::Message::Text(text) => {
-                let data_json = serde_json::from_str::`<ChatMessage>`(&text.to_string());
+                let data_json = serde_json::from_str::<ChatMessage>(&text.to_string());
                 if let Err(err) = data_json {
                     println!("{err}");
                     println!("Failed to parse message: {text}");
@@ -743,7 +728,7 @@ impl `StreamHandler`<`Result<ws::Message, ws::ProtocolError>`> for WsChatSession
     }
 }
 impl WsChatSession {
-    fn hb(&self, ctx: &mut ws::`WebsocketContext`<Self>`) {
+    fn hb(&self, ctx: &mut ws::WebsocketContext<Self>) {
         ctx.run_interval(HEARBEET, |act, ctx| {
             if Instant::now().duration_since(act.hb) > CLIENT_TIMEOUT {
                 act.addr.do_send(server::Disconnect { id: act.id });
@@ -755,7 +740,6 @@ impl WsChatSession {
     }
 }
 ```
-
 ### 7. Preparing the database
 Next, let’s prepare the database. We’ll use SQLite to keep things simple. Here’s how the schema will look:
 
@@ -775,7 +759,6 @@ diesel migration generate create_users
 diesel migration generate create_rooms
 diesel migration generate create_conversations
 ```
-
 Here’s how the migration SQL will look:
 
 ```rust
@@ -806,7 +789,6 @@ CREATE TABLE conversations (
     created_at TEXT NOT NULL
 )
 ```
-
 We also need to add some dummy data just to have some examples for initial rendering to the client later:
 
 diesel migration generate dummy_data
@@ -830,7 +812,6 @@ INSERT INTO conversations(id, user_id, room_id, content, created_at)
     ("f4e54e70-736b-4a79-a622-3659b0b555e8", "1e9a12c1-e98c-4a83-a55a-32cc548a169d", "f061383b-0393-4ce8-9a85-f31d03762263", "Hi, how are you?", "2022-12-23T07:56:30.214162+00:00"),
     ("d3ea6e39-ed58-4613-8922-b78f14a2676a", "1bc833808-05ed-455a-9d26-64fe1d96d62d", "008e9dc4-f01d-4429-ba31-986d7e63cce8", "Hi... are free today?", "2022-12-23T07:56:30.214162+00:00");
 ```
-
 #### 7.1. Generating the schema
 Now let’s generate the schema and run the migration:
 
@@ -838,7 +819,6 @@ Now let’s generate the schema and run the migration:
 diesel database setup
 diesel migration run
 ```
-
 The schema that is generated automatically by the CLI will look like this:
 
 ```rust
@@ -876,7 +856,6 @@ diesel::allow_tables_to_appear_in_same_query!(
     users,
 );
 ```
-
 The above code is auto generated, so don’t make any changes to this file.
 
 #### 7.2. Creating the structs
@@ -923,10 +902,9 @@ pub struct NewConversation {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct RoomResponse {
     pub room: Room,
-    pub users: `Vec`<User>`,
+    pub users: Vec<User>,
 }
 ```
-
 #### 7.3. Setting up the queries
 Now, let’s fetch data from the database.
 
@@ -942,20 +920,18 @@ use std::{
 };
 use uuid::Uuid;
 use crate::models::{Conversation, NewConversation, Room, RoomResponse, User};
-type DbError = `Box`<dyn std::error::Error + Send + Sync>`;
+type DbError = Box<dyn std::error::Error + Send + Sync>;
 ```
-
 Since SQLite doesn’t have a date functionality build, we’ll create one:
 
 ```rust
 // src/db.rs
 fn iso_date() -> String {
     let now = SystemTime::now();
-    let now: `DateTime`<Utc>` = now.into();
+    let now: DateTime<Utc> = now.into();
     return now.to_rfc3339();
 }
 ```
-
 ##### 7.3.1. Finding users by phone number
 Here, we’ll set up a query that will implement a simple login feature and enable us to find a user by phone number. We’re using this login method as an example only. In production, you’ll want to use a method that can be easily verified and debugged:
 
@@ -964,22 +940,21 @@ Here, we’ll set up a query that will implement a simple login feature and enab
 pub fn find_user_by_phone(
     conn: &mut SqliteConnection,
     user_phone: String,
-) -> `Result`<`Option<User>`, DbError> {
+) -> Result<Option<User>, DbError> {
     use crate::schema::users::dsl::*;
     let user = users
         .filter(phone.eq(user_phone))
-        .first::`<User>`(conn)
+        .first::<User>(conn)
         .optional()?;
     Ok(user)
 }
 ```
-
 ##### 7.3.2. Adding a new user
 Here’s a query for storing a new user who registers for our app. This is also part of our authentication system. Again, please don’t use this approach for your production app:
 
 ```rust
 // src/db.rs
-pub fn insert_new_user(conn: &mut SqliteConnection, nm: &str, pn: &str) -> `Result`<User, DbError>` {
+pub fn insert_new_user(conn: &mut SqliteConnection, nm: &str, pn: &str) -> Result<User, DbError> {
     use crate::schema::users::dsl::*;
     let new_user = User {
         id: Uuid::new_v4().to_string(),
@@ -991,7 +966,6 @@ pub fn insert_new_user(conn: &mut SqliteConnection, nm: &str, pn: &str) -> `Resu
     Ok(new_user)
 }
 ```
-
 With the new user added, we now insert new conversations:
 
 ```rust
@@ -999,7 +973,7 @@ With the new user added, we now insert new conversations:
 pub fn insert_new_conversation(
     conn: &mut SqliteConnection,
     new: NewConversation,
-) -> `Result`<Conversation, DbError>` {
+) -> Result<Conversation, DbError> {
     use crate::schema::conversations::dsl::*;
     let new_conversation = Conversation {
         id: Uuid::new_v4().to_string(),
@@ -1014,16 +988,15 @@ pub fn insert_new_conversation(
     Ok(new_conversation)
 }
 ```
-
 ##### 7.3.3. Finding chat rooms and participants
 Next, let’s set up a query to fetch all the chat rooms and participants from the database:
 
 ```rust
 // src/db.rs
-pub fn get_all_rooms(conn: &mut SqliteConnection) -> `Result`<`Vec<RoomResponse>`, DbError> {
+pub fn get_all_rooms(conn: &mut SqliteConnection) -> Result<Vec<RoomResponse>, DbError> {
     use crate::schema::rooms;
     use crate::schema::users;
-    let rooms_data: `Vec`<Room>` = rooms::table.get_results(conn)?;
+    let rooms_data: Vec<Room> = rooms::table.get_results(conn)?;
     let mut ids = HashSet::new();
     let mut rooms_map = HashMap::new();
     let data = rooms_data.to_vec();
@@ -1032,17 +1005,17 @@ pub fn get_all_rooms(conn: &mut SqliteConnection) -> `Result`<`Vec<RoomResponse>
             .participant_ids
             .split(",")
             .into_iter()
-            .collect::`<`Vec<_>`>();
+            .collect::<Vec<_>>();
         for id in user_ids.to_vec() {
             ids.insert(id.to_string());
         }
         rooms_map.insert(room.id.to_string(), user_ids.to_vec());
     }
-    let ids = ids.into_iter().collect::`<`Vec<_>`>();
-    let users_data: `Vec`<User>` = users::table
+    let ids = ids.into_iter().collect::<Vec<_>>();
+    let users_data: Vec<User> = users::table
         .filter(users::id.eq_any(ids))
         .get_results(conn)?;
-    let users_map: `HashMap`<String, User>` = HashMap::from_iter(
+    let users_map: HashMap<String, User> = HashMap::from_iter(
         users_data
         .into_iter()
         .map(|item| (item.id.to_string(), item)),
@@ -1053,13 +1026,12 @@ pub fn get_all_rooms(conn: &mut SqliteConnection) -> `Result`<`Vec<RoomResponse>
             .unwrap()
             .into_iter()
             .map(|id| users_map.get(id.to_owned()).unwrap().clone())
-            .collect::`<`Vec<_>`>();
+            .collect::<Vec<_>>();
         return RoomResponse{ room, users };
-    }).collect::`<`Vec<_>`>();
+    }).collect::<Vec<_>>();
     Ok(response_rooms)
 }
 ```
-
 ### 8. Building the client UI with React
 Let’s design a user interface for our client app; the end result will look like this:
 
@@ -1075,7 +1047,6 @@ Add Tailwind CSS to the project:
 npm install -D tailwindcss postcss autoprefixer
 npx tailwindcss init -p
 ```
-
 Now, change the Tailwind `config` file:
 
 ```javascript
@@ -1085,7 +1056,6 @@ content: [
   "./components/**/*.{js,ts,jsx,tsx}",
 ]
 ```
-
 We will add this `package.json` config to export our Next.js app as static HTML pages so that we can access them through the file server using Actix Web:
 
 ```javascript
@@ -1099,7 +1069,6 @@ We will add this `package.json` config to export our Next.js app as static HTML 
       "build": "next build && next export -o ../static",
       ...
 ```
-
 Next, import the Tailwind CSS utility to the `globals.css` file:
 
 ```javascript
@@ -1108,7 +1077,6 @@ Next, import the Tailwind CSS utility to the `globals.css` file:
 @tailwind components;
 @tailwind utilities;
 ```
-
 Now, let’s create some components for our client app.
 
 #### 8.1. `avatar` component
@@ -1119,19 +1087,18 @@ Here we’ll create the avatar for each user:
 function getShortName(full_name = '') {
   if (full_name.includes(" ")) {
     const names = full_name.split(" ");
-    return `${names[0].charAt(0)}${names[1].charAt(0)}`.toUpperCase()
+    return ${names[0].charAt(0)}${names[1].charAt(0)}.toUpperCase()
   }
-  return `${full_name.slice(0,2)}`.toUpperCase()
+  return ${full_name.slice(0,2)}.toUpperCase()
 }
 export default function Avatar({ children, color = '' }) {
   return (
-    `<div className='bg-blue-500 w-[45px] h-[45px] flex items-center justify-center rounded-full' style={{backgroundColor: color}}>`
-  `<span className='font-bold text-sm text-white'>`{getShortName(children)}</span>
+    <div className='bg-blue-500 w-[45px] h-[45px] flex items-center justify-center rounded-full' style={{backgroundColor: color}}>
+  <span className='font-bold text-sm text-white'>{getShortName(children)}</span>
   </div>
 )
 }
 ```
-
 #### 8.2. `login` component
 Here we’ll create the user login component:
 
@@ -1183,21 +1150,21 @@ export default function Login({ show, setAuth }) {
       setAuth(res)
     }
     return (
-      `<form action="" className="mt-4 space-y-2" onSubmit={onCreateUsername}>`
+      <form action="" className="mt-4 space-y-2" onSubmit={onCreateUsername}>
       <div>
-      `<label className="text-sm font-light">`Username</label>`
-      `<input required type="text" name="username" placeholder="John Doe"
-    className="w-full px-4 py-2 mt-2 border rounded-md focus:outline-none focus:ring-1 focus:ring-blue-600" />`
+      <label className="text-sm font-light">Username</label>
+      <input required type="text" name="username" placeholder="John Doe"
+    className="w-full px-4 py-2 mt-2 border rounded-md focus:outline-none focus:ring-1 focus:ring-blue-600" />
       </div>
       <div>
-      `<label className="text-sm font-light">`Phone</label>`
-      `<input required type="text" name="phone" placeholder="+1111..."
-    className="w-full px-4 py-2 mt-2 border rounded-md focus:outline-none focus:ring-1 focus:ring-blue-600" />`
+      <label className="text-sm font-light">Phone</label>
+      <input required type="text" name="phone" placeholder="+1111..."
+    className="w-full px-4 py-2 mt-2 border rounded-md focus:outline-none focus:ring-1 focus:ring-blue-600" />
       </div>
-      `<div className="flex items-baseline justify-between">`
-      `<button type="submit"
-    className="px-6 py-2 mt-4 text-white bg-violet-600 rounded-lg hover:bg-violet-700 w-full">`Submit</button>`</div>`<div className="pt-2 space-y-2 text-center">``
-      `<p className="text-base text-gray-700">`Already have a username? `<button onClick={showSignIn} className="text-violet-700 font-light">`Sign ``In</button></p>``
+      <div className="flex items-baseline justify-between">
+      <button type="submit"
+    className="px-6 py-2 mt-4 text-white bg-violet-600 rounded-lg hover:bg-violet-700 w-full">Submit</button></div><div className="pt-2 space-y-2 text-center">
+      <p className="text-base text-gray-700">Already have a username? <button onClick={showSignIn} className="text-violet-700 font-light">Sign In</button></p>
       </div>
       </form>
     )
@@ -1215,39 +1182,38 @@ export default function Login({ show, setAuth }) {
         return;
       }
       if (!res.id) {
-        alert(`Phone number not found ${phone}`);
+        alert(Phone number not found ${phone});
         return;
       }
       setAuth(res)
     }
     return (
-      `<form action="" className="mt-4 space-y-2" onSubmit={onSignIn}>`
+      <form action="" className="mt-4 space-y-2" onSubmit={onSignIn}>
       <div>
-      `<label className="text-sm font-light">`Phone</label>`
-      `<input required type="text" name="phone" placeholder="+1111..."
-                        className="w-full px-4 py-2 mt-2 border rounded-md focus:outline-none focus:ring-1 focus:ring-blue-600" />`
+      <label className="text-sm font-light">Phone</label>
+      <input required type="text" name="phone" placeholder="+1111..."
+                        className="w-full px-4 py-2 mt-2 border rounded-md focus:outline-none focus:ring-1 focus:ring-blue-600" />
                 </div>
-                `<div className="flex items-baseline justify-between">`
-                    `<button type="submit"
-                        className="px-6 py-2 mt-4 text-white bg-violet-600 rounded-lg hover:bg-violet-700 w-full">`Submit</button>`</div>`<div className="pt-2 space-y-2 text-center">``
-                    `<p className="text-base text-gray-700">`Don't have username? `<button onClick={showSignIn} className="text-violet-700 font-light">`Create</button></p>``
+                <div className="flex items-baseline justify-between">
+                    <button type="submit"
+                        className="px-6 py-2 mt-4 text-white bg-violet-600 rounded-lg hover:bg-violet-700 w-full">Submit</button></div><div className="pt-2 space-y-2 text-center">
+                    <p className="text-base text-gray-700">Don't have username? <button onClick={showSignIn} className="text-violet-700 font-light">Create</button></p>
                 </div>
             </form>
         )
     }
     return (
-        `<div className={`${show ? '' : 'hidden'} bg-gradient-to-b from-orange-400 to-rose-400`}>`
-            `<div className="flex items-center justify-center min-h-screen">`
-                `<div className="px-8 py-6 mt-4 text-left bg-white  max-w-[400px] w-full rounded-xl shadow-lg">`
-                    `<h3 className="text-xl text-slate-800 font-semibold">`{isShowSigIn ? 'Log in with your phone.' : 'Create your account.'}</h3>
-                    {isShowSigIn ? `<FormSignIn setAuth={setAuth} />` : `<FormCreateUsername setAuth={setAuth} />`}
+        <div className={${show ? '' : 'hidden'} bg-gradient-to-b from-orange-400 to-rose-400}>
+            <div className="flex items-center justify-center min-h-screen">
+                <div className="px-8 py-6 mt-4 text-left bg-white  max-w-[400px] w-full rounded-xl shadow-lg">
+                    <h3 className="text-xl text-slate-800 font-semibold">{isShowSigIn ? 'Log in with your phone.' : 'Create your account.'}</h3>
+                    {isShowSigIn ? <FormSignIn setAuth={setAuth} /> : <FormCreateUsername setAuth={setAuth} />}
                 </div>
             </div>
         </div>
     )
 }
 ```
-
 #### 8.3. `room` component
 Here we’ll create the chat room components:
 
@@ -1270,22 +1236,22 @@ function ChatListItem({ onSelect, room, userId, index, selectedItem }) {
   const active = index == selectedItem;
   const date = new Date(created_at);
   const ampm = date.getHours() >= 12 ? 'PM' : 'AM';
-  const time = `${date.getHours()}:${date.getMinutes()} ${ampm}`
+  const time = ${date.getHours()}:${date.getMinutes()} ${ampm}
   const name = users?.filter(user => user.id != userId).map(user => user.username)[0];
   return (
-    `<div
-  onClick={() =>` onSelect(index, {})}
-  className={`${active ? 'bg-[#FDF9F0] border border-[#DEAB6C]' : 'bg-[#FAF9FE] border border-[#FAF9FE]'} p-2 rounded-[10px] shadow-sm cursor-pointer`} >
-  `<div className='flex justify-between items-center gap-3'>`
-  `<div className='flex gap-3 items-center w-full'>`
-  `<Avatar>`{name}</Avatar>
-  `<div className="w-full max-w-[150px]">`
-  `<h3 className='font-semibold text-sm text-gray-700'>`{name}</h3>
-  `<p className='font-light text-xs text-gray-600 truncate'>`{last_message}</p>
+    <div
+  onClick={() => onSelect(index, {})}
+  className={${active ? 'bg-[#FDF9F0] border border-[#DEAB6C]' : 'bg-[#FAF9FE] border border-[#FAF9FE]'} p-2 rounded-[10px] shadow-sm cursor-pointer} >
+  <div className='flex justify-between items-center gap-3'>
+  <div className='flex gap-3 items-center w-full'>
+  <Avatar>{name}</Avatar>
+  <div className="w-full max-w-[150px]">
+  <h3 className='font-semibold text-sm text-gray-700'>{name}</h3>
+  <p className='font-light text-xs text-gray-600 truncate'>{last_message}</p>
   </div>
   </div>
-  `<div className='text-gray-400 min-w-[55px]'>`
-  `<span className='text-xs'>`{time}</span>
+  <div className='text-gray-400 min-w-[55px]'>
+  <span className='text-xs'>{time}</span>
   </div>
   </div>
   </div>
@@ -1320,12 +1286,12 @@ export default function ChatList({ onChatChange, userId }) {
     onChatChange({ ...item.room, users })
   }
   return (
-    `<div className="overflow-hidden space-y-3">`
+    <div className="overflow-hidden space-y-3">
     {isLoading && <p>Loading chat lists.</p>}
   {
     data.map((item, index) => {
-      return `<ChatListItem
-      onSelect={(idx) =>` onSelectedChat(idx, item)}
+      return <ChatListItem
+      onSelect={(idx) => onSelectedChat(idx, item)}
       room={{ ...item.room, users: item.users }}
              index={index}
     key={item.room.id}
@@ -1337,7 +1303,6 @@ export default function ChatList({ onChatChange, userId }) {
 )
 }
 ```
-
 #### 8.4. `conversation` component
 Here we’ll create the user conversation component:
 
@@ -1348,24 +1313,24 @@ import Avatar from "./avatar"
 function ConversationItem({ right, content, username }) {
   if (right) {
     return (
-      `<div className='w-full flex justify-end'>`
-      `<div className='flex gap-3 justify-end'>`
-      `<div className='max-w-[65%] bg-violet-500 p-3 text-sm rounded-xl rounded-br-none'>`
-      `<p className='text-white'>`{content}</p>
+      <div className='w-full flex justify-end'>
+      <div className='flex gap-3 justify-end'>
+      <div className='max-w-[65%] bg-violet-500 p-3 text-sm rounded-xl rounded-br-none'>
+      <p className='text-white'>{content}</p>
       </div>
-      `<div className='mt-auto'>`
-      `<Avatar>`{username}</Avatar>
+      <div className='mt-auto'>
+      <Avatar>{username}</Avatar>
       </div>
       </div>
       </div>
     )
   }
   return (
-    `<div className='flex gap-3 w-full'>`
-    `<div className='mt-auto'>`
-    `<Avatar color='rgb(245 158 11)'>`{username}</Avatar>
+    <div className='flex gap-3 w-full'>
+    <div className='mt-auto'>
+    <Avatar color='rgb(245 158 11)'>{username}</Avatar>
     </div>
-    `<div className='max-w-[65%] bg-gray-200 p-3 text-sm rounded-xl rounded-bl-none'>`
+    <div className='max-w-[65%] bg-gray-200 p-3 text-sm rounded-xl rounded-bl-none'>
     <p>{content}</p>
     </div>
     </div>
@@ -1377,21 +1342,20 @@ export default function Conversation({ data, auth, users }) {
     ref.current?.scrollTo(0, ref.current.scrollHeight)
   }, [data]);
   return (
-    `<div className='p-4 space-y-4 overflow-auto' ref={ref}>`
+    <div className='p-4 space-y-4 overflow-auto' ref={ref}>
     {
       data.map(item => {
-        return `<ConversationItem
+        return <ConversationItem
         right={item.user_id === auth.id}
                content={item.content}
   username={users.get(item.user_id)}
-key={item.id} />`
+key={item.id} />
 })
   }
   </div>
 )
 }
 ```
-
 Now let’s prepare the Hooks needed to interact with our WebSocket server and REST API server.
 
 #### 8.5. `useWebsocket` Hook
@@ -1426,7 +1390,6 @@ export default function useWebsocket(onMessage) {
   return sendMessage;
 }
 ```
-
 #### 8.6. `useLocalStorage` Hook
 This Hook enables us to get the user data from localStorage:
 
@@ -1455,7 +1418,6 @@ export default function useLocalStorage(key, defaultValue) {
   return [storedValue, setValue];
 }
 ```
-
 #### 8.7. `useConversation` Hook
 We’ll use this Hook to fetch conversations based on the given room `id`:
 
@@ -1463,7 +1425,7 @@ We’ll use this Hook to fetch conversations based on the given room `id`:
 import { useEffect, useState } from "react";
 const fetchRoomData = async (room_id) => {
   if (!room_id) return;
-  const url = `http://localhost:8080/conversations/${room_id}`;
+  const url = http://localhost:8080/conversations/${room_id};
   try {
     let resp = await fetch(url).then(res => res.json());
     return resp;
@@ -1486,7 +1448,6 @@ export default function useConversations(room_id) {
   return [isLoading, messages, setMessages, fetchConversations];
 }
 ```
-
 ### 9. Building the chat application
 Now let’s connect all of our components and Hooks to build our chat application in React with Next.js.
 
@@ -1504,7 +1465,6 @@ import useConversations from '../libs/useConversation'
 import useLocalStorage from '../libs/useLocalStorage'
 import useWebsocket from '../libs/useWebsocket'
 ```
-
 Now, let’s set up the state for our chat pages:
 
 ```javascript
@@ -1519,7 +1479,6 @@ export default function Home() {
   ...
 }
 ```
-
 The following functions will handle all messages coming in or out of the WebSocket server:
 
 + `handleTyping`: Updates the state to display the typing indicator
@@ -1607,7 +1566,6 @@ Here’s how we’ll use these functions in our code:
     onFocusChange();
   }
 ```
-
 We’ll use the following functions to handle state for updating the message and for the user login and logout:
 
 + `updateMessages`: Fetches the conversation of the given room `id` when a user switches chat rooms
@@ -1628,46 +1586,45 @@ We’ll use these functions in our code, like so:
   }
   useEffect(() => setShowLogIn(!auth), [auth])
 ```
-
 Now, let’s display all the data to the client:
 
 ```javascript
 return (
     <div>
-      `<Head>`
-        `<title>`Rust with react chat `app</title>`
-        `<meta name="description" content="Rust with react chat app" />`
-        `<link rel="icon" href="/favicon.ico" />`
+      <Head>
+        <title>Rust with react chat app</title>
+        <meta name="description" content="Rust with react chat app" />
+        <link rel="icon" href="/favicon.ico" />
       </Head>
-      `<Login show={showLogIn} setAuth={setAuthUser} />`
-      `<div className={`${!auth && 'hidden'} bg-gradient-to-b from-orange-400 to-rose-400 h-screen p-12`}>`
-        `<main className='flex w-full max-w-[1020px] h-[700px] mx-auto bg-[#FAF9FE] rounded-[25px] backdrop-opacity-30 opacity-95'>`
-          `<aside className='bg-[#F0EEF5] w-[325px] h-[700px] rounded-l-[25px] p-4 overflow-auto relative'>`
-            `<ChatList onChatChange={updateMessages} userId={auth.id} />`
-            `<button onClick={signOut} className='text-xs w-full max-w-[295px] p-3 rounded-[10px] bg-violet-200 font-semibold text-violet-600 text-center absolute bottom-4'>`LOG `OUT</button>`
+      <Login show={showLogIn} setAuth={setAuthUser} />
+      <div className={${!auth && 'hidden'} bg-gradient-to-b from-orange-400 to-rose-400 h-screen p-12}>
+        <main className='flex w-full max-w-[1020px] h-[700px] mx-auto bg-[#FAF9FE] rounded-[25px] backdrop-opacity-30 opacity-95'>
+          <aside className='bg-[#F0EEF5] w-[325px] h-[700px] rounded-l-[25px] p-4 overflow-auto relative'>
+            <ChatList onChatChange={updateMessages} userId={auth.id} />
+            <button onClick={signOut} className='text-xs w-full max-w-[295px] p-3 rounded-[10px] bg-violet-200 font-semibold text-violet-600 text-center absolute bottom-4'>LOG OUT</button>
           </aside>
-          {room?.id && (`<section className='rounded-r-[25px] w-full max-w-[690px] grid grid-rows-[80px_minmax(450px,_1fr)_65px]'>`
-            `<div className='rounded-tr-[25px] w-ful'>`
-              `<div className='flex gap-3 p-3 items-center'>`
-                `<Avatar color='rgb(245 158 11)'>`{room.users.get_target_user(auth.id)}</Avatar>
+          {room?.id && (<section className='rounded-r-[25px] w-full max-w-[690px] grid grid-rows-[80px_minmax(450px,_1fr)_65px]'>
+            <div className='rounded-tr-[25px] w-ful'>
+              <div className='flex gap-3 p-3 items-center'>
+                <Avatar color='rgb(245 158 11)'>{room.users.get_target_user(auth.id)}</Avatar>
                 <div>
-                  `<p className='font-semibold text-gray-600 text-base'>`{room.users.get_target_user(auth.id)}</p>
-                  `<div className='text-xs text-gray-400'>`{isTyping ? "Typing..." : "10:15 AM"}</div>
+                  <p className='font-semibold text-gray-600 text-base'>{room.users.get_target_user(auth.id)}</p>
+                  <div className='text-xs text-gray-400'>{isTyping ? "Typing..." : "10:15 AM"}</div>
                 </div>
               </div>
-              `<hr className='bg-[#F0EEF5]' />`
+              <hr className='bg-[#F0EEF5]' />
             </div>
-            {(isLoading && room.id) && `<p className="px-4 text-slate-500">`Loading conversation...</p>}
-            `<Conversation data={messages} auth={auth} users={room.users} />`
-            `<div className='w-full'>`
-              `<form onSubmit={submitMessage} className='flex gap-2 items-center rounded-full border border-violet-500 bg-violet-200 p-1 m-2'>`
-                `<input
+            {(isLoading && room.id) && <p className="px-4 text-slate-500">Loading conversation...</p>}
+            <Conversation data={messages} auth={auth} users={room.users} />
+            <div className='w-full'>
+              <form onSubmit={submitMessage} className='flex gap-2 items-center rounded-full border border-violet-500 bg-violet-200 p-1 m-2'>
+                <input
                   onBlur={onFocusChange}
                   onFocus={updateFocus}
                   name="message"
                   className='p-2 placeholder-gray-600 text-sm w-full rounded-full bg-violet-200 focus:outline-none'
-                  placeholder='Type your message here...' />`
-                `<button type='submit' className='bg-violet-500 rounded-full py-2 px-6 font-semibold text-white text-sm'>`Sent</button>`
+                  placeholder='Type your message here...' />
+                <button type='submit' className='bg-violet-500 rounded-full py-2 px-6 font-semibold text-white text-sm'>Sent</button>
               </form>
             </div>
           </section>)}
@@ -1676,7 +1633,6 @@ return (
     </div>
   )
 ```
-
 ### 10. Conclusion
 In this article, we discussed the features of WebSockets, its applications in Rust, and how to use it with the `actix-web` package. We demonstrated how to create an efficient, real-time chat application, using React and Next.js to establish WebSocket connections to the Actix Web server. The code from this article is available on [GitHub](https://github.com/ahmadrosid/rust-react-chat).
 

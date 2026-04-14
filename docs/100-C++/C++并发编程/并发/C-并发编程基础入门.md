@@ -31,18 +31,16 @@ bool joinable() const;          // 检查是否可join
 // 静态函数
 static unsigned hardware_concurrency(); // 获取硬件并发数
 ```
-
 #### 2.3. 常用接口的使用
 ##### 2.3.1. 使用普通函数创建线程
 ```cpp
 void worker_function(int id) {
-    std::cout `<< "Worker " << id << " is running" << std::endl;
+    std::cout << "Worker " << id << " is running" << std::endl;
 }
 
 std::thread t1(worker_function, 1);
 t1.join(); // 等待线程结束
 ```
-
 ##### 2.3.2. 使用Lambda表达式创建线程
 ```cpp
 std::thread t2([](int id) {
@@ -50,7 +48,6 @@ std::thread t2([](int id) {
 }, 2);
 t2.join();
 ```
-
 ##### 2.3.3. 使用成员函数创建线程
 ```cpp
 class Worker {
@@ -64,14 +61,13 @@ Worker worker;
 std::thread t3(&Worker::do_work, &worker, 3);
 t3.join();
 ```
-
 #### 2.4. 完整示例
 ```cpp
-#include <iostream>`
-#include `<thread>`
+#include <iostream>
+#include <thread>
 
 void worker_function(int id) {
-  std::cout `<< "Worker " << id << " is running" << std::endl;
+  std::cout << "Worker " << id << " is running" << std::endl;
 }
 class Worker {
  public:
@@ -95,7 +91,6 @@ int main() {
   return 0;
 }
 ```
-
 ### 3. 线程同步概述
 #### 3.1. 线程同步的目的
 + 防止数据竞争(Data Race)
@@ -125,17 +120,14 @@ void unlock();                  // 解锁
 bool try_lock();               // 尝试加锁
 
 // std::lock_guard (RAII锁管理)
-`std::lock_guard<std::mutex>`lock(mutex);
+std::lock_guard<std::mutex>lock(mutex);
 
 // std::unique_lock (更灵活的锁管理) (也支持RAII锁管理)
-`std::`unique_lock`<std::mutex>` lock(mutex);
+std::unique_lock<std::mutex> lock(mutex);
 void lock();
 void unlock();
 bool try_lock();
 ```
-
-
-
 #### 4.3. 常用接口的使用
 ##### 4.3.1. 基本互斥锁使用
 ```cpp
@@ -148,7 +140,6 @@ void safe_increment() {
     mtx.unlock();
 }
 ```
-
 ##### 4.3.2. RAII风格锁管理
 ```cpp
 std::mutex mtx;
@@ -157,21 +148,20 @@ int shared_data = 0;
 void safe_increment() 
 {
     {
-        `std::`lock_guard`<std::mutex>` lock(mtx);  //创建对象时，自动加锁
+        std::lock_guard<std::mutex> lock(mtx);  //创建对象时，自动加锁
         ++shared_data;
     
     }//对象析构时，自动解锁
 
 }
 ```
-
 ##### 4.3.3. 活锁管理
 ```cpp
 std::mutex mtx;
 int shared_data = 0;
 
 void conditional_increment(bool condition) {
-    `std::`unique_lock`<std::mutex>` lock(mtx);
+    std::unique_lock<std::mutex> lock(mtx);
     if (condition) {
         ++shared_data;
     }
@@ -179,12 +169,11 @@ void conditional_increment(bool condition) {
     lock.unlock();
 }
 ```
-
 #### 4.4. 完整示例
 ```cpp
-#include `<iostream>`
-#include `<mutex>`
-#include `<thread>`
+#include <iostream>
+#include <mutex>
+#include <thread>
 
 int a = 0;       // 定义全局变量
 std::mutex mtx;  // 定义一个全局的互斥锁
@@ -193,7 +182,7 @@ std::mutex mtx;  // 定义一个全局的互斥锁
 void nosync_demo() {
   std::thread t1([&]() {
     a = 2;
-    std::cout `<< "a:" << a << std::endl;
+    std::cout << "a:" << a << std::endl;
   });
 
   std::thread t2([&]() {
@@ -227,17 +216,17 @@ void demo1() {
 void demo2() {
   std::thread t1([&]() {
     {
-`std::lock_guard<std::mutex>`lock(mtx);
+std::lock_guard<std::mutex>lock(mtx);
       a = 2;
-      std::cout `<< "a:" << a << std::endl;
+      std::cout << "a:" << a << std::endl;
     }
   });
 
   std::thread t2([&]() {
     {
-`std::lock_guard<std::mutex>`lock(mtx);
+std::lock_guard<std::mutex>lock(mtx);
       a = 4;
-      std::cout `<< "a:" << a << std::endl;
+      std::cout << "a:" << a << std::endl;
     }
   });
   t1.join();
@@ -248,17 +237,17 @@ void demo2() {
 void demo3() {
   std::thread t1([&]() {
     {
-`std::unique_lock<std::mutex>`lock(mtx);
+std::unique_lock<std::mutex>lock(mtx);
       a = 2;
-      std::cout `<< "a:" << a << std::endl;
+      std::cout << "a:" << a << std::endl;
     }
   });
 
   std::thread t2([&]() {
     {
-`std::unique_lock<std::mutex>`lock(mtx);
+std::unique_lock<std::mutex>lock(mtx);
       a = 4;
-      std::cout `<< "a:" << a << std::endl;
+      std::cout << "a:" << a << std::endl;
     }
   });
   t1.join();
@@ -273,7 +262,6 @@ int main() {
   return 0;
 }
 ```
-
 ### 5. 条件变量的使用
 #### 5.1. 总述
 条件变量用于线程间的通信，允许线程等待某个条件成立。必须与互斥锁配合使用，需要注意信号丢失和虚假唤醒问题。
@@ -281,19 +269,18 @@ int main() {
 #### 5.2. 常用接口
 ```cpp
 // std::condition_variable
-void wait(`std::unique_lock<std::mutex>`& lock);
-`template`<class Predicate>`
-void wait(`std::`unique_lock`<std::mutex>`& lock, Predicate pred);
+void wait(std::unique_lock<std::mutex>& lock);
+template<class Predicate>
+void wait(std::unique_lock<std::mutex>& lock, Predicate pred);
 
 void notify_one();              // 唤醒一个等待线程
 void notify_all();              // 唤醒所有等待线程
 
 // 超时等待
-`template`<class Rep, class Period>`
-std::cv_status wait_for(`std::`unique_lock`<std::mutex>`& lock,
-                       const std::chrono::`duration`<Rep, Period>`& timeout_duration);
+template<class Rep, class Period>
+std::cv_status wait_for(std::unique_lock<std::mutex>& lock,
+                       const std::chrono::duration<Rep, Period>& timeout_duration);
 ```
-
 #### 5.3. 常用接口的使用
 ##### 5.3.1. 基本等待和通知
 ```cpp
@@ -303,21 +290,20 @@ bool ready = false;
 
 // 等待线程
 void wait_for_signal() {
-    `std::`unique_lock`<std::mutex>` lock(mtx);
+    std::unique_lock<std::mutex> lock(mtx);
     cv.wait(lock, []{ return ready; }); // 避免虚假唤醒
-    std::cout `<< "Signal received!" << std::endl;
+    std::cout << "Signal received!" << std::endl;
 }
 
 // 通知线程
 void send_signal() {
     {
-`std::lock_guard<std::mutex>`lock(mtx);
+std::lock_guard<std::mutex>lock(mtx);
         ready = true;
     }
     cv.notify_one();
 }
 ```
-
 ##### 5.3.2. 信号丢失问题
 **现象描述：**  
 信号丢失是指当生产者线程在消费者线程开始等待之前就发送了通知信号，这个信号会被"丢失"，导致消费者线程可能永远等待下去。这是因为条件变量的通知不会被保存，如果没有线程在等待，通知就会消失。
@@ -331,9 +317,9 @@ std::condition_variable cv;
 
   std::thread t1([&]() {
     {
-      `std::`lock_guard`<std::mutex>` lock(mtx);
+      std::lock_guard<std::mutex> lock(mtx);
       a = 2;
-      std::cout `<< "a:" << a << std::endl;
+      std::cout << "a:" << a << std::endl;
     }
     cv.notify_one();
     std::cout << "已经通知\n";
@@ -341,8 +327,8 @@ std::condition_variable cv;
 
   std::thread t2([&]() {
     {
-`std::unique_lock<std::mutex>`lock(mtx);
-      std::cout `<< "准备好等待了\n";
+std::unique_lock<std::mutex>lock(mtx);
+      std::cout << "准备好等待了\n";
       cv.wait(lock);  // 有可能错过通知，无限等待
       a = 4;
       std::cout << "a:" << a << std::endl;
@@ -351,7 +337,6 @@ std::condition_variable cv;
   t1.join();
   t2.join();
 ```
-
 **解决方法概述：**  
 使用条件变量时必须配合一个共享的状态变量（通常是布尔值），在发送通知前先修改状态，在等待时检查状态。这样即使通知信号丢失，等待线程也能通过检查状态变量来判断条件是否已经满足。
 
@@ -364,9 +349,9 @@ bool ready = false;
 
   std::thread t1([&]() {
     {
-`std::lock_guard<std::mutex>`lock(mtx);
+std::lock_guard<std::mutex>lock(mtx);
       a = 2;
-      std::cout `<< "a:" << a << std::endl;
+      std::cout << "a:" << a << std::endl;
       ready = true;
     }
     cv.notify_one();
@@ -375,8 +360,8 @@ bool ready = false;
 
   std::thread t2([&]() {
     {
-`std::unique_lock<std::mutex>`lock(mtx);
-      std::cout `<< "准备好等待了\n";
+std::unique_lock<std::mutex>lock(mtx);
+      std::cout << "准备好等待了\n";
       // 加上条件，通常就是一个bool返回值的lamda表达式，当返回true的时候结束阻塞
       // 这个wait和以下代码等效
       /*
@@ -390,7 +375,6 @@ bool ready = false;
   t1.join();
   t2.join();
 ```
-
 ##### 5.3.3. 虚假唤醒问题
 **现象描述：**  
 虚假唤醒是指线程在条件实际上并未满足的情况下从wait()中被唤醒。这可能由操作系统的实现细节、信号处理或其他系统级事件引起。虚假唤醒是条件变量的固有特性，在任何系统上都可能发生。
@@ -408,9 +392,9 @@ bool ready = false;
 
   std::thread t1([&]() {
     {
-`std::lock_guard<std::mutex>`lock(mtx);
+std::lock_guard<std::mutex>lock(mtx);
       a = 2;
-      std::cout `<< "a:" << a << std::endl;
+      std::cout << "a:" << a << std::endl;
       ready = true;
     }
     cv.notify_one();
@@ -419,8 +403,8 @@ bool ready = false;
 
   std::thread t2([&]() {
     {
-`std::unique_lock<std::mutex>`lock(mtx);
-      std::cout `<< "准备好等待了\n";
+std::unique_lock<std::mutex>lock(mtx);
+      std::cout << "准备好等待了\n";
       // 加上条件，通常就是一个bool返回值的lamda表达式，当返回true的时候结束阻塞
       // 这个wait和以下代码等效
       /*
@@ -434,13 +418,12 @@ bool ready = false;
   t1.join();
   t2.join();
 ```
-
 #### 5.4. 完整示例
 ```cpp
-#include <condition_variable>`
-#include `<iostream>`
-#include `<mutex>`
-#include `<thread>`
+#include <condition_variable>
+#include <iostream>
+#include <mutex>
+#include <thread>
 
 int a = 0;                   // 定义全局变量
 std::mutex mtx;              // 定义一个全局的互斥锁
@@ -450,9 +433,9 @@ std::condition_variable cv;  // 定义一个全局条件变量
 void demo1() {
   std::thread t1([&]() {
     {
-      `std::`lock_guard`<std::mutex>` lock(mtx);
+      std::lock_guard<std::mutex> lock(mtx);
       a = 2;
-      std::cout `<< "a:" << a << std::endl;
+      std::cout << "a:" << a << std::endl;
     }
     cv.notify_one();
     std::cout << "已经通知\n";
@@ -460,8 +443,8 @@ void demo1() {
 
   std::thread t2([&]() {
     {
-`std::unique_lock<std::mutex>`lock(mtx);
-      std::cout `<< "准备好等待了\n";
+std::unique_lock<std::mutex>lock(mtx);
+      std::cout << "准备好等待了\n";
       cv.wait(lock);  // 有可能错过通知，无限等待
       a = 4;
       std::cout << "a:" << a << std::endl;
@@ -476,9 +459,9 @@ void demo2() {
   bool ready = false;
   std::thread t1([&]() {
     {
-`std::lock_guard<std::mutex>`lock(mtx);
+std::lock_guard<std::mutex>lock(mtx);
       a = 2;
-      std::cout `<< "a:" << a << std::endl;
+      std::cout << "a:" << a << std::endl;
       ready = true;
     }
     cv.notify_one();
@@ -487,8 +470,8 @@ void demo2() {
 
   std::thread t2([&]() {
     {
-`std::unique_lock<std::mutex>`lock(mtx);
-      std::cout `<< "准备好等待了\n";
+std::unique_lock<std::mutex>lock(mtx);
+      std::cout << "准备好等待了\n";
       // 加上条件，通常就是一个bool返回值的lamda表达式，当返回true的时候结束阻塞
       // 这个wait和以下代码等效
       /*
@@ -509,9 +492,6 @@ int main() {
   return 0;
 }
 ```
-
-
-
 ### 6. 生产消费者模型
 #### 6.1. 生产消费者模型是什么
 生产消费者模型是一种经典的并发设计模式，包含两类线程：
@@ -535,13 +515,13 @@ int main() {
 
 #### 6.3. 完整示例
 ```cpp
-#include <chrono>`
-#include `<condition_variable>`
-#include `<iostream>`
-#include `<mutex>`
-#include `<queue>`
-#include `<thread>`
-#include `<vector>`
+#include <chrono>
+#include <condition_variable>
+#include <iostream>
+#include <mutex>
+#include <queue>
+#include <thread>
+#include <vector>
 
 // 创建一个线程安全的队列
 class Queue {
@@ -557,19 +537,19 @@ class Queue {
   Queue& operator=(const Queue&) = delete;
 
   std::size_t size() {
-    `std::`lock_guard`<std::mutex>` lock(mtx_);
+    std::lock_guard<std::mutex> lock(mtx_);
     return queue_.size();
   }
 
   bool empty() {
-    `std::`lock_guard`<std::mutex>` lock(mtx_);
+    std::lock_guard<std::mutex> lock(mtx_);
     return queue_.empty();
   }
 
   void push(int val) {
     {
       // 创建lock_guard对象自动加锁
-      `std::`lock_guard`<std::mutex>` lock(mtx_);
+      std::lock_guard<std::mutex> lock(mtx_);
       queue_.push(val);
     }  // 析构自动解锁
     // 通知一个消费者线程来拿数据
@@ -578,7 +558,7 @@ class Queue {
 
   bool pop(int& result,
            std::chrono::milliseconds timeout = std::chrono::milliseconds(100)) {
-    `std::`unique_lock`<std::mutex>` lock(mtx_);
+    std::unique_lock<std::mutex> lock(mtx_);
     // 用wait_for,等待被唤醒，设置超时时间100ms，条件是队列不为空，
     if (cv_.wait_for(lock, timeout, [this]() { return !queue_.empty(); })) {
       result = queue_.front();
@@ -591,7 +571,7 @@ class Queue {
  private:
   std::mutex mtx_;
   std::condition_variable cv_;
-  `std::`queue`<int>` queue_;
+  std::queue<int> queue_;
 };
 
 // 创建一个Buffer类，统一管理和创建生产者消费者
@@ -619,8 +599,8 @@ class Buffer {
         int res;
         if (queue_.pop(res)) {
           {
-            `std::`lock_guard`<std::mutex>` lock(mtx_);
-            std::cout `<< "consumer " << id << " consume data: " << res
+            std::lock_guard<std::mutex> lock(mtx_);
+            std::cout << "consumer " << id << " consume data: " << res
                       << std::endl;
           }
           timeout_count = 0;  // 重置超时计数
@@ -632,7 +612,7 @@ class Buffer {
   }
 
  private:
-`std::vector<std::thread>`threads_;  // 存放线程句柄的数组
+std::vector<std::thread>threads_;  // 存放线程句柄的数组
   std::mutex mtx_;                    // 互斥锁
   Queue queue_;                       // 数据队列
 };

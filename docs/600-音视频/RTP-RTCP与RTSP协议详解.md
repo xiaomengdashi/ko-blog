@@ -51,7 +51,6 @@ uint16_t sequence_number = rand() % 65536; // 初始随机值
 // 发送新包时递增
 sequence_number = (sequence_number + 1) & 0xFFFF;
 ```
-
 2. **时间戳处理**：
 
 ```cpp
@@ -60,16 +59,14 @@ uint32_t timestamp = 0; // 初始值
 // 每个采样周期递增
 timestamp += sample_rate / 1000; // 假设每毫秒一个采样点
 ```
-
 3. **SSRC生成**：
 
 ```cpp
 // 生成唯一SSRC
 uint32_t generate_ssrc() {
-    return `static_cast`<uint32_t>`(std::chrono::system_clock::now().time_since_epoch().count());
+    return static_cast<uint32_t>(std::chrono::system_clock::now().time_since_epoch().count());
 }
 ```
-
 4. **多路复用**：
     - 在C++中，需要为不同媒体流（音频、视频）维护独立的RTP会话
     - 使用`std::map`或`std::unordered_map`管理SSRC与流的映射
@@ -118,7 +115,6 @@ bool should_send_rtcp_report(uint64_t current_time) {
     return (current_time - last_report_time) >= kMinReportIntervalMs;
 }
 ```
-
 2. **CNAME生成**：
 
 ```cpp
@@ -128,7 +124,6 @@ std::string generate_cname() {
     return "user@hostname_" + std::to_string(getpid()) + "_" + std::to_string(time(nullptr));
 }
 ```
-
 3. **接收报告处理**：
 
 ```cpp
@@ -136,7 +131,7 @@ std::string generate_cname() {
 void process_rr_report(const RtcpRrPacket& rr) {
     uint32_t total_packets = rr.packet_count;
     uint32_t lost_packets = rr.lost_packets;
-    float loss_rate = `static_cast`<float>`(lost_packets) / total_packets;
+    float loss_rate = static_cast<float>(lost_packets) / total_packets;
     
     // 计算抖动
     uint32_t jitter = calculate_jitter(rr);
@@ -145,7 +140,6 @@ void process_rr_report(const RtcpRrPacket& rr) {
     adjust_bitrate(loss_rate, jitter);
 }
 ```
-
 4. **RTCP带宽管理**：
 
 ```cpp
@@ -158,7 +152,6 @@ void adjust_rtcp_bandwidth(uint32_t total_bandwidth) {
     }
 }
 ```
-
 ---
 
 ### 4. RTSP协议详解
@@ -184,7 +177,7 @@ void adjust_rtcp_bandwidth(uint32_t total_bandwidth) {
 #### 4.3. SDP格式详解
 SDP（Session Description Protocol）格式：
 
-```plain
+```cpp
 v=0
 o=- 1867010921 1 IN IP4 192.168.0.170
 s:Session streamed by "testH264VideoStreamer"
@@ -199,7 +192,6 @@ m:video 0 RTP/AVP 96
 c:IN IP4 0.0.0.0
 b:AS:1048576
 ```
-
 **关键字段说明**：
 
 + `v=0`：SDP版本
@@ -234,7 +226,6 @@ bool parse_rtsp_request(const std::string& request, RtspRequest& out) {
     return true;
 }
 ```
-
 2. **SDP解析**：
 
 ```cpp
@@ -262,7 +253,6 @@ bool parse_sdp(const std::string& sdp, SdpDescription& out) {
     return true;
 }
 ```
-
 3. **RTP/RTCP端口分配**：
 
 ```cpp
@@ -283,7 +273,6 @@ void handle_setup_request(const RtspRequest& request, RtspResponse& response) {
     }
 }
 ```
-
 ---
 
 ### 5. RTP/RTCP与RTSP的协作关系
@@ -314,7 +303,6 @@ graph TD
     C -->|RTCP报告| E[质量监控]
     E -->|调整参数| C
 ```
-
 **C++实现要点**：
 
 + **RTSP服务器**：使用`libevent`或`Boost.Asio`实现TCP服务器
@@ -342,12 +330,11 @@ public:
         // 环形缓冲区实现
     }
 private:
-    ``std::`vector`<RtpPacket>` buffer_;
+    std::vector<RtpPacket> buffer_;
     size_t head_ = 0;
     size_t tail_ = 0;
 };
 ```
-
 3. **多线程处理**：
     - RTP数据接收线程
     - RTCP报告发送线程
@@ -366,7 +353,6 @@ void handle_rtp_packet(const RtpPacket& packet) {
     next_expected_seq = packet.sequence_number + 1;
 }
 ```
-
 2. **超时处理**：
 
 ```cpp
@@ -377,7 +363,6 @@ void check_rtcp_timeout() {
     }
 }
 ```
-
 3. **SDP错误处理**：
 
 ```cpp

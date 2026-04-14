@@ -5,7 +5,7 @@ slug: /其它/perf生成火焰图
 
 ## 1. 下载火焰图可视化生成器FlameGraph
 
-```
+```rust
 # git clone https://github.com/brendangregg/FlameGraph.git
 Cloning into 'FlameGraph'...
 remote: Enumerating objects: 961, done.
@@ -15,17 +15,14 @@ Resolving deltas: 100% (547/547), done.
 # ls
 FlameGraph
 ```
-
 ### 2. perf采集数据
-```
+```text
 perf record -F 99 -p 2347 -g -- sleep 30
 [ perf record: Woken up 1 times to write data ]
 [ perf record: Captured and wrote 0.627 MB perf.data (~27375 samples) ]
 ```
-
-
 ### 3. 生成火焰图
-```
+```bash
 perf script -i perf.data | ./stackcollapse-perf.pl | ./flamegraph.pl > perf.svg
 ```
 

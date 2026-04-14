@@ -25,7 +25,7 @@ slug: /C++/项目实战/从零实现Malloc-sbrk与mmap如何选择
 准备好了吗？让我们一起深入了解内存管理的基础知识吧！ 🚀
 
 #### 1. 演进路线说明**
-```plain
+```cpp
 🚀 原始方案 → 🛠️ 封装sbrk → 📦 添加元数据 → 🔄 内存对齐 → 🧩 链表管理 → 🎉 空闲复用
 ├───────────┴───────────┴─────────────┴─────────────┴─────────────┴─────── 演进路线
 │
@@ -41,7 +41,6 @@ slug: /C++/项目实战/从零实现Malloc-sbrk与mmap如何选择
 └── 💎 C++现代化改造
     └── 🧠 智能指针管理 → 🎯 RAII封装 → 📦 模板策略 → ⚡ 并发支持
 ```
-
 通过后续阶段的演进，我们将逐步解决：  
 🔧 **内存碎片** → 块合并机制  
 ⏱️ **性能问题** → 预分配内存池 + 无锁队列  
@@ -50,7 +49,7 @@ slug: /C++/项目实战/从零实现Malloc-sbrk与mmap如何选择
 
 C++特性演进亮点：
 
-```plain
+```cpp
 C实现 → C++现代化改造
 ───────────────────────────────────────────
 🔧 原始指针        → 🧠 unique_ptr自定义删除器
@@ -59,7 +58,6 @@ C实现 → C++现代化改造
 🐛 脆弱类型系统    → 🛡️ 强类型内存块封装
 🐢 单线程实现      → ⚡ 原子操作并发支持
 ```
-
 保持核心算法不变，通过现代C++特性增强：
 
 1. 使用`std::aligned_alloc`实现内存对齐
@@ -72,9 +70,9 @@ C实现 → C++现代化改造
 #### 2. 最简实现示例**
 我们先实现一个"永远只分配新内存"的极简版本：🚀✨
 
-```plain
-#include `<unistd.h>`  // 📚 系统调用相关头文件（包含sbrk）
-#include `<stdio.h>`   // 📚 标准输入输出头文件
+```cpp
+#include <unistd.h>  // 📚 系统调用相关头文件（包含sbrk）
+#include <stdio.h>   // 📚 标准输入输出头文件
 // 🌱 极简内存分配函数
 void* emalloc(size_t size) {
     // 🚀 使用sbrk系统调用申请内存
@@ -103,10 +101,9 @@ int main() {
     return0;  // 🏁 程序正常退出
 }
 ```
-
 🛠️ 如何编译和运行：
 
-```plain
+```cpp
 # 🔧🛠️ 编译指令说明
 #   -o main: 指定输出可执行文件名为main
 clang -o main main.c
@@ -115,7 +112,6 @@ clang -o main main.c
 # ✅👀 预期输出结果验证
 # ✨ 分配的内存中的值：42
 ```
-
 这个简单的实现虽然功能有限，但展示了内存分配器的核心概念：
 
 + ✅ 直接使用系统调用
@@ -138,7 +134,7 @@ clang -o main main.c
 
 🌟 初始状态（program break在堆起始位置）🌱：
 
-```plain
+```cpp
 高地址
     ▲ 内核空间🖥️
     │
@@ -150,10 +146,9 @@ clang -o main main.c
     │ 数据段💾
 低地址
 ```
-
 ⬆️🚀 sbrk(1024) 之后：
 
-```plain
+```cpp
 高地址
     ▲ 内核空间🔒
     │
@@ -166,10 +161,9 @@ clang -o main main.c
     │ 数据段💽
 低地址
 ```
-
 📊🔁 再次sbrk(512)：
 
-```plain
+```cpp
 高地址
     ▲ 内核空间🛡️
     │
@@ -182,10 +176,9 @@ clang -o main main.c
     │ 数据段💿
 低地址
 ```
-
 ⬇️💨 sbrk(-256) 释放部分内存：
 
-```plain
+```cpp
 高地址
     ▲ 内核空间🔐
     │
@@ -198,10 +191,9 @@ clang -o main main.c
     │ 数据段📀
 低地址
 ```
-
 🔄🎉 完全释放（sbrk(-总分配大小)）：
 
-```plain
+```cpp
 高地址
     ▲ 内核空间🖥️
     │
@@ -212,7 +204,6 @@ clang -o main main.c
     │ 数据段💾
 低地址
 ```
-
 📌🔑 关键说明：
 
 1. 🎯📍 ░ 符号表示当前program break位置
@@ -227,14 +218,13 @@ clang -o main main.c
 #### 4. brk系统调用详解**
 brk是sbrk的底层原语，通过绝对地址设置program break位置：
 
-```plain
-#include <unistd.h>`
+```cpp
+#include <unistd.h>
 int brk(void *addr);  // 🎯 直接设置堆顶地址
 ```
-
 使用示例：
 
-```plain
+```cpp
 void* current_break = sbrk(0);  // 获取当前堆顶
 // 通过brk扩展堆空间（等效于sbrk(1024)）
 if (brk(current_break + 1024) == -1) {
@@ -246,29 +236,26 @@ if (brk(new_break) == -1) {      // 释放512字节
     perror("brk收缩失败❗");
 }
 ```
-
 📌 关键注意事项：
 
 1. ⚠️ brk参数必须是有效地址：
 
-```plain
+```cpp
 // 错误示范：地址必须大于初始堆区起始地址
 brk((void*)0x1000); // 可能引发段错误❗
 ```
-
 1. 🔄 推荐使用模式：
 
-```plain
+```cpp
 void* old_break = sbrk(0);     // 获取当前堆顶
 void* new_break = old_break + size;
 if (brk(new_break) == 0) {     // 安全扩展
     return old_break;          // 返回分配地址
 }
 ```
-
 1. 🎯 底层关系：
 
-```plain
+```cpp
 // sbrk实际上是brk的封装
 void* sbrk(intptr_t increment) {
     void* old = brk(0);        // 获取当前break
@@ -277,7 +264,6 @@ void* sbrk(intptr_t increment) {
     return (void*)-1;
 }
 ```
-
 🌟 为什么更常用sbrk？
 
 1. 增量式操作更符合内存分配需求 ➕
@@ -288,7 +274,7 @@ void* sbrk(intptr_t increment) {
 #### 5. 为什么不直接使用 sbrk 来获取内存呢？**
 ⚠️ 直接使用sbrk存在显著缺陷：每次内存申请都触发系统调用（🐌 性能低下），无法重用释放的内存（🗑️ 产生碎片），缺乏元数据跟踪机制（💥 易出错）。这正是需要 malloc 封装的关键原因 🎯：
 
-```plain
+```cpp
 原始sbrk缺陷            malloc解决方案
 ─────────────────────────────────────────────────
 🐢 系统调用频繁        → 🚀 批量预分配减少调用次数
@@ -297,7 +283,6 @@ void* sbrk(intptr_t increment) {
 🔓 缺乏安全防护        → 🛡️ 边界检查防止越界访问
 🌐 兼容性差异大        → 📦 统一标准内存接口
 ```
-
 ✨ malloc通过维护内存池 🏊‍♂️、添加块元数据 📝、实现空闲链表 ⛓️ 等机制，在用户层构建高效的内存管理系统。这种封装既保留了sbrk的底层控制能力 💪，又提供了安全高效的内存管理抽象 🎯。
 
 #### 6. 深入理解 mmap 系统调用 ****🚀**
@@ -305,15 +290,14 @@ void* sbrk(intptr_t increment) {
 
 mmap允许将文件 📄 或设备 💻 映射到内存中，也可以创建匿名映射 👻 作为内存分配使用：
 
-```plain
-#include `<sys/mman.h>`  // 📚 系统头文件
+```cpp
+#include <sys/mman.h>  // 📚 系统头文件
 void* mmap(void *addr, size_t length, int prot, int flags,
            int fd, off_t offset);  // 🎯 核心函数声明
 ```
-
 匿名内存映射示例 ✨：
 
-```plain
+```cpp
 // 🌟 使用mmap分配内存
 void* alloc_with_mmap(size_t size) {
     void* ptr = mmap(NULL,                    // 🎯 让系统选择地址
@@ -326,10 +310,9 @@ void* alloc_with_mmap(size_t size) {
     return (ptr == MAP_FAILED) ? NULL : ptr;  // ✅ 返回结果
 }
 ```
-
 内存布局示意图 📊：
 
-```plain
+```cpp
 高地址 ⬆️
     ▲ 内核空间 👑
     │
@@ -346,9 +329,8 @@ void* alloc_with_mmap(size_t size) {
     │ 数据段 💾
 低地址 ⬇️
 ```
-
 #### 7. sbrk vs mmap 详细对比 ****🎯**
-```plain
+```cpp
 特性              sbrk                    mmap
 ──────────────────────────────────────────────────────────
 分配粒度 📏      字节级 ⚡️              页级（通常4KB）📄
@@ -358,7 +340,6 @@ void* alloc_with_mmap(size_t size) {
 系统开销 ⚖️       较小 🟢                 较大 🔴
 适用场景 🎯      小块频繁分配 🚀         大块内存分配 🌟
 ```
-
 💡 内存分配策略建议：
 
 + 🔸 小内存（< 128KB）：优先使用sbrk 🚀
@@ -378,47 +359,43 @@ void* alloc_with_mmap(size_t size) {
 + mmap 以页为单位分配（通常是4KB）
 + 小内存分配会造成巨大浪费
 
-```plain
+```cpp
 // 🚫 不推荐：分配1字节实际占用4KB
 char* byte = mmap(NULL, 1, PROT_READ|PROT_WRITE, 
                  MAP_PRIVATE|MAP_ANONYMOUS, -1, 0);
 ```
-
 1. 🐌 **性能开销大**
 + 每次调用都触发系统调用
 + 涉及页表操作，开销明显
 
-```plain
+```cpp
 // 🚫 频繁调用示例
 for(int i = 0; i < 1000; i++) {
     ptr[i] = mmap(...);  // 😱 1000次系统调用！
 }
 ```
-
 1. 🎯 **内存碎片**
 + 独立的内存映射区域
 + 容易产生地址空间碎片
 
-```plain
+```cpp
 内存布局示意：
 │ [mmap 4KB] ← 碎片1
 │    空洞
 │ [mmap 4KB] ← 碎片2
 │    空洞
 ```
-
 1. 💡 **更好的方案**
 
-```plain
+```cpp
 // ✅ 推荐：批量预分配，细粒度管理
 void* pool = mmap(NULL, POOL_SIZE, ...);
 // 从内存池分配小块内存
 small_alloc(pool, size);
 ```
-
 1. 🎨 **最佳实践**
-+ 小内存（`&lt;128KB）：使用 malloc/sbrk
-+ 大内存（≥128KB）：考虑 mmap
++ 小内存（`<128KB`）：使用 malloc/sbrk
++ 大内存（`≥128KB`）：考虑 mmap
 + 特殊场景：共享内存、内存映射文件
 
 #### 9. sbrk vs mmap 的内存释放机制 ****⚡****️**
@@ -426,13 +403,13 @@ small_alloc(pool, size);
 
 1. **sbrk分配的内存释放** 🗑️🔧：
 
-```plain
+```cpp
 // sbrk分配的内存只能从堆顶释放 ⬆️
 void free_sbrk_memory(void* ptr) {
     // ✅ 如果ptr是堆顶块：通过sbrk归还系统
     if (is_top_chunk(ptr)) {  // 🎯 堆顶检查
         struct block_header* header = (struct block_header*)ptr - 1;
-        sbrk(-(header->`size + sizeof(struct block_header)));  // ⏬ 收缩堆顶
+        sbrk(-(header->size + sizeof(struct block_header)));  // ⏬ 收缩堆顶
     } 
     // ⚠️ 非堆顶块只能标记为空闲
     else {  
@@ -440,7 +417,6 @@ void free_sbrk_memory(void* ptr) {
     }
 }
 ```
-
 ✨ 核心特点：
 
 + 🎯 只能从堆顶收缩 ⬇️
@@ -449,13 +425,12 @@ void free_sbrk_memory(void* ptr) {
 + 📏 内存碎片问题严重 🧩
 1. **mmap分配的内存释放** 🗺️❌：
 
-```plain
+```cpp
 // mmap内存可随时释放 🚀
 void free_mmap_memory(void* ptr, size_t size) {
     munmap(ptr, size);  // 💨 立即归还系统
 }
 ```
-
 🌟 显著优势：
 
 + 🎯 任意位置随时释放 🗽
@@ -465,7 +440,7 @@ void free_mmap_memory(void* ptr, size_t size) {
 
 内存释放示意图 📊：
 
-```plain
+```cpp
 sbrk管理的堆内存 🗃️：
 高地址 ▲
     │ [已分配块3] 🔒 ← 堆顶（可收缩）🎯
@@ -481,7 +456,6 @@ mmap映射的内存 🌈：
     │ [映射区域1] 🧩 ← 单独释放 ✅
 低地址 ▼
 ```
-
 这种释放机制的差异造就了不同的分配策略 📌：
 
 1. 🔹 大块短命内存（≥128KB）→ 优先mmap 🗺️✨
@@ -507,7 +481,7 @@ mmap映射的内存 🌈：
 #### 11. 下一章预告：内存块元数据管理 ****🧠💎**
 我们将深入实现：
 
-```plain
+```cpp
 struct block_header {
     size_t size;        // 📏 块大小
     int is_free;        // 🎚️ 空闲状态

@@ -34,13 +34,11 @@ epoll并没有fd(文件描述符)的上限，它只跟系统内存有关，我�
 ```cpp
 cat /proc/sys/fs/file-max
 ```
-
 再来看select/poll，有一个限定的fd的数量，linux/posix_types.h头文件中
 
 ```cpp
 #define __FD_SETSIZE    1024
 ```
-
 **⑵效率对比**
 
 当然了，你可以修改上述值，然后重新编译内核，然后再次写代码，这也是没问题的，不过我先说说select/poll的机制，估计你马上会作废上面修改枚举值的想法。
@@ -67,9 +65,8 @@ LT可以理解为水平触发，只要有数据可以读，不管怎样都会通
 使用epoll很简单，只需要：
 
 ```cpp
-#include `<sys/epoll.h>`
+#include <sys/epoll.h>
 ```
-
 有三个关键函数：
 
 ```cpp
@@ -77,7 +74,6 @@ int epoll_create(int size);
 int epoll_ctl(int epfd, int op, int fd, struct epoll_events* event);
 int epoll_wait(int epfd, struct epoll_event* events, int maxevents, int timeout);
 ```
-
 当然了，不要忘记关闭函数。
 
 **epoll和select**
@@ -213,7 +209,6 @@ finally:
     epoll.close()
     serversocket.close()
 ```
-
 可见epoll使用也很简单，并没有过多复杂的逻辑，当然主要是在系统层面封装的好。至于Epoll的原理，也不是三言两语可以解释清楚，作为开发者，先学会如何使用API。
 
 **epoll与tornado**
@@ -262,7 +257,6 @@ callback = functools.partial(connection_ready, sock)
         io_loop.add_handler(sock.fileno(), callback, io_loop.READ)
         io_loop.start()
 ```
-
 上面的代码来者tornado的模块IOLoop源码的文档，很简明的介绍了在tornado中如何使用网络IO。当然具体的封装实现，可以参考tornado源码获知，在此不做介绍了。
 
 说了这么多，总算引出了我们的主人公 epoll 了。不同于忙轮询和无差别轮询，epoll 会把哪个流发生了怎样的 I/O 事件通知我们。此时我们对这些流的操作都是有意义的。（复杂度降低到了O(k)，k为产生 I/O 事件的流的个数。
@@ -292,7 +286,6 @@ epoll 在 linux 内核中申请了一个简易的文件系统，把原先的一�
 ```cpp
 __poll_t poll(struct file *fp, poll_table *wait)
 ```
-
 **不同类型的 file 实现不同，但做的事情都差不多：**
 
 + 通过 fp 拿到其对应的 waitqueue
@@ -371,7 +364,7 @@ PS. 普通文件不是 pollable 的，详情请看 epoll_does_not_work_with_file
  *  the Free Software Foundation; either version 2 of the License, or
  *  (at your option) any later version.
  *
- *  Davide Libenzi `<davidel@xmailserver.org>`
+ *  Davide Libenzi <davidel@xmailserver.org>
  *
  */
 /*
@@ -568,7 +561,7 @@ SYSCALL_DEFINE1(epoll_create1, int, flags)
 	 * ep, ep就是struct epollevent, 它会作为一个私有数据保存在struct file的private指针里面.
 	 * 其实说白了, 就是为了能通过fd找到struct file, 通过struct file能找到eventpoll结构.
 	 * 如果懂一点Linux下字符设备驱动开发, 这里应该是很好理解的,
-	 * 推荐阅读 `<Linux device driver 3rd>`
+	 * 推荐阅读 <Linux device driver 3rd>
 	 */
 	error = anon_inode_getfd("[eventpoll]", &eventpoll_fops, ep,
 				 O_RDWR | (flags & O_CLOEXEC));
@@ -1283,7 +1276,6 @@ static inline int is_file_epoll(struct file *f)
 }
 /* OK, eventpoll我认为比较重要的函数都注释完了... */
 ```
-
 #### 3.1. 4.1epoll_create
 从slab缓存中创建一个eventpoll对象,并且创建一个匿名的fd跟fd对应的file对象, 而eventpoll对象保存在struct file结构的private指针中,并且返回, 该fd对应的file operations只是实现了poll跟release操作。
 
@@ -1302,12 +1294,10 @@ static inline int is_file_epoll(struct file *f)
 ```cpp
 int epoll_create(int size); //监听个数
 ```
-
 #### 4.2. 5.2epoll事件设置
 ```cpp
 int epoll_ctl(int epfd, int op, int fd, struct epoll_event *event)
 ```
-
 第一个参数epfd是epoll_create()的返回值。
 
 第二个参数op表示动作，用三个宏来表示：
@@ -1317,7 +1307,6 @@ EPOLL_CTL_ADD：注册新的fd到epfd中；
 EPOLL_CTL_MOD：修改已经注册的fd的监听事件；
 EPOLL_CTL_DEL：从epfd中删除一个fd；
 ```
-
 第三个参数是需要监听的fd。
 
 第四个参数是告诉内核需要监听什么事。
@@ -1330,7 +1319,6 @@ struct epoll_event {
     epoll_data_t data; /* User data variable */
 };
 ```
-
 **events可以是以下几个宏的集合：**
 
 + EPOLLIN ：表示对应的文件描述符可以读（包括对端SOCKET正常关闭）；
@@ -1345,7 +1333,6 @@ struct epoll_event {
 ```cpp
 int epoll_wait(int epfd, struct epoll_event * events, int maxevents, int timeout)
 ```
-
 + 等待事件的产生，类似于select()调用。
 + 参数events用来从内核得到事件的集合，
 + maxevents告之内核这个events有多大，这个maxevents的值不能大于创建epoll_create()时的size，
@@ -1469,7 +1456,6 @@ void TcpServerThread()
 	PRINT("end\n");
 }
 ```
-
 **⑵启动多个客户端进行测试，**修改主程序，创建多个客户端线程，产生多个客户端，去连接同一个服务端，来测试epoll监听多个事件的功能。
 
 ```cpp
@@ -1482,7 +1468,7 @@ int main()
 
 	//创建多个客户端
 	thread thClinet[CLIENT_NUM];
-	for (int i=0; i`<CLIENT_NUM; i++)
+	for (int i=0; i<CLIENT_NUM; i++)
 	{
 		thClinet[i] = thread(TcpClientThread);
 		sleep(1);
@@ -1494,7 +1480,6 @@ int main()
 	}
 }
 ```
-
 本例中，CLIENT_NUM为3，使用3个客户端来测试epoll功能。
 
 **⑶测试结果，**在Ubuntu上编译运行，程序运行时的打印如下：
@@ -1510,7 +1495,7 @@ int main()
 [TcpClientThread] create socketfd:6
 [TcpClientThread] connect ok
 [TcpServerThread] epoll wait done, num:1
-[TcpServerThread] =====>` accept new clientfd:7
+[TcpServerThread] =====> accept new clientfd:7
 [EpollAddEvent] epollfd:5 add fd:7(event:1)
 [TcpServerThread] epoll wait...
 [TcpServerThread] epoll wait done, num:1

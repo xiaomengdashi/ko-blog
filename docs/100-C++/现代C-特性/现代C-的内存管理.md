@@ -9,7 +9,7 @@ RAII（Resource Acquisition Is Initialization）是C++管理资源的基石模�
 #### 1.1. RAII伪代码实现
 ```cpp
 // RAII基类模板
-`template`<typename Resource, typename Deleter>`
+template<typename Resource, typename Deleter>
 class RAIIWrapper {
 public:
     // 构造时获取资源
@@ -27,7 +27,6 @@ private:
     Resource* resource_;  // 管理的资源指针
 };
 ```
-
 ### 2. unique_ptr：独占所有权的智能指针
 #### 2.1. 核心特性与应用场景
 + **独占所有权**：同一时间只能有一个unique_ptr指向对象
@@ -43,10 +42,9 @@ private:
 ```cpp
 // ... existing code ...
 private:
-    _LIBCPP_NO_UNIQUE_ADDRESS `__compressed_pair`<pointer, deleter_type>` __ptr_;
+    _LIBCPP_NO_UNIQUE_ADDRESS __compressed_pair<pointer, deleter_type> __ptr_;
 // ... existing code ...
 ```
-
 `__compressed_pair`是libcxx的优化实现，当删除器是无状态类型（如默认的`default_delete`）时，会被优化掉，使`unique_ptr`大小与原始指针相同。
 
 ##### 2.2.2. 对象实例化：
@@ -57,23 +55,22 @@ private:
 ```cpp
 // ... existing code ...
 // 非数组版本make_unique
- template `<class _Tp, class... _Args>`
+ template <class _Tp, class... _Args>
 inline _LIBCPP_HIDE_FROM_ABI
-typename `__unique_ptr_traits`<_Tp>`::pointer
+typename __unique_ptr_traits<_Tp>::pointer
 __make_unique(_Args&&... __args) {
-    return ::new _Tp(`std::`forward`<_Args>`(__args)...);
+    return ::new _Tp(std::forward<_Args>(__args)...);
 }
 
- template `<class _Tp, class... _Args>`
+ template <class _Tp, class... _Args>
 inline _LIBCPP_HIDE_FROM_ABI
-`unique_ptr`<_Tp>`
+unique_ptr<_Tp>
 make_unique(_Args&&... __args) {
-    return `unique_ptr`<_Tp>`(`__make_unique`<_Tp>`(`std::`forward`<_Args>`(__args)...));
+    return unique_ptr<_Tp>(__make_unique<_Tp>(std::forward<_Args>(__args)...));
 }
 
 // ... existing code ...
 ```
-
 ##### 2.2.3. 资源销毁机制
 unique_ptr的析构函数通过调用删除器释放资源：
 
@@ -83,7 +80,6 @@ _LIBCPP_HIDE_FROM_ABI _LIBCPP_CONSTEXPR_SINCE_CXX23 ~unique_ptr() { reset(); }
 
 // ... existing code ...
 ```
-
 `release()`方法转移所有权但不释放资源，`reset()`方法则会释放当前资源：
 
 ```cpp
@@ -102,7 +98,6 @@ __deleter_(__tmp);
 }
 // ... existing code ...
 ```
-
 ### 3. shared_ptr：共享所有权的智能指针
 #### 3.1. 核心特性与应用场景
 + **共享所有权**：多个shared_ptr可指向同一对象
@@ -121,7 +116,6 @@ private:
     __shared_weak_count* __cntrl_;  // 指向控制块的指针
 // ... existing code ...
 ```
-
 **shared_ptr的实例化包含了两个部分的实例化，管理对象的实例化和控制块的实例化**。  
 这句话意味着：
 
@@ -135,12 +129,12 @@ private:
 // 1. 初始化原始指针成员
 explicit shared_ptr(_Yp* __p) : __ptr_(__p) {
 // 2. 用 unique_ptr 临时持有 __p，确保异常安全
-`unique_ptr`<_Yp>` __hold(__p);
+unique_ptr<_Yp> __hold(__p);
 // 3. 定义分配器与控制块类型
-typedef typename `__shared_ptr_default_allocator`<_Yp>`::type _AllocT;
-typedef `__shared_ptr_pointer`<_Yp*, `__shared_ptr_default_delete<_Tp, _Yp>`, _AllocT> _CntrlBlk;
+typedef typename __shared_ptr_default_allocator<_Yp>::type _AllocT;
+typedef __shared_ptr_pointer<_Yp*, __shared_ptr_default_delete<_Tp, _Yp>, _AllocT> _CntrlBlk;
 // 4. 构造控制块（包含引用计数、删除器、分配器）
-__cntrl_ = new _CntrlBlk(__p, `__shared_ptr_default_delete`<_Tp, _Yp>`(), _AllocT());
+__cntrl_ = new _CntrlBlk(__p, __shared_ptr_default_delete<_Tp, _Yp>(), _AllocT());
 // 5. 控制块构造成功，释放 unique_ptr 的临时所有权
 __hold.release();
 // 6. 启用 weak_this 机制（支持 enable_shared_from_this）
@@ -148,7 +142,6 @@ __enable_weak_this(__p, __p);
 
 }
 ```
-
 ##### 3.2.3. 控制块实现-（引用计数）
 控制块核心成员：
 
@@ -212,7 +205,6 @@ virtual void __on_zero_shared_weak() _NOEXCEPT = 0;
 
 };
 ```
-
 强引用计数减少操作在`__shared_count`类中实现：
 
 ```cpp
@@ -226,7 +218,6 @@ bool __release_shared() noexcept {
 }
 // ... existing code ...
 ```
-
 ##### 3.2.4. 对象实例化：make_shared
 `make_shared`相比直接使用`new`+`shared_ptr`有显著优势：
 
@@ -236,22 +227,21 @@ bool __release_shared() noexcept {
 
 ```cpp
 // ... existing code ...
-template `<class _Tp, class... _Args>`
-inline _LIBCPP_HIDE_FROM_ABI `shared_ptr`<_Tp>`
+template <class _Tp, class... _Args>
+inline _LIBCPP_HIDE_FROM_ABI shared_ptr<_Tp>
 make_shared(_Args&&... __args) {
-    typedef typename `__shared_ptr_default_allocator`<_Tp>`::type _Alloc;
-    return `std::`allocate_shared`<_Tp>`(_Alloc(), `std::`forward`<_Args>`(__args)...);
+    typedef typename __shared_ptr_default_allocator<_Tp>::type _Alloc;
+    return std::allocate_shared<_Tp>(_Alloc(), std::forward<_Args>(__args)...);
 }
 
 // 分配并构造对象和控制块
- template `<class _Tp, class _Alloc, class... _Args>`
-inline _LIBCPP_HIDE_FROM_ABI `shared_ptr`<_Tp>`
+ template <class _Tp, class _Alloc, class... _Args>
+inline _LIBCPP_HIDE_FROM_ABI shared_ptr<_Tp>
 allocate_shared(const _Alloc& __a, _Args&&... __args) {
-    return `__allocate_shared_common`<_Tp>`(__a, `std::`forward`<_Args>`(__args)...);
+    return __allocate_shared_common<_Tp>(__a, std::forward<_Args>(__args)...);
 }
 // ... existing code ...
 ```
-
 ##### 3.2.5. 5.资源释放
 核心内容：
 
@@ -279,7 +269,6 @@ bool __release_shared() noexcept {
 }
 // ... existing code ...
 ```
-
 ###### 3.2.5.2. 弱引用计数归零（控制块销毁）**
 `weak_ptr` 不直接管理资源，但会增加控制块的弱引用计数。当最后一个 `weak_ptr` 销毁时：
 
@@ -290,7 +279,6 @@ void __release_weak() noexcept {
   }
 }
 ```
-
 ###### 3.2.5.3. 控制块内存管理
 | **模板类** | **__shared_ptr_emplace** | **__shared_ptr_pointer** |
 | --- | --- | --- |
@@ -311,7 +299,6 @@ public:
   void __release_weak() noexcept; // 弱引用-1
 };
 ```
-
 + **强引用操作**：通过`__add_shared()`/`__release_shared()`管理
 + **弱引用操作**：通过`__add_weak()`/`__release_weak()`管理
 + **资源释放**：通过重写`__on_zero_shared()`和`__on_zero_shared_weak()`实现差异化释放逻辑
@@ -328,7 +315,6 @@ private:
     element_type* __ptr_;       // 指向实际对象的指针
     __shared_weak_count* __cntrl_;  // 指向控制块的指针
 ```
-
 这些指针的读写操作未使用任何同步机制（如互斥锁或原子操作），多线程并发修改时会导致数据竞争。
 
 shared_ptr的线程安全保证：
@@ -350,8 +336,8 @@ weak_ptr通过lock()方法安全获取对象访问权：
 
 ```cpp
 // ... existing code ...
-`shared_ptr`<_Tp>` lock() const noexcept {
-    `shared_ptr`<_Tp>` __r;
+shared_ptr<_Tp> lock() const noexcept {
+    shared_ptr<_Tp> __r;
     __r.__cntrl_ = __cntrl_ ? __cntrl_->lock() : __cntrl_;
     if (__r.__cntrl_)
         __r.__ptr_ = __ptr_;
@@ -359,7 +345,6 @@ weak_ptr通过lock()方法安全获取对象访问权：
 }
 // ... existing code ...
 ```
-
 `lock()`方法内部调用控制块的`lock()`，只有当强引用计数>0时才会成功获取强引用。
 
 ### 5. 循环引用问题与解决方案
@@ -368,25 +353,25 @@ weak_ptr通过lock()方法安全获取对象访问权：
 
 #### 5.2. 示例代码
 ```cpp
-#include `<memory>`
-#`include`<iostream>`
+#include <memory>
+#include<iostream>
 class B;
 
 class A {
 public:
-`std::shared_ptr<B>`b_ptr;
-    ~A() { std::cout `<< "A destroyed" << std::endl; }
+std::shared_ptr<B>b_ptr;
+    ~A() { std::cout << "A destroyed" << std::endl; }
 };
 
 class B {
 public:
-`std::shared_ptr<A>`a_ptr;
-    ~B() { std::cout `<< "B destroyed" << std::endl; }
+std::shared_ptr<A>a_ptr;
+    ~B() { std::cout << "B destroyed" << std::endl; }
 };
 
 void test_circular_reference() {
-    auto a =`std::make_shared<A>`();
-    auto b =`std::make_shared<B>`();
+    auto a =std::make_shared<A>();
+    auto b =std::make_shared<B>();
     a->b_ptr = b;  // A引用B
     b->a_ptr = a;  // B引用A，形成循环
 }
@@ -396,7 +381,6 @@ int main(){
     test_circular_reference();
 }
 ```
-
 引用关系分析 ：
 
 + 在 test_circular_reference() 函数中， a （指向 A 实例）和 b （指向 B 实例）是局部 shared_ptr
@@ -413,25 +397,25 @@ int main(){
 将循环引用中的一个shared_ptr改为weak_ptr即可打破循环：
 
 ```cpp
-#include `<memory>`
-#include `<iostream>`
+#include <memory>
+#include <iostream>
 class B;
 
 class A {
 public:
-`std::shared_ptr<B>`b_ptr;
-    ~A() { std::cout `<< "A destroyed" << std::endl; }
+std::shared_ptr<B>b_ptr;
+    ~A() { std::cout << "A destroyed" << std::endl; }
 };
 
 class B {
 public:
-`std::weak_ptr<A>`a_ptr;  // 使用weak_ptr打破循环
-    ~B() { std::cout `<< "B destroyed" << std::endl; }
+std::weak_ptr<A>a_ptr;  // 使用weak_ptr打破循环
+    ~B() { std::cout << "B destroyed" << std::endl; }
 };
 
 void test_solve_circular_reference() {
-    auto a =`std::make_shared<A>`();
-    auto b =`std::make_shared<B>`();
+    auto a =std::make_shared<A>();
+    auto b =std::make_shared<B>();
     a->b_ptr = b;
     b->a_ptr = a;  // weak_ptr不增加强引用计数
 }

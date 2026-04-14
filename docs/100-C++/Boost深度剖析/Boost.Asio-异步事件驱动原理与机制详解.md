@@ -14,7 +14,7 @@ slug: /C++/Boost深度剖析/Boost.Asio-异步事件驱动原理与机制详解
 
 ```cpp
 class io_context_impl {
-    `std::`atomic`<int>` work_count_{0};
+    std::atomic<int> work_count_{0};
     // ...任务队列、锁等...
 
 public:
@@ -43,7 +43,6 @@ public:
     }
 };
 ```
-
 **典型用法：**
 
 ```cpp
@@ -52,7 +51,6 @@ auto guard = boost::asio::make_work_guard(io);
 // 此时 io.run() 不会退出，直到 guard.reset() 或 guard析构
 io.run();
 ```
-
 ---
 
 ### 2. async_accept 实现原理
@@ -76,38 +74,36 @@ void async_accept(handler) {
     });
 }
 ```
-
 **实际用法：**
 
 ```cpp
 acceptor.async_accept([self](error_code ec, tcp::socket socket){
     if (!ec) {
         // 处理新连接
-        `std::`make_shared`<session>`(std::move(socket), ...)->run();
+        std::make_shared<session>(std::move(socket), ...)->run();
     }
     // 继续异步等待下一个连接
     self->do_accept();
 });
 ```
-
 ---
 
 ### 3. async_xxx 方法注册回调到 io_context（伪代码）
 ```cpp
 class io_context {
-    std::deque`<`std::function<void()>`> queue_;
+    std::deque<std::function<void()>> queue_;
     std::mutex mutex_;
     std::condition_variable cv_;
-    `std::`atomic`<bool>` stopped_;
+    std::atomic<bool> stopped_;
 
 public:
     // 用户调用 async_xxx 注册回调
-    `template`<typename Handler>`
+    template<typename Handler>
     void async_xxx(Handler handler) {
         // 这里可以做异步操作准备，比如启动异步IO
         // 注册回调到队列
         {
-            `std::`lock_guard`<std::mutex>` lock(mutex_);
+            std::lock_guard<std::mutex> lock(mutex_);
             queue_.push_back([handler](){
                 // 异步操作完成时调用
                 handler(/* result */);
@@ -119,9 +115,9 @@ public:
     // 事件循环
     void run() {
         while (!stopped_) {
-            ``std::`function`<void()>` task;
+            std::function<void()> task;
             {
-                `std::`unique_lock`<std::mutex>` lock(mutex_);
+                std::unique_lock<std::mutex> lock(mutex_);
                 cv_.wait(lock, [&]{ return !queue_.empty() || stopped_; });
                 if (stopped_) break;
                 task = std::move(queue_.front());
@@ -137,7 +133,6 @@ public:
     }
 };
 ```
-
 **使用示例：**
 
 ```cpp
@@ -148,7 +143,6 @@ ctx.async_xxx([](auto result){
 });
 ctx.run();
 ```
-
 ---
 
 ### 4. 为什么是非阻塞的？

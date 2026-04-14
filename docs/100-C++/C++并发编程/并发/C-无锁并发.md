@@ -47,9 +47,9 @@ ABA问题是无锁编程中最经典的问题之一。它发生在以下场景�
 
 ##### 2.1.2. 问题产生的代码示例
 ```cpp
-#include `<atomic>`
-#include `<thread>`
-#include `<iostream>`
+#include <atomic>
+#include <thread>
+#include <iostream>
 
 struct Node {
     int data;
@@ -59,7 +59,7 @@ struct Node {
 
 class ProblematicLockFreeStack {
 private:
-    `std::`atomic`<Node*>` head;  // 栈顶指针
+    std::atomic<Node*> head;  // 栈顶指针
     
 public:
     ProblematicLockFreeStack() : head(nullptr) {}
@@ -121,7 +121,6 @@ void demonstrateABA() {
     t2.join();
 }
 ```
-
 **为什么会发生问题：**
 
 1. **内存重用**：删除的节点内存可能被立即重新分配给新节点
@@ -135,8 +134,8 @@ void demonstrateABA() {
 **总体思路：** 为每个指针附加一个单调递增的版本号，每次修改时同时更新版本号。CAS操作同时比较指针和版本号，确保检测到所有变化。
 
 ```cpp
-#include `<atomic>`
-#include `<cstdint>`
+#include <atomic>
+#include <cstdint>
 
 struct TaggedPointer {
     Node* ptr;        // 实际指针
@@ -153,7 +152,7 @@ struct TaggedPointer {
 
 class SafeLockFreeStack {
 private:
-    `std::`atomic`<TaggedPointer>` head;  // 带版本号的栈顶指针
+    std::atomic<TaggedPointer> head;  // 带版本号的栈顶指针
     
 public:
     SafeLockFreeStack() : head(TaggedPointer()) {}
@@ -192,23 +191,22 @@ public:
     }
 };
 ```
-
 **方案二：危险指针（Hazard Pointers）**
 
 **总体思路：** 每个线程在访问共享指针前，先将其标记为"危险"（正在使用），其他线程在删除节点前检查是否有线程正在使用该指针，如果有则延迟删除。
 
 ```cpp
-#include `<atomic>`
-#include `<vector>`
-#include `<thread>`
-#include `<unordered_set>`
+#include <atomic>
+#include <vector>
+#include <thread>
+#include <unordered_set>
 
 class HazardPointerManager {
 private:
     // 每个线程的危险指针列表
-    static thread_local ``std::`vector`<`std::atomic<void*>`> hazardPtrs;
+    static thread_local std::vector<std::atomic<void*>> hazardPtrs;
     // 全局待删除节点列表
-    static std::atomic`<`std::vector<Node*>`*> pendingDeletes;
+    static std::atomic<std::vector<Node*>*> pendingDeletes;
     
 public:
     // 保护指针，标记为正在使用
@@ -246,7 +244,7 @@ public:
             // 有线程正在使用，加入待删除列表
             auto* deletes = pendingDeletes.load();
             if (!deletes) {
-                deletes = new ``std::`vector`<Node*>`();
+                deletes = new std::vector<Node*>();
                 pendingDeletes.store(deletes);
             }
             deletes->push_back(node);
@@ -255,12 +253,12 @@ public:
 };
 
 // 静态成员定义
-thread_local ``std::`vector`<`std::atomic<void*>`> HazardPointerManager::hazardPtrs;
-std::atomic`<`std::vector<Node*>`*> HazardPointerManager::pendingDeletes{nullptr};
+thread_local std::vector<std::atomic<void*>> HazardPointerManager::hazardPtrs;
+std::atomic<std::vector<Node*>*> HazardPointerManager::pendingDeletes{nullptr};
 
 class HazardPointerLockFreeStack {
 private:
-    `std::`atomic`<Node*>` head;
+    std::atomic<Node*> head;
     
 public:
     HazardPointerLockFreeStack() : head(nullptr) {}
@@ -305,7 +303,6 @@ public:
     }
 };
 ```
-
 #### 2.2. 饥饿问题
 ##### 2.2.1. 问题详细描述
 饥饿问题（Starvation）在无锁编程中表现为某些线程长时间无法成功执行关键操作。这通常发生在高竞争环境中，原因包括：
@@ -317,15 +314,15 @@ public:
 
 ##### 2.2.2. 问题产生的代码示例
 ```cpp
-#include `<atomic>`
-#include `<thread>`
-#include `<chrono>`
-#include `<vector>`
-#include `<iostream>`
+#include <atomic>
+#include <thread>
+#include <chrono>
+#include <vector>
+#include <iostream>
 
-`std::`atomic`<int>` counter(0);
-`std::`atomic`<int>` successCount(0);  // 统计成功次数
-`std::`atomic`<int>` failureCount(0);  // 统计失败次数
+std::atomic<int> counter(0);
+std::atomic<int> successCount(0);  // 统计成功次数
+std::atomic<int> failureCount(0);  // 统计失败次数
 
 // 高频率线程：不断尝试增加计数器，可能导致其他线程饥饿
 void aggressiveIncrement(int threadId, int iterations) {
@@ -349,7 +346,7 @@ void aggressiveIncrement(int threadId, int iterations) {
     successCount.fetch_add(localSuccess);
     failureCount.fetch_add(localFailure);
     
-    std::cout `<< "Thread " << threadId << ": Success=" << localSuccess 
+    std::cout << "Thread " << threadId << ": Success=" << localSuccess 
               << ", Failures=" << localFailure << std::endl;
 }
 
@@ -357,7 +354,7 @@ void aggressiveIncrement(int threadId, int iterations) {
 void demonstrateStarvation() {
     const int numThreads = 8;
     const int iterations = 10000;
-`std::vector<std::thread>`threads;
+    std::vector<std::thread>threads;
     
     auto start = std::chrono::high_resolution_clock::now();
     
@@ -371,9 +368,9 @@ void demonstrateStarvation() {
     }
     
     auto end = std::chrono::high_resolution_clock::now();
-    auto duration = std::chrono::`duration_cast`<std::chrono::milliseconds>`(end - start);
+    auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
     
-    std::cout `<< "Total time: " << duration.count() << "ms" << std::endl;
+    std::cout << "Total time: " << duration.count() << "ms" << std::endl;
     std::cout << "Total successes: " << successCount.load() << std::endl;
     std::cout << "Total failures: " << failureCount.load() << std::endl;
     std::cout << "Final counter: " << counter.load() << std::endl;
@@ -382,7 +379,6 @@ void demonstrateStarvation() {
     // 表明存在饥饿问题
 }
 ```
-
 **为什么会发生问题：**
 
 1. **缓存行竞争**：多个线程同时访问同一缓存行，导致频繁的缓存失效
@@ -396,10 +392,10 @@ void demonstrateStarvation() {
 **总体思路：** 当CAS操作失败时，不立即重试，而是等待一段时间再重试。等待时间随失败次数指数增长，减少竞争强度，给其他线程成功的机会。
 
 ```cpp
-#include <atomic>`
-#include `<thread>`
-#include `<chrono>`
-#include `<random>`
+#include <atomic>
+#include <thread>
+#include <chrono>
+#include <random>
 
 class ExponentialBackoff {
 private:
@@ -460,14 +456,14 @@ void fairIncrement(int threadId, int iterations) {
         backoff.reset();  // 成功时重置退避时间
     }
     
-    std::cout `<< "Thread " << threadId << ": Success=" << localSuccess 
+    std::cout << "Thread " << threadId << ": Success=" << localSuccess 
               << ", Failures=" << localFailure << std::endl;
 }
 
 // 自适应退避策略：根据系统负载动态调整
 class AdaptiveBackoff {
 private:
-`std::atomic<int>`globalFailureRate{0};  // 全局失败率
+std::atomic<int>globalFailureRate{0};  // 全局失败率
     int baseDelay;
     int maxDelay;
     
@@ -497,20 +493,19 @@ public:
     }
 };
 ```
-
 **方案二：公平锁机制**
 
 **总体思路：** 使用票号系统确保线程按到达顺序执行操作，避免某些线程被饿死。每个线程获取一个票号，按顺序执行操作。
 
 ```cpp
-#include `<atomic>`
-#include `<thread>`
+#include <atomic>
+#include <thread>
 
 class FairLockFreeCounter {
 private:
-    `std::`atomic`<int>` counter;    // 实际计数器
-    `std::`atomic`<int>` ticket;     // 发号器：分配票号
-    `std::`atomic`<int>` serving;    // 当前服务的票号
+    std::atomic<int> counter;    // 实际计数器
+    std::atomic<int> ticket;     // 发号器：分配票号
+    std::atomic<int> serving;    // 当前服务的票号
     
 public:
     FairLockFreeCounter() : counter(0), ticket(0), serving(0) {}
@@ -559,13 +554,12 @@ void fairIncrementTest(int threadId, int iterations) {
     }
     
     auto end = std::chrono::high_resolution_clock::now();
-    auto duration = std::chrono::`duration_cast`<std::chrono::microseconds>`(end - start);
+    auto duration = std::chrono::duration_cast<std::chrono::microseconds>(end - start);
     
-    std::cout `<< "Thread " << threadId << " completed in " 
+    std::cout << "Thread " << threadId << " completed in " 
               << duration.count() << " microseconds" << std::endl;
 }
 ```
-
 #### 2.3. 存行伪共享问题
 ##### 2.3.1. 问题详细描述
 缓存行伪共享（False Sharing）是多核系统中的性能杀手。现代CPU使用缓存行（通常64字节）作为缓存的基本单位。当多个线程访问同一缓存行中的不同变量时，会发生以下问题：
@@ -577,18 +571,18 @@ void fairIncrementTest(int threadId, int iterations) {
 
 ##### 2.3.2. 问题产生的代码示例
 ```cpp
-#include <atomic>`
-#include `<thread>`
-#include `<vector>`
-#include `<chrono>`
-#include `<iostream>`
+#include <atomic>
+#include <thread>
+#include <vector>
+#include <chrono>
+#include <iostream>
 
 // 问题代码：多个原子变量紧密排列，可能位于同一缓存行
 struct BadCounters {
-    `std::`atomic`<int>` counter1{0};  // 假设从地址0x1000开始
-    `std::`atomic`<int>` counter2{0};  // 地址0x1004，与counter1在同一缓存行
-    `std::`atomic`<int>` counter3{0};  // 地址0x1008，与counter1在同一缓存行
-    `std::`atomic`<int>` counter4{0};  // 地址0x100C，与counter1在同一缓存行
+    std::atomic<int> counter1{0};  // 假设从地址0x1000开始
+    std::atomic<int> counter2{0};  // 地址0x1004，与counter1在同一缓存行
+    std::atomic<int> counter3{0};  // 地址0x1008，与counter1在同一缓存行
+    std::atomic<int> counter4{0};  // 地址0x100C，与counter1在同一缓存行
     
     // 在64字节缓存行中，这4个int（每个4字节）都在同一缓存行内
     // 当任何一个counter被修改时，整个缓存行都会失效
@@ -600,7 +594,7 @@ void testFalseSharing() {
     const int iterations = 1000000;
     
     // 工作函数：每个线程操作不同的计数器
-    auto worker = [&](`std::`atomic`<int>`& counter, int threadId) {
+    auto worker = [&](std::atomic<int>& counter, int threadId) {
         auto start = std::chrono::high_resolution_clock::now();
         
         for (int i = 0; i < iterations; ++i) {
@@ -612,15 +606,15 @@ void testFalseSharing() {
         }
         
         auto end = std::chrono::high_resolution_clock::now();
-        auto duration = std::chrono::`duration_cast`<std::chrono::milliseconds>`(end - start);
+        auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
         
-        std::cout `<< "Thread " << threadId << " time: " << duration.count() << "ms" << std::endl;
+        std::cout << "Thread " << threadId << " time: " << duration.count() << "ms" << std::endl;
     };
     
     auto globalStart = std::chrono::high_resolution_clock::now();
     
     // 启动4个线程，每个操作不同的计数器
-`std::vector<std::thread>`threads;
+    std::vector<std::thread>threads;
     threads.emplace_back(worker, std::ref(counters.counter1), 1);
     threads.emplace_back(worker, std::ref(counters.counter2), 2);
     threads.emplace_back(worker, std::ref(counters.counter3), 3);
@@ -631,14 +625,13 @@ void testFalseSharing() {
     }
     
     auto globalEnd = std::chrono::high_resolution_clock::now();
-    auto totalTime = std::chrono::`duration_cast`<std::chrono::milliseconds>`(globalEnd - globalStart);
+    auto totalTime = std::chrono::duration_cast<std::chrono::milliseconds>(globalEnd - globalStart);
     
-    std::cout `<< "Total time with false sharing: " << totalTime.count() << "ms" << std::endl;
+    std::cout << "Total time with false sharing: " << totalTime.count() << "ms" << std::endl;
     std::cout << "Results: " << counters.counter1 << ", " << counters.counter2 
               << ", " << counters.counter3 << ", " << counters.counter4 << std::endl;
 }
 ```
-
 **为什么会发生问题：**
 
 1. **缓存行大小**：现代CPU缓存行通常为64字节，可容纳16个int变量
@@ -652,29 +645,29 @@ void testFalseSharing() {
 **总体思路：** 使用内存对齐确保每个频繁访问的变量独占一个缓存行，避免多个变量共享同一缓存行。
 
 ```cpp
-#include <atomic>`
-#include `<thread>`
-#include `<vector>`
+#include <atomic>
+#include <thread>
+#include <vector>
 
 // 获取缓存行大小（编译时常量）
 constexpr size_t CACHE_LINE_SIZE = 64;  // 大多数现代CPU的缓存行大小
 
 // 方法1：使用alignas关键字对齐到缓存行边界
 struct alignas(CACHE_LINE_SIZE) AlignedCounter {
-    `std::`atomic`<int>` counter{0};
+    std::atomic<int> counter{0};
     // 编译器会自动在结构体末尾添加填充，确保整个结构体大小为缓存行的倍数
     // 这样每个AlignedCounter实例都会独占至少一个缓存行
 };
 
 // 方法2：手动填充到缓存行大小
 struct PaddedCounter {
-    `std::`atomic`<int>` counter{0};
+    std::atomic<int> counter{0};
     // 手动添加填充字节，确保结构体大小等于缓存行大小
-    char padding[CACHE_LINE_SIZE - sizeof(`std::`atomic`<int>`)];
+    char padding[CACHE_LINE_SIZE - sizeof(std::atomic<int>)];
 };
 
 // 方法3：使用模板实现通用的缓存行填充
-`template`<typename T>`
+template<typename T>
 struct CacheLinePadded {
     T data;
     // 计算需要的填充大小
@@ -701,10 +694,10 @@ struct GoodCounters {
     AlignedCounter counter4;  // 独占缓存行4
     
     // 或者使用模板版本
-    // CacheLinePadded`<`std::atomic<int>`> counter1;
-    // CacheLinePadded`<`std::atomic<int>`> counter2;
-    // CacheLinePadded`<`std::atomic<int>`> counter3;
-    // CacheLinePadded`<`std::atomic<int>`> counter4;
+    // CacheLinePadded<std::atomic<int>> counter1;
+    // CacheLinePadded<std::atomic<int>> counter2;
+    // CacheLinePadded<std::atomic<int>> counter3;
+    // CacheLinePadded<std::atomic<int>> counter4;
 };
 
 // 测试优化后的性能
@@ -721,14 +714,14 @@ void testNonFalseSharing() {
         }
         
         auto end = std::chrono::high_resolution_clock::now();
-        auto duration = std::chrono::`duration_cast`<std::chrono::milliseconds>`(end - start);
+        auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
         
-        std::cout `<< "Thread " << threadId << " time: " << duration.count() << "ms" << std::endl;
+        std::cout << "Thread " << threadId << " time: " << duration.count() << "ms" << std::endl;
     };
     
     auto globalStart = std::chrono::high_resolution_clock::now();
     
-`std::vector<std::thread>`threads;
+std::vector<std::thread>threads;
     threads.emplace_back(worker, std::ref(counters.counter1), 1);
     threads.emplace_back(worker, std::ref(counters.counter2), 2);
     threads.emplace_back(worker, std::ref(counters.counter3), 3);
@@ -739,9 +732,9 @@ void testNonFalseSharing() {
     }
     
     auto globalEnd = std::chrono::high_resolution_clock::now();
-    auto totalTime = std::chrono::`duration_cast`<std::chrono::milliseconds>`(globalEnd - globalStart);
+    auto totalTime = std::chrono::duration_cast<std::chrono::milliseconds>(globalEnd - globalStart);
     
-    std::cout `<< "Total time without false sharing: " << totalTime.count() << "ms" << std::endl;
+    std::cout << "Total time without false sharing: " << totalTime.count() << "ms" << std::endl;
     // 通常会看到显著的性能提升
 }
 
@@ -752,7 +745,6 @@ size_t detectCacheLineSize() {
     return std::hardware_destructive_interference_size;  // C++17
 }
 ```
-
 **方案二：数据结构重组**
 
 **总体思路：** 重新组织数据结构，将频繁访问的数据分离到不同的缓存行，或者将相关数据聚合到同一缓存行以提高局部性。
@@ -762,7 +754,7 @@ size_t detectCacheLineSize() {
 struct ThreadLocalCounters {
     // 每个线程使用自己的计数器，避免共享
     static thread_local int localCounter;
-    static`std::atomic<int>`globalCounter;
+    staticstd::atomic<int>globalCounter;
     
     static void increment() {
         localCounter++;  // 本地增量，无竞争
@@ -780,20 +772,20 @@ struct ThreadLocalCounters {
 };
 
 thread_local int ThreadLocalCounters::localCounter = 0;
-`std::`atomic`<int>` ThreadLocalCounters::globalCounter{0};
+std::atomic<int> ThreadLocalCounters::globalCounter{0};
 
 // 策略2：读写分离
 struct ReadWriteSeparated {
     // 读频繁的数据放在一起
     struct alignas(CACHE_LINE_SIZE) ReadOnlyData {
-        `std::`atomic`<int>` readCounter{0};
-        `std::`atomic`<bool>` isActive{true};
+        std::atomic<int> readCounter{0};
+        std::atomic<bool> isActive{true};
     } readData;
     
     // 写频繁的数据放在一起
     struct alignas(CACHE_LINE_SIZE) WriteOnlyData {
-        `std::`atomic`<int>` writeCounter{0};
-        `std::`atomic`<int>` modificationCount{0};
+        std::atomic<int> writeCounter{0};
+        std::atomic<int> modificationCount{0};
     } writeData;
 };
 ```

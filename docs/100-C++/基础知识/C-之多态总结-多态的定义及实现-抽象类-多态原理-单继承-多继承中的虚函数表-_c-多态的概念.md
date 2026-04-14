@@ -94,19 +94,19 @@ slug: /C++/基础知识/C++之多态总结
 
 + **那么我可以写一段代码来查看d的虚表**：
 
-```plain
+```cpp
 typedef void(*VFPTR) ();
 void PrintVTable(VFPTR vTable[])
 {
  // 依次取虚表中的虚函数指针打印并调用。调用就可以看出存的是哪个函数
- cout `<< " 虚表地址>`" `<< vTable << endl;
+ cout << " 虚表地址>" << vTable << endl;
  for (int i = 0; vTable[i] != nullptr; ++i)
  {
- printf(" 第%d个虚函数地址 :0X%x,->`", i, vTable[i]);
+ printf(" 第%d个虚函数地址 :0X%x,->", i, vTable[i]);
  VFPTR f = vTable[i];
  f();
  }
- cout `<< endl; 
+ cout << endl; 
  }
 // 思路：取出b、d对象的头4bytes，就是虚表的指针，前面我们说了虚函数表本质是一个存虚函数指针的指针数组，这个数组最后面放了一个nullptr
 // 1.先取b的地址，强转成一个int*的指针
@@ -125,7 +125,6 @@ int main()
  return 0; 
  }
 ```
-
 + 运行结果：  
 ![](/img/posts/9523dd86ea9db17ca6b291f7cd4dfad8.png)
 + 虚表中的位置：
@@ -144,18 +143,18 @@ int main()
 ![](/img/posts/6c424a6383eba5c692987c4be7c7ffc6.png)
 + 我们依然写一段代码来查看虚表地址：
 
-```plain
+```cpp
 typedef void(*VFPTR) ();
 void PrintVTable(VFPTR vTable[])
 {
- cout << " 虚表地址>`" `<< vTable << endl;
+ cout << " 虚表地址>" << vTable << endl;
  for (int i = 0; vTable[i] != nullptr; ++i)
  {
- printf(" 第%d个虚函数地址 :0X%x,->`", i, vTable[i]);
+ printf(" 第%d个虚函数地址 :0X%x,->", i, vTable[i]);
  VFPTR f = vTable[i];
  f();
  }
- cout `<< endl; 
+ cout << endl; 
  }
 int main()
 {

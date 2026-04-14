@@ -28,7 +28,7 @@ slug: /C++/现代C++现代特性/现代C++的输入输出
 ```cpp
 // 基本输入输出模板
 std::cin >> variable;                    // 从标准输入读取
-std::cout `<< value << std::endl;         // 输出到标准输出并换行
+std::cout << value << std::endl;         // 输出到标准输出并换行
 std::cerr << error_message << std::endl; // 错误输出（无缓冲）
 std::clog << log_message << std::endl;   // 日志输出（有缓冲）
 
@@ -42,7 +42,6 @@ if (stream.eof()) { /* 到达文件末尾 */ }
 if (stream.fail()) { /* 操作失败 */ }
 if (stream.bad()) { /* 严重错误 */ }
 ```
-
 **文件流操作模板：**
 
 ```cpp
@@ -77,31 +76,29 @@ std::ios::app         // 追加模式
 std::ios::trunc       // 截断模式
 std::ios::binary      // 二进制模式
 ```
-
 **字符串流操作模板：**
 
 ```cpp
 // 输入字符串流模板
 std::istringstream iss("input string");
 DataType value;
-iss >`> value;
+iss >> value;
 
 // 输出字符串流模板
 std::ostringstream oss;
-oss `<< "formatted " << value;
+oss << "formatted " << value;
 std::string result = oss.str();
 
 // 双向字符串流模板
 std::stringstream ss;
 ss << "input data";
-ss >`> output_variable;
+ss >> output_variable;
 ```
-
 **格式化操作符模板：**
 
 ```cpp
 // 数值格式化模板
-std::cout `<< std::dec << value;          // 十进制
+std::cout << std::dec << value;          // 十进制
 std::cout << std::hex << value;          // 十六进制
 std::cout << std::oct << value;          // 八进制
 std::cout << std::showbase << std::hex << value; // 显示进制前缀
@@ -121,13 +118,12 @@ std::cout << std::setfill('*') << std::setw(10) << value; // 填充字符
 std::cout << std::boolalpha << bool_value;   // 输出true/false
 std::cout << std::noboolalpha << bool_value; // 输出1/0
 ```
-
 #### 2.3. 具体使用
 ```cpp
 // 基本输入输出
 int number;
-std::cin >`> number;
-std::cout `<< "输入的数字是: " << number << std::endl;
+std::cin >> number;
+std::cout << "输入的数字是: " << number << std::endl;
 
 // 读取一行
 std::string line;
@@ -148,20 +144,19 @@ std::stringstream ss;
 ss << "数字: " << 42;
 std::string result = ss.str();
 ```
-
 #### 2.4. 示例代码
 ```cpp
-#include <iostream>`
-#include `<fstream>`
-#include `<sstream>`
-#include `<iomanip>`
+#include <iostream>
+#include <fstream>
+#include <sstream>
+#include <iomanip>
 
 int main() {
     // 标准输入输出
-    std::cout `<< "请输入一个数字: ";
+    std::cout << "请输入一个数字: ";
     int num;
-    std::cin >`> num;
-    std::cout `<< "您输入的是: " << num << std::endl;
+    std::cin >> num;
+    std::cout << "您输入的是: " << num << std::endl;
     
     // 格式化输出
     double pi = 3.14159;
@@ -187,7 +182,6 @@ int main() {
     return 0;
 }
 ```
-
 ---
 
 ### 3. std::syncstream (C++20)
@@ -205,11 +199,11 @@ int main() {
 **基本同步流模板：**
 
 ```cpp
-#include <syncstream>`
+#include <syncstream>
 
 // 创建同步输出流模板
 std::osyncstream sync_stream(underlying_stream);
-sync_stream `<< "thread-safe output" << std::endl;
+sync_stream << "thread-safe output" << std::endl;
 // 析构时自动emit到底层流
 
 // 手动控制emit模板
@@ -220,7 +214,6 @@ sync_stream.emit(); // 立即刷新到底层流
 // 获取底层流模板
 auto& wrapped = sync_stream.get_wrapped();
 ```
-
 **多线程使用模板：**
 
 ```cpp
@@ -237,7 +230,6 @@ void thread_function(int thread_id) {
     sync_cout << "atomic output block" << std::endl;
 } // 作用域结束时自动emit
 ```
-
 **不同流的包装模板：**
 
 ```cpp
@@ -255,7 +247,6 @@ std::osyncstream sync_file(file);
 std::ostringstream oss;
 std::osyncstream sync_oss(oss);
 ```
-
 #### 3.3. 具体使用
 ```cpp
 // 创建同步流
@@ -276,18 +267,17 @@ if (sync_cout.get_wrapped() == std::cout) {
     // 确认包装的是标准输出
 }
 ```
-
 #### 3.4. 示例代码
 ```cpp
-#include <iostream>`
-#include `<syncstream>`
-#include `<thread>`
-#include `<vector>`
+#include <iostream>
+#include <syncstream>
+#include <thread>
+#include <vector>
 
 void safe_worker(int id) {
     std::osyncstream sync_cout(std::cout);
     for (int i = 0; i < 3; ++i) {
-        sync_cout `<< "线程" << id << ": 消息" << i << std::endl;
+        sync_cout << "线程" << id << ": 消息" << i << std::endl;
     }
     // 析构时自动emit
 }
@@ -300,7 +290,7 @@ void unsafe_worker(int id) {
 
 int main() {
     std::cout << "=== 安全输出（使用syncstream）===" << std::endl;
-`std::vector<std::thread>`threads;
+std::vector<std::thread>threads;
     
     for (int i = 0; i < 3; ++i) {
         threads.emplace_back(safe_worker, i);
@@ -310,7 +300,7 @@ int main() {
     }
     
     threads.clear();
-    std::cout `<< "\n=== 不安全输出（直接使用cout）===" << std::endl;
+    std::cout << "\n=== 不安全输出（直接使用cout）===" << std::endl;
     
     for (int i = 0; i < 3; ++i) {
         threads.emplace_back(unsafe_worker, i);
@@ -322,7 +312,6 @@ int main() {
     return 0;
 }
 ```
-
 ---
 
 ### 4. std::println (C++23)
@@ -333,7 +322,7 @@ int main() {
 **基本打印模板：**
 
 ```cpp
-#include <print>`
+#include <print>
 
 // 简单文本输出模板
 std::println("message");
@@ -348,7 +337,6 @@ std::println(stream, "format string", args...);
 std::print("no newline");
 std::print(stream, "format string", args...);
 ```
-
 **数据类型格式化模板：**
 
 ```cpp
@@ -361,13 +349,12 @@ std::println("默认: {}, 固定: {:.2f}, 科学: {:e}", val, val, val);
 std::println("精度: {:.{}f}", value, precision);
 
 // 字符串格式化模板
-std::println("左对齐: '{:`<10}', 右对齐: '{:>`10}', 居中: '{:^10}'", str, str, str);
+std::println("左对齐: '{:<10}', 右对齐: '{:>10}', 居中: '{:^10}'", str, str, str);
 std::println("填充: '{:*^10}'", str);
 
 // 布尔值格式化模板
 std::println("布尔: {}, 字符串: {:s}", flag, flag);
 ```
-
 **流输出模板：**
 
 ```cpp
@@ -385,7 +372,6 @@ std::println(file, "message to file: {}", data);
 std::ostringstream oss;
 std::println(oss, "message to string stream");
 ```
-
 #### 4.3. 具体使用
 ```cpp
 // 简单输出
@@ -406,11 +392,10 @@ std::println("π = {:.3f}", 3.14159);
 std::ofstream file("output.txt");
 std::println(file, "文件输出: {}", "内容");
 ```
-
 #### 4.4. 示例代码
 ```cpp
-#include `<print>`
-#include `<string>`
+#include <print>
+#include <string>
 
 int main() {
     // 基本使用
@@ -430,7 +415,7 @@ int main() {
     std::println("π = {:.2f}", pi);
     
     // 字符串对齐
-    std::println("左对齐: '{:`<10}', 右对齐: '{:>`10}'", "hello", "world");
+    std::println("左对齐: '{:<10}', 右对齐: '{:>10}'", "hello", "world");
     
     // 不换行输出
     std::print("这是");
@@ -440,7 +425,6 @@ int main() {
     return 0;
 }
 ```
-
 ---
 
 ### 5. std::format (C++20)
@@ -451,7 +435,7 @@ int main() {
 **基本格式化模板：**
 
 ```cpp
-#include `<format>`
+#include <format>
 
 // 基本格式化模板
 std::string result = std::format("format string with {} and {}", arg1, arg2);
@@ -462,12 +446,11 @@ std::string result = std::format("{1} {0} {2}", arg0, arg1, arg2);
 // 重复使用参数模板
 std::string result = std::format("{0} + {0} = {1}", value, result);
 ```
-
 **输出到迭代器模板：**
 
 ```cpp
 // 输出到容器模板
-``std::`vector`<char>` buffer;
+std::vector<char> buffer;
 std::format_to(std::back_inserter(buffer), "format: {}", value);
 
 // 输出到数组模板
@@ -479,7 +462,6 @@ buffer[result.size] = '\0';
 std::string str;
 std::format_to(std::back_inserter(str), "format: {}", value);
 ```
-
 **大小计算模板：**
 
 ```cpp
@@ -489,7 +471,6 @@ std::string result;
 result.reserve(size);
 std::format_to(std::back_inserter(result), "format string: {}", value);
 ```
-
 **数值格式化模板：**
 
 ```cpp
@@ -509,13 +490,12 @@ std::format("{:E}", value);      // 科学计数法大写
 std::format("{:g}", value);      // 自动选择格式
 std::format("{:G}", value);      // 自动选择格式大写
 ```
-
 **字符串格式化模板：**
 
 ```cpp
 // 对齐和宽度模板
-std::format("{:`<10}", str);      // 左对齐，宽度10
-std::format("{:>`10}", str);      // 右对齐，宽度10
+std::format("{:<10}", str);      // 左对齐，宽度10
+std::format("{:>10}", str);      // 右对齐，宽度10
 std::format("{:^10}", str);      // 居中，宽度10
 std::format("{:*^10}", str);     // 居中，用*填充
 
@@ -523,13 +503,12 @@ std::format("{:*^10}", str);     // 居中，用*填充
 std::format("{:.5}", str);       // 最多显示5个字符
 std::format("{:10.5}", str);     // 宽度10，最多5个字符
 ```
-
 **自定义类型格式化模板：**
 
 ```cpp
 // 简单自定义格式化器模板
 template<>
-struct `std::`formatter`<CustomType>` {
+struct std::formatter<CustomType> {
     constexpr auto parse(format_parse_context& ctx) {
         return ctx.begin();
     }
@@ -541,7 +520,7 @@ struct `std::`formatter`<CustomType>` {
 
 // 支持格式说明符的格式化器模板
 template<>
-struct `std::`formatter`<CustomType>` {
+struct std::formatter<CustomType> {
     char format_type = 'd';
     
     constexpr auto parse(format_parse_context& ctx) {
@@ -560,7 +539,6 @@ struct `std::`formatter`<CustomType>` {
     }
 };
 ```
-
 #### 5.3. 具体使用
 ```cpp
 // 基本格式化
@@ -575,19 +553,18 @@ std::string fixed = std::format("{:.2f}", 3.14159);   // "3.14"
 std::string sci = std::format("{:e}", 1234.5);        // "1.234500e+03"
 
 // 字符串对齐
-std::string left = std::format("{:`<10}", "left");     // "left      "
-std::string right = std::format("{:>`10}", "right");   // "     right"
+std::string left = std::format("{:<10}", "left");     // "left      "
+std::string right = std::format("{:>10}", "right");   // "     right"
 std::string center = std::format("{:^10}", "center"); // "  center  "
 
 // 填充字符
 std::string filled = std::format("{:*^10}", "test");  // "***test***"
 ```
-
 #### 5.4. 示例代码
 ```cpp
-#include `<format>`
-#include `<iostream>`
-#include `<vector>`
+#include <format>
+#include <iostream>
+#include <vector>
 
 struct Person {
     std::string name;
@@ -596,7 +573,7 @@ struct Person {
 
 // 为Person类型定义格式化器
 template<>
-struct `std::`formatter`<Person>` {
+struct std::formatter<Person> {
     constexpr auto parse(format_parse_context& ctx) {
         return ctx.begin();
     }
@@ -609,7 +586,7 @@ struct `std::`formatter`<Person>` {
 int main() {
     // 基本格式化
     std::string greeting = std::format("你好, {}!", "世界");
-    std::cout `<< greeting << std::endl;
+    std::cout << greeting << std::endl;
     
     // 数字格式化
     int num = 255;
@@ -621,16 +598,15 @@ int main() {
     std::cout << std::format("π = {:.3f}\n", pi);
     
     // 字符串对齐
-    std::cout << std::format("'{:<8}' '{:^8}' '{:>`8}'\n", "左", "中", "右");
+    std::cout << std::format("'{:<8}' '{:^8}' '{:>8}'\n", "左", "中", "右");
     
     // 自定义类型
     Person person{"张三", 25};
-    std::cout `<< std::format("人员信息: {}\n", person);
+    std::cout << std::format("人员信息: {}\n", person);
     
     return 0;
 }
 ```
-
 ---
 
 ### 6. 文件系统库 (std::filesystem, C++17)
@@ -641,7 +617,7 @@ int main() {
 **路径操作模板：**
 
 ```cpp
-#include <filesystem>`
+#include <filesystem>
 namespace fs = std::filesystem;
 
 // 路径构建模板
@@ -657,7 +633,6 @@ fs::path stem = path.stem();           // 不含扩展名的文件名
 fs::path extension = path.extension();
 fs::path root = path.root_path();
 ```
-
 **文件检查模板：**
 
 ```cpp
@@ -673,7 +648,6 @@ uintmax_t size = fs::file_size(path);
 fs::file_time_type time = fs::last_write_time(path);
 fs::perms permissions = fs::status(path).permissions();
 ```
-
 **文件操作模板：**
 
 ```cpp
@@ -689,7 +663,6 @@ fs::rename(old_path, new_path);
 fs::remove(path);           // 删除单个文件或空目录
 fs::remove_all(path);       // 递归删除目录及其内容
 ```
-
 **目录操作模板：**
 
 ```cpp
@@ -711,7 +684,6 @@ for (const auto& entry : fs::recursive_directory_iterator(path)) {
     // 处理所有子目录中的项目
 }
 ```
-
 **工作目录操作模板：**
 
 ```cpp
@@ -722,7 +694,6 @@ fs::current_path(new_path);                // 设置当前目录
 // 临时目录模板
 fs::path temp_dir = fs::temp_directory_path();
 ```
-
 **空间信息模板：**
 
 ```cpp
@@ -732,7 +703,6 @@ uintmax_t capacity = space.capacity;    // 总容量
 uintmax_t free_space = space.free;      // 可用空间
 uintmax_t available = space.available;  // 用户可用空间
 ```
-
 **错误处理模板：**
 
 ```cpp
@@ -740,7 +710,7 @@ uintmax_t available = space.available;  // 用户可用空间
 try {
     fs::copy_file(source, dest);
 } catch (const fs::filesystem_error& ex) {
-    std::cerr `<< "文件系统错误: " << ex.what() << std::endl;
+    std::cerr << "文件系统错误: " << ex.what() << std::endl;
 }
 
 // 错误码处理模板
@@ -750,7 +720,6 @@ if (ec) {
     std::cerr << "错误: " << ec.message() << std::endl;
 }
 ```
-
 #### 6.3. 具体使用
 ```cpp
 // 路径构建
@@ -781,12 +750,11 @@ fs::create_directories("path/to/nested/dirs");
 fs::copy_file("source.txt", "dest.txt");
 fs::rename("old_name.txt", "new_name.txt");
 ```
-
 #### 6.4. 示例代码
 ```cpp
-#include <filesystem>`
-#include `<iostream>`
-#include `<fstream>`
+#include <filesystem>
+#include <iostream>
+#include <fstream>
 
 namespace fs = std::filesystem;
 

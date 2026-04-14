@@ -13,7 +13,97 @@ docusaurus:
   permalink: /docusaurus
   description: Docusaurus tag description
 
+Docusaurus:
+  label: Docusaurus
+  permalink: /docusaurus-cn
+  description: Docusaurus 框架相关文章
+
 hola:
   label: Hola
   permalink: /hola
   description: Hola tag description
+
+C++:
+  label: C++
+  permalink: /c-plus-plus
+  description: C++ 相关技术文章
+
+编程语言:
+  label: 编程语言
+  permalink: /programming-language
+  description: 编程语言相关文章
+
+性能优化:
+  label: 性能优化
+  permalink: /performance-optimization
+  description: 与性能优化和系统效率相关的文章
+
+模板元编程:
+  label: 模板元编程
+  permalink: /template-metaprogramming
+  description: C++ 模板元编程与编译期技术
+
+编译期计算:
+  label: 编译期计算
+  permalink: /compile-time-computation
+  description: 编译期求值与静态计算相关内容
+
+内存管理:
+  label: 内存管理
+  permalink: /memory-management
+  description: 内存分配、生命周期与资源管理相关文章
+
+资源管理:
+  label: 资源管理
+  permalink: /resource-management
+  description: RAII 与系统资源管理相关内容
+
+RTSP:
+  label: RTSP
+  permalink: /rtsp
+  description: RTSP 协议与流媒体服务相关文章
+
+AI编程:
+  label: AI编程
+  permalink: /ai-coding
+  description: AI 辅助编程与智能开发相关内容
+
+Live555:
+  label: Live555
+  permalink: /live555
+  description: Live555 流媒体框架相关文章
+
+AI:
+  label: AI
+  permalink: /ai
+  description: 人工智能相关内容
+
+Agent:
+  label: Agent
+  permalink: /agent
+  description: 智能体、代理系统与工具调用相关内容
+
+LLM:
+  label: LLM
+  permalink: /llm
+  description: 大语言模型相关文章
+
+编程工具:
+  label: 编程工具
+  permalink: /developer-tools
+  description: 编程工具与开发效率相关文章
+
+教程:
+  label: 教程
+  permalink: /tutorial
+  description: 教学与入门类文章
+
+Claude:
+  label: Claude
+  permalink: /claude
+  description: Claude 与相关开发实践
+
+编译原理:
+  label: 编译原理
+  permalink: /compiler-principles
+  description: 编译原理、优化与代码生成相关内容

@@ -33,7 +33,7 @@ slug: /Rust/Rust-范型和-Rust-宏的实战使用场景
   
 有没有什么~~偷懒的~~简洁的而又不影响性能的方式？第一时间想到范型上！
 
-Rust 中定义一个范型 Struct  叫 `ApiResponse`&lt;T>` 作为接口的统一返回结构。code 为数值(如果你有正负值，用 i64,i32 什么的)，number 为 String，data 数据是可选切类型为任意就定义为 `Option`<T>`，它可以返回  `Some`&lt;T>` 或者 Some(())。`T` 允许 `ApiResponse` 支持任何类型的数据，增强了代码的灵活性。
+Rust 中定义一个范型 Struct，叫 `ApiResponse<T>` 作为接口的统一返回结构。code 为数值（如果你有正负值，用 i64、i32 什么的），number 为 String，data 数据是可选且类型可以任意，因此定义为 `Option<T>`。它可以返回 `Some(T)` 或者 `Some(())`。`T` 允许 `ApiResponse` 支持任何类型的数据，增强了代码的灵活性。
 
 ![](/img/posts/fbc3b06c6e16f75fef89f7552bf12ef5.png)
 
@@ -57,79 +57,70 @@ Rust 中定义一个范型 Struct  叫 `ApiResponse`&lt;T>` 作为接口的统�
 
 通过引入 Rust 范型, 我们成功~~偷懒~~简化了一堆的  struct 的返回结构的定义。 你以为这就结束了？No, No, No! 这段代码里面依然还是充斥着一大堆的重复太长代码
 
-```plain
-HttpResponse::Ok().json(ApiResponse::`<T>`::success(T)
+```rust
+HttpResponse::Ok().json(ApiResponse::<T>::success(T)
 
 
-HttpResponse::Ok().json(ApiResponse::`<()>`::fail(xxx)
+HttpResponse::Ok().json(ApiResponse::<()>::fail(xxx)
 ```
-
 这怎么能容忍呢？必须继续~~偷懒~~简化！通过观察一下哈，我发现，这除了 T  和 （） 不是没变化了吗？如果我能把前面那一段都拿掉，就剩 success(T) 和 fail(xxx)  那这代码就不是太简洁美观了吗？
 
 那种时候，激动人心的时刻到了，宏(macro) 她要粉末登场！
 
-首先可以明确的是我最后只想要两个宏，一个 success,   一个 fail 。但是在前面已经实现的代码中，返回的数据外面是俩层嵌套，HttpResponse::Ok().json  是外层，ApiResponse::&lt;&gt;是内层，那么先定义一层宏解决掉内层嵌套。
+首先可以明确的是我最后只想要两个宏，一个 success，一个 fail。但是在前面已经实现的代码中，返回的数据外面是两层嵌套，`HttpResponse::Ok().json` 是外层，`ApiResponse::<T>` 是内层，那么先定义一层宏解决掉内层嵌套。
 
 ![](/img/posts/f0e75d47eaa90983197491beb7d16bd3.png)
 
 根据宏的定义方式定义出两个宏。
 
-```plain
+```rust
 #[macro_export]
 ```
-
 告诉编译器我要导出这个宏，在其他模块可以引入使用。
 
-```plain
+```rust
 macro_rules!
 ```
-
 定义宏，后面跟一个名称 api_response_success。
 
-```plain
+```rust
 ($data:expr)
 ```
-
 宏接受一个表达式参数 $data。（这里success只需要一个T参数，fail 需要 code 和 message )  。
 
-```plain
+```rust
 => {...}
 ```
-
 宏展开之后的格式。  
 
 
 我的思路是首先可以明确的是我最后只想要两个宏，一个 success,   一个 fail 。但是前面是两层嵌套，外层是：
 
-```plain
+```rust
 HttpResponse::Ok().json
 ```
-
 内层是：
 
-```plain
-ApiResponse::`<T>`
+```rust
+ApiResponse::<T>
 ```
-
 那么先定义一层宏解决掉内层嵌套，就继续解决外层重复性的代码。  
 
 
 ![](/img/posts/d1b5bfdf26ad235e55daf032ec5b4ce4.png)
 
-也就是 api_response_success! 和 api_reresponse_fail! 这两个宏替代了内层的 ApiResponse::`&lt;T>`
+也就是 api_response_success! 和 api_reresponse_fail! 这两个宏替代了内层的 `ApiResponse::<T>`
 
 即
 
-```plain
-HttpResponse::Ok().json(ApiResponse::`<`PagesRes<Vec<QuestionListRes>`>>::success(ques_items_res))
+```rust
+HttpResponse::Ok().json(ApiResponse::<PagesRes<Vec<QuestionListRes>>>::success(ques_items_res))
 ```
-
 被抽成
 
-```plain
+```rust
 HttpResponse::Ok().json(api_response_success!(ques_items_res))
 ```
-
 继续减肥瘦身，外层也实现Rust【宏】化！  
 
 
@@ -139,7 +130,7 @@ HttpResponse::Ok().json(api_response_success!(ques_items_res))
 
 1. 在调用的地方多一个导入 json_response 的方法。        
 
-```plain
+```rust
 use crate::errcode::{ApiResponse,json_response};
 ```
 

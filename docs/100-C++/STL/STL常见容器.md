@@ -23,8 +23,8 @@ string (const string& str, size_t pos, size_t len = npos); // 部分拷贝
 string (const char* s); 
 string (const char* s, size_t n);
 string (size_t n, char c);
-template `<class InputIterator>`  string  (InputIterator first, InputIterator last);
-string (`initializer_list`<char>` il);
+template <class InputIterator>  string  (InputIterator first, InputIterator last);
+string (initializer_list<char> il);
 string (string&& str) noexcept;
 
 std::string s0 ("Initial string");
@@ -38,7 +38,6 @@ std::string s6a (10, 'x'); // xxxxxxxxxx
 std::string s6b (10, 42);      // **********
 std::string s7 (s0.begin(), s0.begin()+7); // Initial
 ```
-
 我们也可以通过赋值运算符进行 `std::string` 对象的初始化：
 
 ```cpp
@@ -51,18 +50,16 @@ std::string str2 = str1; // 1
 std::string str3 = "Hello"; // 2
 std::string str4 == 'c'; // 3
 ```
-
 也可以从终端读取字符进行初始化：
 
 ```cpp
 std::string input,line;
-std::cout `<< "请输入一个字符串：";
-std::cin >`> input; // 读取直到第一个空白字符结束
+std::cout << "请输入一个字符串：";
+std::cin >> input; // 读取直到第一个空白字符结束
 
-std::cout `<< "请输入一行文本：";
+std::cout << "请输入一行文本：";
 std::getline(std::cin, line); // 读取包含空格的整行字符串，回车结束
 ```
-
 #### 1.2. 字符串操作
 `std::string` 重载了很多符号，比如 `=、+、!=、<、[]......`，这使得它可以和其他 `std::string` 对象操作和比较。如下图所示：
 
@@ -82,7 +79,7 @@ str.append("dots are cool",5);          // "Writing 10 dots "
 str.append("here: ");                   // "Writing 10 dots here: "
 str.append(10,'.');                    // "Writing 10 dots here: .........."
 str.append(str5.begin()+8,str5.end());  // "Writing 10 dots here: .......... and then 5 more"
-str.`append<int>`(5,0x2E);                // "Writing 10 dots here: .......... and then 5 more....."
+str.append<int>(5,0x2E);                // "Writing 10 dots here: .......... and then 5 more....."
 // + 添加到尾部
 std::string name ("John");
 std::string family ("Smith");
@@ -111,7 +108,6 @@ it = str_insert.insert(str_insert.begin()+5,','); // to be(,) not to be: that is
 str_insert.insert (str_insert.end(),3,'.');       // to be, not to be: that is the question(...)
 str_insert.insert (it+2,str7.begin(),str7.begin()+3); // (or )
 ```
-
 ##### 1.2.2. 清空、删除
 如果我们想清空字符串，通过调用 `clear()` 函数可将字符串内容设置为 `null`：
 
@@ -119,14 +115,12 @@ str_insert.insert (it+2,str7.begin(),str7.begin()+3); // (or )
 td::string strClear("strClear");
 strClear.clear(); // ""，空字符串
 ```
-
 若想从字符串尾部删除**字符**，可通过 `pop_back()` 函数删除字符串末尾的 **1 个字符**：
 
 ```cpp
 std::string str_hello ("hello world!");
 str_hello.pop_back(); // hello world
 ```
-
 若想删除指定字符串、指定位置的**子字符串**，可通过 `erase()` 函数实习：
 
 ```cpp
@@ -135,7 +129,6 @@ str_erase.erase (10,8);			// "This is an sentence."
 str_erase.erase (str_erase.begin()+9); 	// "This is a sentence."
 str_erase.erase (str_erase.begin()+5, str_erase.end()-9); 	// "This sentence."
 ```
-
 ##### 1.2.3. 比较字符串
 关于字符串的比较，其实是逐个位置按照字符比较，计算机中字符存储的方式是ASCII码表，每个字符对应一个ASCII码值，比较字符就是比较ASCII码值的大小：
 
@@ -148,7 +141,7 @@ std::string a = "apple";
 std::string b = "banana";
 
 if (a == b) {
-    std::cout `<< "a 和 b 相等" << std::endl;
+    std::cout << "a 和 b 相等" << std::endl;
 } else {
     std::cout << "a 和 b 不相等" << std::endl;
 }
@@ -162,7 +155,6 @@ if (a < b) {
 // a 和 b 不相等
 // a 在字典序中小于 b
 ```
-
 ##### 1.2.4. 修改字符串
 **修改字符串大小：**
 
@@ -176,7 +168,6 @@ std::string strResize("strResize");
 strResize.resize(6); // "strRes"
 strResize.resize(16, '*'); // "strRes**********"
 ```
-
 **替换字符串：**
 
 我们也可以使用 `replace()` 函数将从索引位置开始的n个字符替换为后面的字符串，并返回对该字符串的引用：
@@ -192,7 +183,6 @@ std::string replacement = "C++ Programming";
 // 从索引 7 开始，替换长度为 5 的子串为 replacement 从索引 0 开始长度为 3 的子串
 str.replace(7, 5, replacement, 0, 3);
 ```
-
 **交换字符串：**
 
 我们也可以使用 `swap()` 函数交换两个字符串：
@@ -204,7 +194,6 @@ std::string strSwapWhat("strSwapWhat");
 strSwap.swap(strSwapWhat);
 std::cout << strSwap << '\n';	// "strSwapWhat"
 ```
-
 **转换字符串格式：**
 
 我们可以转换字符串的格式，比如使用 `std::stoi` 将 `std::string` 类型转换为 `int`；也可以使用 `std::to_string` 将其他类型转换为 `std::string`：
@@ -217,7 +206,6 @@ double num = std::stod(str);
 int num = 789;
 std::string str = std::to_string(num);
 ```
-
 ##### 1.2.5. 字符串查询
 **查询字符串是否为空：**`empty()`
 
@@ -225,7 +213,6 @@ std::string str = std::to_string(num);
 std::string str;
 std::cout << str.empty() << std::endl; // 1
 ```
-
 **查询字符串的字符个数**：`size()、length()、capacity()、max_size()`
 
 ```cpp
@@ -243,7 +230,6 @@ std::cout << strQuerySize.size() << '\n';	// 12
 std::cout << strQuerySize.capacity() << '\n'; // 12
 std::cout << strQuerySize.max_size() << '\n'; // 4611686018427387897
 ```
-
 **返回给定位置字符串的字符（不是删除）：**`at()、[]、back()、front()、data()、c_str()`
 
 ```cpp
@@ -267,7 +253,6 @@ const char& front() const;
 const char* data() const noexcept; // 不以'\0'结尾的字符数组
 const char* c_str() const noexcept; // 以 '\0' 结尾的字符数组
 ```
-
 举例：
 
 ```cpp
@@ -279,7 +264,6 @@ std::cout << strQueryChar.front() << '\n';   // s
 const char* pCharArr = strQueryChar.data(); 
 const char* cstrPtr = strQueryChar.c_str();
 ```
-
 **查询是否包含指定的 子字符串、字符：**
 
 + `find`：查询是否包含第一个参数指定的**字符串或字符**，成功则返回首次查询到的子串的索引，失败返回`std::string::npos`；
@@ -300,7 +284,6 @@ std::size_t found_first = str.find_first_of("aeiou"); // 1(a)
 // find_last_of 函数示例
 std::size_t found_last = str.find_last_of("aeiou"); // 32（i）
 ```
-
 **获取一个 子字符串:**
 
 `substr`返回一个新构造的字符串对象，其值初始化为此对象的子字符串的副本:
@@ -310,14 +293,12 @@ std::string str = "Hello, World!";
 std::string sub = str.substr(7, 5); // 从位置7开始，长度5
 std::cout << sub << std::endl; // 输出: World
 ```
-
 **注意：** 如果省略第二个参数，`substr()` 会返回从起始位置到字符串末尾的所有字符。
 
 ```cpp
 std::string sub = str.substr(7); // 从位置7开始直到结束
 std::cout << sub << std::endl; // 输出: World!
 ```
-
 ##### 1.2.6. 判断字符串中的字符字母/数字/大小写
 std::string 类中不包含对字符大小写/字母/数字判断的函数，需要我们包含头文件`<cctype>`：
 
@@ -326,10 +307,10 @@ std::string 类中不包含对字符大小写/字母/数字判断的函数，需
 如果我们需要将指定字符串转换为大小写，我们需要使用`<algorithm>` 头文件中的`std::transform`，并结合 `<cctype>` 中的`std::toupper` 和 `std::tolower`实现：
 
 ```cpp
-#include `<iostream>`
-#include `<string>`
-#include `<algorithm>`
-#include `<cctype>`
+#include <iostream>
+#include <string>
+#include <algorithm>
+#include <cctype>
 
 int main() {
     std::string str = "Hello, World!";
@@ -340,15 +321,14 @@ int main() {
     return 0;
 }
 ```
-
 #### 1.3. 其他高级用法
 ##### 1.3.1. 字符串流（`stringstream`）
 `std::stringstream` 是 C++ 标准库中第 `<sstream>` 头文件提供的一个类，用于在内存中进行字符串的读写操作，类似于文件流。
 
 ```cpp
-#include `<iostream>`
-#include `<sstream>`
-#include `<string>`
+#include <iostream>
+#include <sstream>
+#include <string>
 
 // 从字符串流中读取数据
 std::string data = "123 45.67 Hello";
@@ -357,7 +337,7 @@ int a;
 double b;
 std::string c;
 ss >> a >> b >> c;
-std::cout `<< "a: " << a << ", b: " << b << ", c: " << c << std::endl; // 输出: a: 123, b: 45.67, c: Hello
+std::cout << "a: " << a << ", b: " << b << ", c: " << c << std::endl; // 输出: a: 123, b: 45.67, c: Hello
 
 // 向字符串流写入数据
 std::stringstream ss;
@@ -378,13 +358,12 @@ std::cout << "拼接后的字符串: " << result << std::endl; // Hello, World!
 std::string str = "apple,banana,orange";
 std::stringstream ss(str);
 std::string token;
-`std::vector<std::string>`tokens;
+std::vector<std::string>tokens;
 //使用 std::getline 函数从 ss 中按逗号 , 分割字符串，将分割后的每个子字符串存储在 token 中，并添加到 tokens 向量中
 while (std::getline(ss, token, ',')) { //
     tokens.push_back(token);
 }
 ```
-
 ##### 1.3.2. 正则表达式与字符串匹配
 C++ 标准库提供了 `<regex>` 头文件，用于支持正则表达式。
 
@@ -395,13 +374,12 @@ std::regex pattern(R"(\b\w{5}\b)"); // 匹配所有5个字母的单词
 std::sregex_iterator it(text.begin(), text.end(), pattern);
 std::sregex_iterator end;
 
-std::cout `<< "5个字母的单词有:" << std::endl;
+std::cout << "5个字母的单词有:" << std::endl;
 while (it != end) {
     std::cout << (*it).str() << std::endl;
     ++it;
 }
 ```
-
 #### 1.4. 简单的例子
 ##### 1.4.1. 示例项目1：简易文本分析器
 **需求分析：**
@@ -414,15 +392,15 @@ while (it != end) {
 + 输出最长的单词
 
 ```cpp
-#include <iostream>`
-#include `<string>`
-#include `<sstream>`
-#include `<map>`
-#include `<algorithm>`
+#include <iostream>
+#include <string>
+#include <sstream>
+#include <map>
+#include <algorithm>
 
 int main() {
     std::string text;
-    std::cout `<< "请输入一段文本（结束请输入Ctrl+Z/exit()）：\n";
+    std::cout << "请输入一段文本（结束请输入Ctrl+Z/exit()）：\n";
     
     // 读取整段文本
     std::ostringstream oss;
@@ -437,7 +415,7 @@ int main() {
     // 使用字符串流分割单词
     std::stringstream ss(text);
     std::string word;
-`std::map<std::string, int>`wordCount;
+std::map<std::string, int>wordCount;
     size_t totalWords = 0;
     std::string longestWord;
 
@@ -460,7 +438,7 @@ int main() {
         }
     }
 
-    std::cout `<< "\n统计结果:\n";
+    std::cout << "\n统计结果:\n";
     std::cout << "总单词数: " << totalWords << std::endl;
     std::cout << "每个单词出现的次数:\n";
     for (const auto& pair : wordCount) {
@@ -472,12 +450,12 @@ int main() {
     // 查找指定单词的出现次数
     std::string searchWord;
     std::cout << "\n请输入要查找的单词: ";
-    std::cin >`> searchWord;
+    std::cin >> searchWord;
     // 转为小写
     std::transform(searchWord.begin(), searchWord.end(), searchWord.begin(), ::tolower);
     auto it = wordCount.find(searchWord);
     if (it != wordCount.end()) {
-        std::cout `<< "'" << searchWord << "' 出现了 " << it->`second `<< " 次。" << std::endl;
+        std::cout << "'" << searchWord << "' 出现了 " << it->second << " 次。" << std::endl;
     } else {
         std::cout << "'" << searchWord << "' 未在文本中找到。" << std::endl;
     }
@@ -485,7 +463,6 @@ int main() {
     return 0;
 }
 ```
-
 ##### 1.4.2. 示例项目2：用户输入验证工具
 **需求分析：**
 
@@ -498,9 +475,9 @@ int main() {
 **代码实现：**
 
 ```cpp
-#include <iostream>`
-#include `<string>`
-#include `<regex>`
+#include <iostream>
+#include <string>
+#include <regex>
 
 bool isValidEmail(const std::string& email) {
     // 简单的正则表达式，匹配基本的邮件格式
@@ -510,11 +487,11 @@ bool isValidEmail(const std::string& email) {
 
 int main() {
     std::string email;
-    std::cout `<< "请输入您的电子邮件地址: ";
-    std::cin >`> email;
+    std::cout << "请输入您的电子邮件地址: ";
+    std::cin >> email;
 
     if (isValidEmail(email)) {
-        std::cout `<< "电子邮件地址有效。" << std::endl;
+        std::cout << "电子邮件地址有效。" << std::endl;
     } else {
         std::cout << "电子邮件地址无效。" << std::endl;
     }
@@ -522,7 +499,6 @@ int main() {
     return 0;
 }
 ```
-
 ### 2. Vector
 向量（**Vector**）是 C++ STL 中的一种序列式容器，能够动态地管理可变大小的**连续**数组。与传统的固定大小的数组不同，向量可以根据需要动态调整其大小，简单来说向量是一个能够存放任意类型的**动态数组**。**是连续的。**
 
@@ -530,14 +506,13 @@ int main() {
 
 #### 2.1. 初始化
 ```cpp
-``std::`vector`<int>` vec1; // 空向量
-`vector`<int>` v{1,2,3,4,5}; //直接使用初始化列表赋值
-`vector`<int>` v(5); //初始化5个值为0的元素
-`vector`<int>` v(5, 4); //初始化5个值为4的元素
-``std::`vector`<int>` v2(v1); // v1
-``std::`vector`<int>` v2(std::move(vec4));
+std::vector<int> vec1; // 空向量
+vector<int> v{1,2,3,4,5}; //直接使用初始化列表赋值
+vector<int> v(5); //初始化5个值为0的元素
+vector<int> v(5, 4); //初始化5个值为4的元素
+std::vector<int> v2(v1); // v1
+std::vector<int> v2(std::move(vec4));
 ```
-
 #### 2.2. vector容器操作
 ##### 2.2.1. vector的大小和容量
 + `size()`：返回 `std::vector` 中当前**实际存储**的元素数量。
@@ -545,22 +520,21 @@ int main() {
 + `empty()`：检查向量是否为空。
 
 ```cpp
-``std::`vector`<int>` vec = {1, 2, 3};
-std::cout `<< "Size: " << vec.size() << std::endl;       // 输出: 3
+std::vector<int> vec = {1, 2, 3};
+std::cout << "Size: " << vec.size() << std::endl;       // 输出: 3
 std::cout << "Capacity: " << vec.capacity() << std::endl; // 输出: 3
 std::cout << "Is empty? " << (vec.empty() ? "Yes" : "No") << std::endl; // 输出: No
 ```
-
 可以使用 `resize、reserve、shrink_to_fit` 调整向量的大小
 
 ```cpp
 // 辅助函数，用于输出 vector 的大小和容量
-void printVectorInfo(const`std::vector<int>`& vec, const std::string& message) {
-    std::cout `<< message << std::endl;
+void printVectorInfo(conststd::vector<int>& vec, const std::string& message) {
+    std::cout << message << std::endl;
     std::cout << "大小: " << vec.size() << ", 容量: " << vec.capacity() << std::endl;
 }
 
-`std::vector<int>`vec;
+std::vector<int>vec;
 printVectorInfo(vec, "初始状态:"); // 大小: 0, 容量: 0
 // 使用 reserve 预留空间
 vec.reserve(20);
@@ -569,7 +543,7 @@ printVectorInfo(vec, "使用 reserve(20) 后:"); // 大小: 0, 容量: 20
 vec.resize(10);
 printVectorInfo(vec, "使用 resize(10) 后:"); // 大小: 10, 容量: 20
 // 输出元素值（默认初始化为 0）
-std::cout `<< "resize(10) 后的元素值: ";
+std::cout << "resize(10) 后的元素值: ";
 for (int num : vec) {
     std::cout << num << " ";
 }
@@ -599,7 +573,6 @@ std::cout << std::endl; // resize(5) 后的元素值: 0 0 0 0 0
 vec.shrink_to_fit();
 printVectorInfo(vec, "使用 shrink_to_fit() 后:"); // 大小: 5, 容量: 5
 ```
-
 + `resize(count)` 改变 `std::vector` 中的元素数量，如果不指定元素值会**默认添加 0**
     - 若 `count` 大于当前大小，会在容器末尾添加新元素，可能会导致内存重新分配。
     - 若 `count` 小于当前大小，会移除容器末尾的元素，不会改变容量。
@@ -621,12 +594,12 @@ printVectorInfo(vec, "使用 shrink_to_fit() 后:"); // 大小: 5, 容量: 5
 + `clear()`：移除所有元素。
 
 ```cpp
-`std::vector<int>`vec;
+std::vector<int>vec;
 // 使用push_back添加元素
 vec.push_back(10);
 vec.emplace_back(20);
 vec.emplace_back(30);
-std::cout `<< "After push_back: "; // 10 20 30 
+std::cout << "After push_back: "; // 10 20 30 
 for(auto num : vec) {
     std::cout << num << " ";
 }
@@ -659,7 +632,6 @@ std::cout << std::endl; // 输出: 10 20
 vec.clear();
 std::cout << "After clear, size: " << vec.size() << std::endl; // 输出: 0
 ```
-
 ##### 2.2.3. 访问
 + `operator[]`：通过索引访问元素。
 + `at()`：通过索引访问元素，带边界检查。
@@ -667,9 +639,9 @@ std::cout << "After clear, size: " << vec.size() << std::endl; // 输出: 0
 + `back()`：访问最后一个元素。
 
 ```cpp
-`std::vector<std::string>`fruits = {"Apple", "Banana", "Cherry"};
+std::vector<std::string>fruits = {"Apple", "Banana", "Cherry"};
 // 使用operator[]访问元素
-std::cout `<< "First fruit: " << fruits[0] << std::endl; // 输出: Apple
+std::cout << "First fruit: " << fruits[0] << std::endl; // 输出: Apple
 // 使用at()访问元素
 try {
     std::cout << "Second fruit: " << fruits.at(1) << std::endl; // 输出: Banana
@@ -682,21 +654,19 @@ catch(const std::out_of_range& e) {
 std::cout << "Front: " << fruits.front() << std::endl; // 输出: Apple
 std::cout << "Back: " << fruits.back() << std::endl;   // 输出: Cherry
 ```
-
 ##### 2.2.4. 
 + C++ 新特性
 + 迭代器
 
 ```cpp
-`std::vector<int>`numbers = {1, 2, 3, 4, 5};
+std::vector<int>numbers = {1, 2, 3, 4, 5};
 for(auto num : numbers) {
-    std::cout `<< num << " ";
+    std::cout << num << " ";
 }
 for(auto it = numbers.begin(); it != numbers.end(); ++it) {
 	std::cout << *it << " ";
 }
 ```
-
 ##### 2.2.5. vector修改
 **修改内存：**
 
@@ -710,7 +680,7 @@ for(auto it = numbers.begin(); it != numbers.end(); ++it) {
 + 替换整个向量内容
 
 ```cpp
-`std::vector<int>`vec = {10, 20, 30, 40, 50};
+std::vector<int>vec = {10, 20, 30, 40, 50};
 // 通过索引修改元素
 vec[2] = 35;
 // 使用 at() 修改元素
@@ -718,20 +688,19 @@ vec.at(4) = 55;  // 10 20 35 40 55
 // 使用assign修改
 vec.assign(5, 10);  // 10 10 10 10 10
 vec.assign({4, 5, 6}); // 4 5 6
-``std::`vector`<int>` vec2 = {4, 5, 6, 7};
+std::vector<int> vec2 = {4, 5, 6, 7};
 vec.assign(vec2.begin() + 1, vec2.end()); // 5 6 7
 ```
-
 #### 2.3. 常用算法
 ##### 2.3.1. 排序
 可以使用 `<algorithm>` 头文件中的 `sort()` 函数对向量进行升序降序：
 
 ```cpp
-``std::`vector`<int>` numbers = {50, 20, 40, 10, 30};
+std::vector<int> numbers = {50, 20, 40, 10, 30};
 // 使用sort()排序，升序
 std::sort(numbers.begin(), numbers.end());
 // 排序后
-std::cout `<< "After sorting: ";
+std::cout << "After sorting: ";
 for(auto num : numbers) {
     std::cout << num << " ";
 }
@@ -739,41 +708,38 @@ std::cout << std::endl; // After sorting: 10 20 30 40 50
 
 // 使用sort()并传入lambda表达式进行降序排序
 std::sort(numbers.begin(), numbers.end(), [](int a, int b) {
-	return a >` b;
+	return a > b;
 });
 //After sorting in descending order: 50 40 30 20 10
 ```
-
 ##### 2.3.2. 反转reverse()
 使用 `reverse()` 函数可以反转向量中的元素顺序。
 
 ```cpp
-``std::`vector`<char>` letters = {'A', 'B', 'C', 'D', 'E'};
+std::vector<char> letters = {'A', 'B', 'C', 'D', 'E'};
 // 反转向量
 std::reverse(letters.begin(), letters.end());
-std::cout `<< "After reversing: ";
+std::cout << "After reversing: ";
 for(auto c : letters) {
     std::cout << c << " ";
 }
 std::cout << std::endl; // After reversing: E D C B A
 ```
-
 ##### 2.3.3. 查找find()
 `string` 的 `find` 有四种，但是返回索引，而 `vector` 返回的是 `iterator`。但我们可以通过 `std::distance` 间接求得索引值。
 
 ```cpp
-`std::vector<std::string>`fruits = {"Apple", "Banana", "Cherry", "Date"};
+std::vector<std::string>fruits = {"Apple", "Banana", "Cherry", "Date"};
 std::string target = "Cherry";
 // 使用find()查找元素
 auto it = std::find(fruits.begin(), fruits.end(), target);
 if(it != fruits.end()) {
-    std::cout `<< target << " found at position " << std::distance(fruits.begin(), it) << std::endl;
+    std::cout << target << " found at position " << std::distance(fruits.begin(), it) << std::endl;
 }
 else {
     std::cout << target << " not found." << std::endl;
 }
 ```
-
 `std::distance(fruits.begin(), it)` 用于求两个迭代器之间的长度。
 
 ### 3. list
@@ -781,19 +747,18 @@ else {
 
 #### 3.1. 初始化
 ```cpp
-`list<int>` lt1; //构造int类型的空容器
-`list`<int>` lt2(10, 2); //构造含有10个2的int类型容器
-`list`<int>` lt3(lt2); //拷贝构造int类型的lt2容器的复制品
-`list`<int>` lt{ 1,2,3,4,5 };  // 直接使用花括号进行构造---C++11允许
+list<int> lt1; //构造int类型的空容器
+list<int> lt2(10, 2); //构造含有10个2的int类型容器
+list<int> lt3(lt2); //拷贝构造int类型的lt2容器的复制品
+list<int> lt{ 1,2,3,4,5 };  // 直接使用花括号进行构造---C++11允许
 
 string s("hello world");
-`list`<char>` lt4(s.begin(),s.end()); //构造string对象某段迭代器区间的内容
+list<char> lt4(s.begin(),s.end()); //构造string对象某段迭代器区间的内容
 
 int arr[] = { 1, 2, 3, 4, 5 };
 int sz = sizeof(arr) / sizeof(int);
-`list`<int>` lt5(arr, arr + sz); //构造数组某段区间的复制品  ->本质是调用迭代器区间的构造函数
+list<int> lt5(arr, arr + sz); //构造数组某段区间的复制品  ->本质是调用迭代器区间的构造函数
 ```
-
 #### 3.2. list操作
 ##### 3.2.1. list的大小和容量
 + `size()` 函数用于获取当前容器当中的元素个数
@@ -812,15 +777,14 @@ int sz = sizeof(arr) / sizeof(int);
 不能像 `std::vector`一样可以通过 `at()` 和 `[]` 进行元素访问。
 
 ```cpp
-`list`<int>` mylist {1, 2, 3, 4, 5, 6, 7, 8};
-cout`<< "初始化后的mylist为：";
+list<int> mylist {1, 2, 3, 4, 5, 6, 7, 8};
+cout<< "初始化后的mylist为：";
 for (auto num : mylist) {
     cout<< num<< " ";
 }
 int front = mylist.front();   // 1
 int back = mylist.back();   // 8
 ```
-
 若想要访问其他位置的元素，可通过迭代器来间接访问：
 
 1. 使用迭代器手动遍历
@@ -848,14 +812,13 @@ insert(iterator, value);
 insert(iterator, num, value); 
 insert(iterator, iterator1, iterator2);
 ```
-
 + 使用 `insert(iterator,value)`方法，作用是向`iterator`迭代器指向元素的**前边**添加一个元素`value`，并返回一个迭代器指向新插入的元素。
 + 使用 `insert(iterator,num,value)`方法，作用是向`iterator`迭代器指向元素的**前边**添加`num`个元素`value`，并返回一个迭代器指向新插入的**第一个**元素。
 + 使用 `insert(iterator, iterator1, iterator2);`方法，作用是向`iterator`迭代器指向元素的**前边**添加`[iterator1,iterator2)`之间的元素
 
 ```cpp
 // 初始化一个 list
-`std::`list`<int>` myList = {1, 2, 3, 4};
+std::list<int> myList = {1, 2, 3, 4};
 // 1. insert(iterator, value);
 auto it = myList.begin();
 ++it; // 移动到第二个元素的位置
@@ -871,25 +834,23 @@ myList.insert(it, 3, 6); // After insert(iterator, num, value): 1 6 6 6 2 3 4
 // 重置 list
 myList = {1, 2, 3, 4};
 // 3. insert(iterator, iterator1, iterator2);
-``std::`vector`<int>` vec = {7, 8, 9};
+std::vector<int> vec = {7, 8, 9};
 it = myList.begin();
 ++it; // 移动到第二个元素的位置
 myList.insert(it, vec.begin(), vec.end()); // After insert(iterator, iterator1, iterator2): 1 7 8 9 2 3 4
 ```
-
 `erase()` 共有 两 种形式： 
 
 ```cpp
 list.erase(iterator) 
 list.erase(iterator1,iterator2)
 ```
-
 + `list.erase(iterator)` 这种用法会删除迭代器`iterator`指向的元素，返回指向下一个元素的迭代器。
 + `list.erase(iterator1,iterator2)` 这种用法会删除迭代器`iterator1`指向的元素到`iterator2`指向元素之间的元素，包括`iterator1`指向的元素但不包括`iterator2`指向的元素，即擦除`[iterator1,iterator2)`，返回指向 `iterator2` 所指向元素的迭代器
 
 ```cpp
 // 初始化一个 list
-`std::`list`<int>` myList = {1, 2, 3, 4, 5, 6, 7, 8};
+std::list<int> myList = {1, 2, 3, 4, 5, 6, 7, 8};
 // 1. list.erase(iterator);
 auto it = myList.begin();
 // 移动迭代器到第三个元素的位置
@@ -907,7 +868,6 @@ std::advance(it2, 4);
 // 移除 [it1, it2) 范围内的元素
 it2 = myList.erase(it1, it2);  // After list.erase(iterator1, iterator2): 1 6 7 8
 ```
-
 ##### 3.2.4. 常见操作函数
 | 接口名称 | 接口名称 |
 | --- | --- |
@@ -920,7 +880,7 @@ it2 = myList.erase(it1, it2);  // After list.erase(iterator1, iterator2): 1 6 7 
 | reverse | 反转元素的顺序 |
 
 
-`std::vector` 中没有 `sort()`、`reverse()` 成员函数，但可以通过 `std::` 的算法 `std::sort()`、`std::reverse()` 实现，而`list`中有 `sort()、reverse()` 成员函数
+`std::vector` 中没有 `sort()`、`reverse()` 成员函数，但可以通过 `std::sort()`、`std::reverse()` 这些算法实现，而 `list` 中有 `sort()`、`reverse()` 成员函数。
 
 **a）splice()**
 
@@ -967,18 +927,15 @@ list1.splice(it4, list2, start, end);
 // list1: 1 5 6 2 3
 // list2: 4
 ```
-
-
 **b）remove**
 
 `std::list` 的 `remove` 方法用于从列表中移除与指定值相等的元素
 
 ```cpp
-`std::`list`<int>` mylist {1, 2, 3, 4, 5};
+std::list<int> mylist {1, 2, 3, 4, 5};
 // 移除列表中所有值为2的元素
 mylist.remove(2); // 1 3 4 5
 ```
-
 **c）remove_if()——移除满足特定标准的元素**
 
 ```cpp
@@ -986,20 +943,18 @@ bool isEven(int n) {
     return n % 2 == 0;
 }
 
-`std::`list`<int>` mylist {1, 2, 3, 4, 5};
+std::list<int> mylist {1, 2, 3, 4, 5};
 // 移除列表中所有满足 isEven 的元素（偶数）
 mylist.remove_if(isEven); // 1 3 5
 ```
-
 **d）unique()——删除连续的重复元素**
 
 `unique()`方法用于移除链表中相邻且重复的元素，仅保留一个副本。
 
 ```cpp
-`std::`list`<int>` myList = {1, 2, 2, 3, 3, 4, 5, 5, 5};
+std::list<int> myList = {1, 2, 2, 3, 3, 4, 5, 5, 5};
 myList.unique(); // 1 2 3 4 5
 ```
-
 **e）sort()——对元素进行排序**
 
 `sort()`方法用于对链表中的元素进行排序。默认情况下，它按**升序**对元素进行排序，使用元素类型的 < 运算符进行比较。
@@ -1010,11 +965,10 @@ bool compareDesc(int a, int b) {
     return a > b;
 }
 
-`std::`list`<int>` myList = {5, 3, 2, 4, 1};
+std::list<int> myList = {5, 3, 2, 4, 1};
 myList.sort(); // 1 2 3 4 5 
 myList.sort(compareDesc); // 5 4 3 2 1
 ```
-
 **f）merge()——合并list**
 
 `merge()`方法将另一个列表的元素插入到调用方法的列表中，并保持排序顺序
@@ -1022,21 +976,19 @@ myList.sort(compareDesc); // 5 4 3 2 1
 **注意：merge()方法只能用于已排序的list。如果list未排序，则合并的结果将是不正确的。**
 
 ```cpp
-`std::`list`<int>` list1 = {1, 3, 5};
-`std::`list`<int>` list2 = {2, 4, 6};
+std::list<int> list1 = {1, 3, 5};
+std::list<int> list2 = {2, 4, 6};
 // 将 list2 合并到 list1 中
 list1.merge(list2); // 1 2 3 4 5 6
 ```
-
 **g）reverse()——将该链表的所有元素的顺序反转**
 
 `reverse()`方法用于反转链表中元素的顺序，即将链表中的第一个元素变为最后一个元素，第二个元素变为倒数第二个元素，以此类推
 
 ```cpp
-`std::`list`<int>` myList = {1, 2, 3, 4, 5};
+std::list<int> myList = {1, 2, 3, 4, 5};
 myList.reverse(); // 5 4 3 2 1
 ```
-
 **h）assign()——将值赋给容器**
 
 `assign()`方法用于将链表中的元素替换为新的元素序列。它可以接受不同形式的参数，提供了两种重载形式。
@@ -1046,9 +998,9 @@ myList.reverse(); // 5 4 3 2 1
 
 ```cpp
 // 创建一个空的 std::list
-`std::`list`<int>` myList;
+std::list<int> myList;
 // 第一种形式：使用迭代器范围进行赋值
-``std::`vector`<int>` myVector = {1, 2, 3, 4, 5};
+std::vector<int> myVector = {1, 2, 3, 4, 5};
 myList.assign(myVector.begin(), myVector.end()); // 1 2 3 4 5 
 
 // 清空列表，为下一次赋值做准备
@@ -1056,7 +1008,6 @@ myList.clear();
 // 第二种形式：使用元素数量和值进行赋值
 myList.assign(3, 10); // 10 10 10
 ```
-
 ### 4. deque
 `deque`（双端队列）是一种支持在两端高效插入和删除元素的序列容器。与`vector`相比，`deque`支持在前端和后端均以常数时间进行插入和删除操作。
 
@@ -1064,27 +1015,26 @@ myList.assign(3, 10); // 10 10 10
 
 #### 4.1. 初始化
 ```cpp
-`std::`deque`<int>` myDeque;
-`std::`deque`<int>` d(10); // 创建一个具有 n 个元素的 deque 容器，默认为0。 0 0 0 0 0 0 0 0 0 0 
-`std::`deque`<int>` myDeque(5, 10); // 10 10 10 10 10
-`std::`deque`<int>` myDeque = {1, 3, 5, 7, 9}; // 1 3 5 7 9
+std::deque<int> myDeque;
+std::deque<int> d(10); // 创建一个具有 n 个元素的 deque 容器，默认为0。 0 0 0 0 0 0 0 0 0 0 
+std::deque<int> myDeque(5, 10); // 10 10 10 10 10
+std::deque<int> myDeque = {1, 3, 5, 7, 9}; // 1 3 5 7 9
 
-`std::`deque`<int>` d1(5);
-`std::`deque`<int>` d2(d1); // 5
+std::deque<int> d1(5);
+std::deque<int> d2(d1); // 5
 
-``std::`vector`<int>` myVector = {1, 2, 3, 4, 5};
+std::vector<int> myVector = {1, 2, 3, 4, 5};
 // 注意，采用此方式，必须保证新旧容器存储的元素类型一致。
-`std::`deque`<int>` myDeque(myVector.begin(), myVector.end()); // 1 2 3 4 5
+std::deque<int> myDeque(myVector.begin(), myVector.end()); // 1 2 3 4 5
 
 // 通过拷贝其他类型容器中指定区域内的元素（也可以是普通数组），元素类型要相同
 //拷贝普通数组，创建deque容器
 int a[] = { 1,2,3,4,5 };
-`std::`deque`<int>`d(a, a + 5);
+std::deque<int>d(a, a + 5);
 //适用于所有类型的容器
-`std::`array`<int, 5>`arr{ 11,12,13,14,15 };
-`std::`deque`<int>`d(arr.begin()+2, arr.end());//拷贝arr容器中的{13,14,15}
+std::array<int, 5>arr{ 11,12,13,14,15 };
+std::deque<int>d(arr.begin()+2, arr.end());//拷贝arr容器中的{13,14,15}
 ```
-
 #### 4.2. 成员函数
 | **函数成员** | **函数功能** |
 | --- | --- |
@@ -1158,11 +1108,10 @@ int a[] = { 1,2,3,4,5 };
 ```cpp
 template < class Key,                                     // 指定键（key）的类型
            class T,                                       // 指定值（value）的类型
-           class Compare = `less`<Key>`,                     // 指定排序规则
-           class Alloc = `allocator`<`pair<const Key,T>` >    // 指定分配器对象的类型
+           class Compare = less<Key>,                     // 指定排序规则
+           class Alloc = allocator<pair<const Key,T> >    // 指定分配器对象的类型
            > class map;
 ```
-
 可以看到，`map` 容器模板有 4 个参数，其中后 2 个参数都设有默认值。大多数场景中，我们只需要设定前 2 个参数的值，有些场景可能会用到第 3 个参数，但最后一个参数几乎不会用到。
 
 `map` 容器的模板类中包含多种构造函数，因此创建 `map` 容器的方式也有多种，下面就几种常用的创建 `map` 容器的方法，做一一讲解。
@@ -1170,59 +1119,52 @@ template < class Key,                                     // 指定键（key）�
 1. 通过调用 `map` 容器类的默认构造函数，可以创建出一个空的 `map` 容器，比如：
 
 ```cpp
-``std::`map`<std::string, int>`myMap;
+std::map<std::string, int>myMap;
 ```
-
 通过此方式创建出的 `myMap` 容器，初始状态下是空的，即没有存储任何键值对。鉴于空 `map` 容器可以根据需要随时添加新的键值对，因此创建空 `map` 容器是比较常用的。
 
 1. 当然在创建 `map` 容器的同时，也可以通过列表初始化进行初始化，比如：
 
 ```cpp
-``std::`map`<std::string, int>`myMap{ {"C语言教程",10},{"STL教程",20} };
+std::map<std::string, int>myMap{ {"C语言教程",10},{"STL教程",20} };
 ```
-
 由此，`myMap` 容器在初始状态下，就包含有 2 个键值对。
 
 再次强调，`map` 容器中存储的键值对，其本质都是 `pair` 类模板创建的 `pair` 对象。因此，下面程序也可以创建出一模一样的 `myMap` 容器：
 
 ```cpp
-``std::`map`<std::string, int>`myMap{std::make_pair("C语言教程",10),std::make_pair("STL教程",20)};
+std::map<std::string, int>myMap{std::make_pair("C语言教程",10),std::make_pair("STL教程",20)};
 ```
-
 1. 除此之外，在某些场景中，可以利用先前已创建好的 `map` 容器，再创建一个新的 `map` 容器。例如：
 
 ```cpp
-``std::`map`<std::string, int>`newMap(myMap);
+std::map<std::string, int>newMap(myMap);
 ```
-
 由此，通过调用 `map` 容器的拷贝构造函数，即可成功创建一个和 `myMap` 完全一样的 `newMap` 容器。
 
 C++ 11 标准中，还为 `map` 容器增添了移动构造函数。当有临时的 `map` 对象作为参数，传递给要初始化的 `map` 容器时，此时就会调用移动构造函数。举个例子：
 
 ```cpp
 //调用 map 类模板的移动构造函数创建 newMap 容器
-``std::`map`<std::string, int>`newMap(std::move(MyMap));
+std::map<std::string, int>newMap(std::move(MyMap));
 ```
-
 > 注意，无论是调用复制构造函数还是调用拷贝构造函数，都必须保证这 2 个容器的**类型完全一致**。
 >
 
 1. `map` 类模板还支持取已建 `map` 容器中指定区域内的键值对，创建并初始化新的 `map` 容器。例如：
 
 ```cpp
-``std::`map`<std::string, int>`myMap{ {"C语言教程",10},{"STL教程",20} };
-``std::`map`<std::string, int>`newMap(++myMap.begin(), myMap.end());
+std::map<std::string, int>myMap{ {"C语言教程",10},{"STL教程",20} };
+std::map<std::string, int>newMap(++myMap.begin(), myMap.end());
 ```
-
 这里，通过调用 `map` 容器的双向迭代器，实现了在创建 `newMap` 容器的同时，将其初始化为仅包含一个 `{"STL教程", 20}` 键值对的容器。
 
 1. 当然，在以上几种创建 `map` 容器的基础上，我们都可以手动修改 `map` 容器的排序规则。默认情况下，`map` 容器调用 `std::less<T>` 规则，根据容器内各键值对的键的大小，对所有键值对做**升序**排序。因此，如下 2 行创建 `map` 容器的方式，其实是等价的：
 
 ```cpp
-``std::`map`<std::string, int>`myMap{ {"C语言教程",10},{"STL教程",20} };
-``std::`map`<std::string, int,`std::less<std::string>`> myMap{ {"C语言教程",10},{"STL教程",20} };`
+std::map<std::string, int>myMap{ {"C语言教程",10},{"STL教程",20} };
+std::map<std::string, int,std::less<std::string>> myMap{ {"C语言教程",10},{"STL教程",20} };
 ```
-
 以上 2 中创建方式生成的 `myMap` 容器，其内部键值对排列的顺序为：
 
 > `<”C语言教程”, 10>`
@@ -1232,9 +1174,8 @@ C++ 11 标准中，还为 `map` 容器增添了移动构造函数。当有临时
 下面程序手动修改了 `myMap` 容器的排序规则，令其作**降序**排序：
 
 ```cpp
-``std::`map`<std::string, int,`std::greater<std::string>`> myMap{ {"C语言教程",10},{"STL教程",20} };`
+std::map<std::string, int,std::greater<std::string>> myMap{ {"C语言教程",10},{"STL教程",20} };
 ```
-
 此时，`myMap` 容器内部键值对排列的顺序为：
 
 > `<”STL教程”, 20>`
@@ -1276,12 +1217,11 @@ unordered_map 容器模板的定义如下所示：
 ```cpp
 template < class Key,                        //键值对中键的类型
            class T,                          //键值对中值的类型
-           class Hash = `hash`<Key>`,           //容器内部存储键值对所用的哈希函数
-           class Pred = `equal_to`<Key>`,       //判断各个键值对键相同的规则
-           class Alloc = `allocator< pair`<const Key,T>` >  // 指定分配器对象的类型
+           class Hash = hash<Key>,           //容器内部存储键值对所用的哈希函数
+           class Pred = equal_to<Key>,       //判断各个键值对键相同的规则
+           class Alloc = allocator< pair<const Key,T> >  // 指定分配器对象的类型
            > class unordered_map;
 ```
-
 以上 5 个参数中，必须显式给前 2 个参数传值，并且除特殊情况外，最多只需要使用前 4 个参数，各自的含义和功能如下表所示。
 
 | 参数 | 含义 |
@@ -1299,54 +1239,49 @@ template < class Key,                        //键值对中键的类型
 1. 通过调用 `unordered_map` 模板类的默认构造函数，可以创建空的 `unordered_map` 容器。比如：
 
 ```cpp
-`std::`unordered_map`<std::string, std::string>` umap;
+std::unordered_map<std::string, std::string> umap;
 ```
-
 由此，就创建好了一个可存储 `<string,string>` 类型键值对的 unordered_map 容器。
 
 1. 当然，在创建 `unordered_map` 容器的同时，可以完成初始化操作。比如：
 
 ```cpp
-`std::`unordered_map`<std::string, std::string>` umap{
+std::unordered_map<std::string, std::string> umap{
     {"Python教程","http://c.biancheng.net/python/"},
     {"Java教程","http://c.biancheng.net/java/"},
     {"Linux教程","http://c.biancheng.net/linux/"} };
 ```
-
 通过此方法创建的 `umap` 容器中，就包含有 3 个键值对元素。
 
 1. 另外，还可以调用 `unordered_map` 模板中提供的复制（拷贝）构造函数，将现有 `unordered_map` 容器中存储的键值对，复制给新建 `unordered_map` 容器。例如，在第二种方式创建好 `umap` 容器的基础上，再创建并初始化一个 `umap2` 容器：
 
 ```cpp
-`std::`unordered_map`<std::string, std::string>` umap2(umap);
+std::unordered_map<std::string, std::string> umap2(umap);
 ```
-
 由此，`umap2` 容器中就包含有 `umap` 容器中所有的键值对。
 
 除此之外，C++ 11 标准中还向 `unordered_map` 模板类增加了移动构造函数，即以右值引用的方式将临时 `unordered_map` 容器中存储的所有键值对，全部复制给新建容器。例如：
 
 ```cpp
 //返回临时 unordered_map 容器的函数
-std::unordered_map `<std::string, std::string >` retUmap(){
-    `std::`unordered_map`<std::string, std::string>`tempUmap{
+std::unordered_map <std::string, std::string > retUmap(){
+    std::unordered_map<std::string, std::string>tempUmap{
         {"Python教程","http://c.biancheng.net/python/"},
         {"Java教程","http://c.biancheng.net/java/"},
         {"Linux教程","http://c.biancheng.net/linux/"} };
     return tempUmap;
 }
 //调用移动构造函数，创建 umap2 容器
-`std::`unordered_map`<std::string, std::string>` umap2(retUmap());
+std::unordered_map<std::string, std::string> umap2(retUmap());
 ```
-
 注意，无论是调用复制构造函数还是拷贝构造函数，必须保证 2 个容器的**类型完全相同**。
 
 1. 当然，如果不想全部拷贝，可以使用 `unordered_map` 类模板提供的迭代器，在现有 `unordered_map` 容器中选择部分区域内的键值对，为新建 `unordered_map` 容器初始化。例如：
 
 ```cpp
 //传入 2 个迭代器，
-`std::`unordered_map`<std::string, std::string>` umap2(++umap.begin(),umap.end());
+std::unordered_map<std::string, std::string> umap2(++umap.begin(),umap.end());
 ```
-
 通过此方式创建的 `umap2` 容器，其内部就包含 `umap` 容器中除第 1 个键值对外的所有其它键值对。
 
 #### 6.4. unordered_map 成员方法
@@ -1397,8 +1332,8 @@ AVL 和 红黑树都是一种自平衡的**二叉搜索树**，它们在保持�
 
 ![](/img/posts/6f749fc03e6eeae587b6a7ee27c43b1a.png)
 
-> 二叉搜索树只需要满足：**`左子树节点值`&lt;`根节点值 < 右子树节点值**
->`
+> 二叉搜索树只需要满足：**`左子树节点值 < 根节点值 < 右子树节点值`**
+>
 
 当插入或删除操作导致 AVL 树的某个节点的平衡因子超出了 -1 到 1 的范围时，AVL树实现平衡的方式是通过旋转操作：
 
@@ -1416,7 +1351,7 @@ AVL 和 红黑树都是一种自平衡的**二叉搜索树**，它们在保持�
 ![](/img/posts/dcf9fb1a4d67a1a5b982fe260369500e.png)
 
 #### 7.2. 实现
-在实现之前，必须要注意：键类型`KeyType`必须支持比较操作，能够使用比较运算符 `opeator`&lt;`。若是自定义结构，必须重载 `opeator&lt;`：
+在实现之前，必须要注意：键类型`KeyType`必须支持比较操作，能够使用比较运算符 `operator<`。若是自定义结构，必须重载 `operator<`：
 
 ```cpp
 struct CustomKey {
@@ -1430,21 +1365,20 @@ struct CustomKey {
     }
 };
 ```
-
 ##### 7.2.1. 模板化AVL树节点
-将`AVLNode`结构模板化，使其能够处理不同类型的键和值。假设键类型`KeyType`支持操作运算符`operator&lt;`进行比较，因为AVL树需要对键进行排序以维护其性质。**如果自定义的键类型不支持操作运算符`operator&lt;`进行比较，我们需要在该类型中重载`operator&lt;`**。
+将`AVLNode`结构模板化，使其能够处理不同类型的键和值。假设键类型`KeyType`支持操作运算符`operator<`进行比较，因为AVL树需要对键进行排序以维护其性质。**如果自定义的键类型不支持操作运算符`operator<`进行比较，我们需要在该类型中重载`operator<`**。
 
 首先，我们定义AVL树的节点。每个节点包含一个键（`key`）、一个值（`value`）、节点高度（`height`），以及指向左子节点和右子节点的指针。
 
 ```cpp
-#include <iostream>`
-#include `<string>`
-#include `<vector>`
-#include `<algorithm>` 
-#include `<functional>` // 用于 std::function
+#include <iostream>
+#include <string>
+#include <vector>
+#include <algorithm> 
+#include <functional> // 用于 std::function
 
 // 模板化的AVL树节点结构
-template `<typename KeyType, typename ValueType>`
+template <typename KeyType, typename ValueType>
 struct AVLNode{
 	KeyType _key;
 	ValueType _value;
@@ -1455,7 +1389,6 @@ struct AVLNode{
 		: _key(key), _value(value), _height(1), _left(nullptr), _right(nullptr) {}
 };
 ```
-
 ##### 7.2.2. 辅助函数模板化
 辅助函数同样需要模板化，以适应不同的`AVLNode`类型。
 
@@ -1463,26 +1396,24 @@ struct AVLNode{
 获取节点的高度。如果节点为空，则高度为0
 
 ```cpp
-template `<typename KeyType, typename ValueType>`
-int getHeight(`AVLNode`<KeyType, ValueType>`* node) {
+template <typename KeyType, typename ValueType>
+int getHeight(AVLNode<KeyType, ValueType>* node) {
     if (node == nullptr)
         return 0;
     return node->_height;
 }
 ```
-
 ###### 7.2.2.2. 获取平衡因子
 左子树高度减去右子树高度就是平衡因子
 
 ```cpp
-template `<typename KeyType, typename ValueType>`
-int getBalance(`AVLNode`<KeyType, ValueType>`* node) {
+template <typename KeyType, typename ValueType>
+int getBalance(AVLNode<KeyType, ValueType>* node) {
     if (node == nullptr)
         return 0;
     return getHeight(node->_left) - getHeight(node->_right);
 }
 ```
-
 ###### 7.2.2.3. 右旋
 右旋转用于处理左子树过高的情况
 
@@ -1495,10 +1426,10 @@ z   T2                            T2  T3
 ```
 
 ```cpp
-template `<typename KeyType, typename ValueType>`
-`AVLNode`<KeyType, ValueType>`* rightRotate(`AVLNode`<KeyType, ValueType>`* y) {
-    `AVLNode`<KeyType, ValueType>`* x = y->_left;
-    `AVLNode`<KeyType, ValueType>`* T2 = x->_right;
+template <typename KeyType, typename ValueType>
+AVLNode<KeyType, ValueType>* rightRotate(AVLNode<KeyType, ValueType>* y) {
+    AVLNode<KeyType, ValueType>* x = y->_left;
+    AVLNode<KeyType, ValueType>* T2 = x->_right;
     // 执行旋转
     x->_right = y;
     y->_left = T2;
@@ -1509,7 +1440,6 @@ template `<typename KeyType, typename ValueType>`
     return x;
 }
 ```
-
 ###### 7.2.2.4. 左旋
 左旋转用于处理右子树过高的情况
 
@@ -1522,10 +1452,10 @@ T1  y           ==>           x   z
 ```
 
 ```cpp
-template `<typename KeyType, typename ValueType>`
-`AVLNode`<KeyType, ValueType>`* leftRotate(`AVLNode`<KeyType, ValueType>`* x) {
-    `AVLNode`<KeyType, ValueType>`* y = x->_right;
-    `AVLNode`<KeyType, ValueType>`* T2 = y->_left;
+template <typename KeyType, typename ValueType>
+AVLNode<KeyType, ValueType>* leftRotate(AVLNode<KeyType, ValueType>* x) {
+    AVLNode<KeyType, ValueType>* y = x->_right;
+    AVLNode<KeyType, ValueType>* T2 = y->_left;
     // 执行旋转
     y->_left = x;
     x->_right = T2;
@@ -1536,7 +1466,6 @@ template `<typename KeyType, typename ValueType>`
     return y;
 }
 ```
-
 ##### 7.2.3. AVL树的核心操作模板化
 ###### 7.2.3.1. 节点插入
 插入操作遵循标准的二叉搜索树插入方式，然后通过旋转保持树的平衡。如果插入一个新节点，可能会遇到以下情况：
@@ -1546,11 +1475,11 @@ template `<typename KeyType, typename ValueType>`
 如果插入 28，就需要我们将插入后的树先进行左旋，然后右旋，当然还可能有其他情况。
 
 ```cpp
-`AVLNode`<KeyType, ValueType>`* insertNode(`AVLNode`<KeyType, ValueType>`* node, // 当前节点
+AVLNode<KeyType, ValueType>* insertNode(AVLNode<KeyType, ValueType>* node, // 当前节点
     const KeyType& key, const ValueType& value) {
     // 执行BST的插入，递归调用
     if (node ==nullptr) // 当执行到最后一层时，才会将节点插入至 nullptr 的位置
-        return new `AVLNode`<KeyType, ValueType>`(key, value);
+        return new AVLNode<KeyType, ValueType>(key, value);
 
     if (key < node->_key) // 如果插入的key值小于当前节点，那么插入当前节点的左子树
         node->_left = insertNode(node->_left, key, value);
@@ -1594,7 +1523,6 @@ template `<typename KeyType, typename ValueType>`
    /
   5
 ```
-
 对于上面这种情况，插入5，满足左右，我们先要对 4 进行左旋，然后对8进行右旋
 
 ```cpp
@@ -1606,7 +1534,6 @@ template `<typename KeyType, typename ValueType>`
    \
     7
 ```
-
 对于上面这种情况，插入7，满足右左，我们先要对 8 进行右旋，然后对4进行左旋
 
 **这两种情况很特殊，必须要这样操作**
@@ -1615,20 +1542,19 @@ template `<typename KeyType, typename ValueType>`
 用于删除节点时找到中序后继。
 
 ```cpp
-`AVLNode`<KeyType, ValueType>`* getMinValueNode(`AVLNode`<KeyType, ValueType>`* node) {
-    `AVLNode`<KeyType, ValueType>`* cur = node;
+AVLNode<KeyType, ValueType>* getMinValueNode(AVLNode<KeyType, ValueType>* node) {
+    AVLNode<KeyType, ValueType>* cur = node;
     while (cur->_left != nullptr)
         cur = cur->_left;
 
     return cur;
 }
 ```
-
 ###### 7.2.3.3. 查找给定节点的value值
 按键查找节点，返回对应的值。如果键不存在，返回`nullptr`。
 
 ```cpp
-ValueType* searchNode(`AVLNode`<KeyType, ValueType>`* node, const KeyType& key) {
+ValueType* searchNode(AVLNode<KeyType, ValueType>* node, const KeyType& key) {
     if (node == nullptr)
         return nullptr;
 
@@ -1640,7 +1566,6 @@ ValueType* searchNode(`AVLNode`<KeyType, ValueType>`* node, const KeyType& key) 
         return searchNode(node->_right, key);
 }
 ```
-
 ###### 7.2.3.4. 删除节点（BST节点删除方式）
 删除操作分为三种情况：删除节点无叶子节点、有一个子节点或有两个子节点。删除后，通过旋转保持树的平衡。**删除方式和BST的方式一样**：
 
@@ -1655,7 +1580,7 @@ z 的**中序前驱**：z 的左子树中最右下节点，该节点一定没有
 以BST方式将指定节点删除后，需要重新旋转，以保持平衡。
 
 ```cpp
-`AVLNode`<KeyType, ValueType>`* deleteNode(`AVLNode`<KeyType, ValueType>`* root, const KeyType& key) {
+AVLNode<KeyType, ValueType>* deleteNode(AVLNode<KeyType, ValueType>* root, const KeyType& key) {
     // 以 BST 方式删除
     if (root == nullptr)
         return root;
@@ -1667,7 +1592,7 @@ z 的**中序前驱**：z 的左子树中最右下节点，该节点一定没有
     else { // 找到待删节点
         // 待删除节点无子树或只有一个子树
         if (root->_left == nullptr or root->_right == nullptr) {
-            `AVLNode`<KeyType, ValueType>`* temp = root->_left != nullptr ? root->_left : root->_right;
+            AVLNode<KeyType, ValueType>* temp = root->_left != nullptr ? root->_left : root->_right;
             // 若 temp 为空，说明待删除节点没有子节点
             if (temp == nullptr) {
                 temp = rooot;
@@ -1681,7 +1606,7 @@ z 的**中序前驱**：z 的左子树中最右下节点，该节点一定没有
         }
         else { // 待删除节点的左右子树都存在（难点）
             // 获取中序后继
-            `AVLNode`<KeyType, ValueType>`* temp = getMinValueNode(root->right);
+            AVLNode<KeyType, ValueType>* temp = getMinValueNode(root->right);
             // 保持待删除节点的左右子树不变，复制中序后继的键值对到此节点
             root->key = temp->key;
             root->value = temp->value;
@@ -1728,7 +1653,6 @@ z 的**中序前驱**：z 的左子树中最右下节点，该节点一定没有
      /
    35
 ```
-
 对于上面这种情况，删除 60，满足左右，我们先要对 30 进行左旋，然后对50进行右旋
 
 ```cpp
@@ -1742,13 +1666,12 @@ z 的**中序前驱**：z 的左子树中最右下节点，该节点一定没有
        /
      52
 ```
-
 对于上面这种情况，删除 20，满足右左，我们先要对 70 进行右旋，然后对50进行左旋
 
 ###### 7.2.3.5. 中序遍历
 ```cpp
 // 中序遍历辅助函数
-void inorderHelper(`AVLNode`<KeyType, ValueType>`* node, ``std::`vector`<`std::pair<KeyType, ValueType>`>& res) const {
+void inorderHelper(AVLNode<KeyType, ValueType>* node, std::vector<std::pair<KeyType, ValueType>>& res) const {
     if (node != nullptr) {
         inorderHelper(node->_left, res);
         res.emplace_back(node->_key, node->_value);
@@ -1756,7 +1679,6 @@ void inorderHelper(`AVLNode`<KeyType, ValueType>`* node, ``std::`vector`<`std::p
     }
 }
 ```
-
 能够将 key 从小到大依次遍历
 
 ##### 7.2.4. AVLMap的操作
@@ -1784,8 +1706,8 @@ void remove(const KeyType& key) {
 }
 
 // 中序遍历，返回有序的键值对
-``std::`vector`<`std::pair<KeyType, ValueType>`> inorderTraversal() const {
-    ``std::`vector`<`std::pair<KeyType, ValueType>`> res;
+std::vector<std::pair<KeyType, ValueType>> inorderTraversal() const {
+    std::vector<std::pair<KeyType, ValueType>> res;
     inorderHelper(root, res);
     return res;
 }
@@ -1793,7 +1715,7 @@ void remove(const KeyType& key) {
 // 析构函数，释放所有节点的内存
 ~AVLMap() {
     // 使用后序遍历释放节点
-    ``std::`function`<void(`AVLNode<KeyType, ValueType>`*)> destroy = [&](`AVLNode`<KeyType, ValueType>`* node) {
+    std::function<void(AVLNode<KeyType, ValueType>*)> destroy = [&](AVLNode<KeyType, ValueType>* node) {
         if (node != nullptr) {
             destroy(node->_left);
             destroy(node->_right);
@@ -1804,17 +1726,16 @@ void remove(const KeyType& key) {
     destroy(root);
 }
 ```
-
 ##### 7.2.5. 完整代码
 ```cpp
 #pragma once
-#include `<iostream>`
-#include `<vector>`
-#include `<algorithm>`
-#include `<string>`
-#include `<functional>`
+#include <iostream>
+#include <vector>
+#include <algorithm>
+#include <string>
+#include <functional>
 
-template `<typename KeyType, typename ValueType>`
+template <typename KeyType, typename ValueType>
 struct AVLNode{
 	KeyType _key;
 	ValueType _value;
@@ -1825,26 +1746,26 @@ struct AVLNode{
 		: _key(key), _value(value), _height(1), _left(nullptr), _right(nullptr) {}
 };
 
-template `<typename KeyType, typename ValueType>`
+template <typename KeyType, typename ValueType>
 class AVLMap {
 private:
-	`AVLNode`<KeyType, ValueType>`* root;
+	AVLNode<KeyType, ValueType>* root;
 
-	int getHeight(`AVLNode`<KeyType, ValueType>`* node) {
+	int getHeight(AVLNode<KeyType, ValueType>* node) {
 		if (node == nullptr) 
 			return 0;
 		return node->_height;
 	}
 
-	int getBalance(`AVLNode`<KeyType, ValueType>`* node) {
+	int getBalance(AVLNode<KeyType, ValueType>* node) {
 		if (node == nullptr)
 			return 0;
 		return getHeight(node->_left) - getHeight(node->_right); // 左子树 - 右子树
 	}
 
-	`AVLNode`<KeyType, ValueType>`* rightRotate(`AVLNode`<KeyType, ValueType>`* y) {
-		`AVLNode`<KeyType, ValueType>`* x = y->_left;
-		`AVLNode`<KeyType, ValueType>`* T2 = x->_right;
+	AVLNode<KeyType, ValueType>* rightRotate(AVLNode<KeyType, ValueType>* y) {
+		AVLNode<KeyType, ValueType>* x = y->_left;
+		AVLNode<KeyType, ValueType>* T2 = x->_right;
 		// 执行旋转
 		x->_right = y;
 		y->_left = T2;
@@ -1855,9 +1776,9 @@ private:
 		return x;
 	}
 
-	`AVLNode`<KeyType, ValueType>`* leftRotate(`AVLNode`<KeyType, ValueType>`* x) {
-		`AVLNode`<KeyType, ValueType>`* y = x->_right;
-		`AVLNode`<KeyType, ValueType>`* T2 = y->_left;
+	AVLNode<KeyType, ValueType>* leftRotate(AVLNode<KeyType, ValueType>* x) {
+		AVLNode<KeyType, ValueType>* y = x->_right;
+		AVLNode<KeyType, ValueType>* T2 = y->_left;
 		// 执行旋转
 		y->_left = x;
 		x->_right = T2;
@@ -1868,11 +1789,11 @@ private:
 		return y;
 	}
 
-	`AVLNode`<KeyType, ValueType>`* insertNode(`AVLNode`<KeyType, ValueType>`* node, // 当前节点
+	AVLNode<KeyType, ValueType>* insertNode(AVLNode<KeyType, ValueType>* node, // 当前节点
 		const KeyType& key, const ValueType& value) {
 		// 执行BST的插入，递归调用
 		if (node == nullptr) // 当执行到最后一层时，才会将节点插入至 nullptr 的位置
-			return new `AVLNode`<KeyType, ValueType>`(key, value);
+			return new AVLNode<KeyType, ValueType>(key, value);
 
 		if (key < node->_key) // 如果插入的key值小于当前节点，那么插入当前节点的左子树
 			node->_left = insertNode(node->_left, key, value);
@@ -1913,15 +1834,15 @@ private:
 		return node;
 	}
 
-	`AVLNode`<KeyType, ValueType>`* getMinValueNode(`AVLNode`<KeyType, ValueType>`* node) {
-		`AVLNode`<KeyType, ValueType>`* cur = node;
+	AVLNode<KeyType, ValueType>* getMinValueNode(AVLNode<KeyType, ValueType>* node) {
+		AVLNode<KeyType, ValueType>* cur = node;
 		while (cur->_left != nullptr)
 			cur = cur->_left;
 
 		return cur;
 	}
 
-	ValueType* searchNode(`AVLNode`<KeyType, ValueType>`* node, const KeyType& key) {
+	ValueType* searchNode(AVLNode<KeyType, ValueType>* node, const KeyType& key) {
 		if (node == nullptr)
 			return nullptr;
 
@@ -1933,7 +1854,7 @@ private:
 			return searchNode(node->_right,key);
 	}
 
-	`AVLNode`<KeyType, ValueType>`* deleteNode(`AVLNode`<KeyType, ValueType>`* root, const KeyType& key) {
+	AVLNode<KeyType, ValueType>* deleteNode(AVLNode<KeyType, ValueType>* root, const KeyType& key) {
 		// 以 BST 方式删除
 		if (root == nullptr)
 			return root;
@@ -1945,7 +1866,7 @@ private:
 		else { // 找到待删节点
 			// 待删除节点无子树或只有一个子树
 			if (root->_left == nullptr or root->_right == nullptr) {
-				`AVLNode`<KeyType, ValueType>`* temp = root->_left != nullptr ? root->_left : root->_right;
+				AVLNode<KeyType, ValueType>* temp = root->_left != nullptr ? root->_left : root->_right;
 				// 若 temp 为空，说明待删除节点没有子节点
 				if (temp == nullptr) {
 					temp = root;
@@ -1959,7 +1880,7 @@ private:
 			}
 			else { // 待删除节点的左右子树都存在（难点）
 				// 获取中序后继
-				`AVLNode`<KeyType, ValueType>`* temp = getMinValueNode(root->_right);
+				AVLNode<KeyType, ValueType>* temp = getMinValueNode(root->_right);
 				// 保持待删除节点的左右子树不变，复制中序后继的键值对到此节点
 				root->_key = temp->_key;
 				root->_value = temp->_value;
@@ -1997,7 +1918,7 @@ private:
 	}
 
 	// 中序遍历辅助函数
-	void inorderHelper(`AVLNode`<KeyType, ValueType>`* node, ``std::`vector`<`std::pair<KeyType, ValueType>`>& res) const {
+	void inorderHelper(AVLNode<KeyType, ValueType>* node, std::vector<std::pair<KeyType, ValueType>>& res) const {
 		if (node != nullptr) {
 			inorderHelper(node->_left, res);
 			res.emplace_back(node->_key, node->_value);
@@ -2024,8 +1945,8 @@ public:
 	}
 
 	// 中序遍历，返回有序的键值对
-	``std::`vector`<`std::pair<KeyType, ValueType>`> inorderTraversal() const {
-		``std::`vector`<`std::pair<KeyType, ValueType>`> res;
+	std::vector<std::pair<KeyType, ValueType>> inorderTraversal() const {
+		std::vector<std::pair<KeyType, ValueType>> res;
 		inorderHelper(root, res);
 		return res;
 	}
@@ -2033,7 +1954,7 @@ public:
 	// 析构函数，释放所有节点的内存
 	~AVLMap() {
 		// 使用后序遍历释放节点
-		``std::`function`<void(`AVLNode<KeyType, ValueType>`*)> destroy = [&](`AVLNode`<KeyType, ValueType>`* node) {
+		std::function<void(AVLNode<KeyType, ValueType>*)> destroy = [&](AVLNode<KeyType, ValueType>* node) {
 			if (node != nullptr) {
 				destroy(node->_left);
 				destroy(node->_right);
@@ -2045,7 +1966,6 @@ public:
 	}
 };
 ```
-
 该代码仍有很多地方需要优化改进：
 
 + **内存管理**：当前实现使用递归进行插入和删除，如果树非常深，可能会导致栈溢出。可以考虑使用迭代方法或优化递归深度。
@@ -2110,7 +2030,7 @@ public:
 1. **标准二叉搜索树插入**：根据键值比较，将新节点插入到合适的位置，初始颜色为**红色**（染成红色是为了保证第5条性质）。
 2. **插入后的修正（Insert Fixup）**：通过重新着色和旋转操作，恢复红黑树的五大性质。
 
-BST 的插入不过多介绍，保证左子树节点值` &lt; 根节点值 &lt; 右子树节点值即可，这里详细分析插入后的修正。
+BST 的插入不过多介绍，保证左子树节点值` < 根节点值 < 右子树节点值`即可，这里详细分析插入后的修正。
 
 因为新插入的节点 z 默认颜色是红色，则需满足以下情况：
 
@@ -2201,7 +2121,7 @@ d）RL型别：情况一处理完转到祖父节点后发现，23 是RL型别
 
 ###### 8.2.1.2. 代码
 ```cpp
-bool Insert(const pair<K,V>` &kv)
+bool Insert(const pair<K,V> &kv)
 {
   //1. 按照二叉搜索的树规则插入新节点
   Node* &root = GetRoot(); //这里注意要用引用接收返回值
@@ -2312,7 +2232,6 @@ bool Insert(const pair<K,V>` &kv)
   return true;
 }
 ```
-
 ##### 8.2.2. 删除
 删除操作同样重要且复杂，因为它可能破坏红黑树的多个性质。与插入类似，删除操作也需要两个主要步骤：
 
@@ -2367,7 +2286,7 @@ bool Insert(const pair<K,V>` &kv)
 ```cpp
 enum Color { RED, BLACK };
 
-template `<typename Key, typename Value>`
+template <typename Key, typename Value>
 struct RBTreeNode {
     Key _key;
     Value _value;
@@ -2481,9 +2400,9 @@ d8 =8：hash′(25)=(12+8)%15=5，5号空间为空，将25放入5号空间
 
 注意： 线性探测法很简单，只要有空间，就一定能够探测到位置。但是，在处理冲突的过程中，会出现非同义词之间对同一个散列地址发生争夺的现象，称之为“堆积”。例如，上图中25和38是同义词，25和12、51、65、14、40、42、15均非同义词，却探测了9次才找到合适的位置，大大降低了查找效率。
 
-②**平方探测法**：不同于前面线性探测法依次顺序查看下一个位置是否能存储元素，平方探测的规则是以 d_i = 1^2, -1^2, 2^2, -2^2,…, k^2, -k^2，其中 k &lt;= m / 2。
+②**平方探测法**：不同于前面线性探测法依次顺序查看下一个位置是否能存储元素，平方探测的规则是以 `d_i = 1^2, -1^2, 2^2, -2^2,…, k^2, -k^2`，其中 `k <= m / 2`。
 
-当 ( H(key) + d_i ) &lt; 0 或 > m 时，从表尾或表头重新开始。
+当 `( H(key) + d_i ) < 0` 或 `> m` 时，从表尾或表头重新开始。
 
 > 使用平方探测法时，**哈希表表长 m 必须是一个 **`**4j + 3**`** 的素数，才能探测到所有位置。**
 >
@@ -2509,4 +2428,3 @@ d8 =8：hash′(25)=(12+8)%15=5，5号空间为空，将25放入5号空间
 
 > 来自: [C++常见容器 | 爱吃土豆的个人博客](https://aichitudou.cn/2025/03/01/%E5%85%AB%E8%82%A1%E2%80%94%E2%80%94%E5%B8%B8%E8%A7%81%E5%AE%B9%E5%99%A8/#1-String%E7%B1%BB)
 >
-

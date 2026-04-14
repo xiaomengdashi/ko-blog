@@ -38,7 +38,6 @@ if dist[v] > dist[u] + weight(u, v):
     dist[v] = dist[u] + weight(u, v)  # 更新最短距离
     prev[v] = u                       # 记录前驱节点（用于路径回溯）
 ```
-
 3. **终止条件**：  
     - 所有节点已访问，或剩余节点的 `dist` 均为 `∞`（不可达）。
 
@@ -64,7 +63,6 @@ def dijkstra(graph, start):
                 heapq.heappush(heap, (dist[v], v))
     return dist
 ```
-
 **输入示例（邻接表）**：  
 
 ```python
@@ -76,7 +74,6 @@ graph = [
 ]
 print(dijkstra(graph, 0))  # 输出: [0, 2, 1, 4]
 ```
-
 ---
 
 ### 3. 3. Dijkstra 的适用场景**
@@ -104,7 +101,6 @@ def networkDelayTime(times, n, k):
     max_dist = max(dist)
     return max_dist if max_dist < float('inf') else -1
 ```
-
 #### 4.2. (2) 最低成本路径（LeetCode 1584）**
 **问题**：连接所有点的最小曼哈顿距离和（最小生成树变种）。  
 **解法**：Dijkstra 类似 Prim 算法。  
@@ -122,7 +118,6 @@ def networkDelayTime(times, n, k):
 2 → 1 (weight: -1)  
 Dijkstra 会错误输出 dist[1] = 1（实际应为 0: 0→2→1）。
 ```
-
 #### 5.2. (2) 如何优化时间复杂度？**
 + **优先队列（堆）**：将查找最小 `dist` 的时间从 `O(V)` 降为 `O(log V)`。  
 + **斐波那契堆**：理论最优 `O(E + V log V)`，但实现复杂。

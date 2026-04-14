@@ -24,14 +24,14 @@ slug: /Rust/黑客编程之道/静态变量lazy_static
 
 ```rust
 // ❌ 这样不行
-static HASHMAP: `HashMap`<u32, String>` = HashMap::new();
+static HASHMAP: HashMap<u32, String> = HashMap::new();
 
 
 // ✅ 使用lazy_static
 use lazy_static::lazy_static;
 use std::collections::HashMap;
 lazy_static! {
-    static ref HASHMAP: `HashMap`<u32, String>` = {
+    static ref HASHMAP: HashMap<u32, String> = {
         let mut map = HashMap::new();
         map.insert(1, "one".to_string());
         map.insert(2, "two".to_string());
@@ -39,7 +39,6 @@ lazy_static! {
     };
 }
 ```
-
 ### 2. 进阶应用
 #### 2.1. 配置管理
 ```rust
@@ -49,7 +48,7 @@ use std::collections::HashMap;
 
 
 lazy_static! {
-    static ref CONFIG: `Mutex`<`HashMap<String, String>`> = {
+    static ref CONFIG: Mutex<HashMap<String, String>> = {
         let mut config = HashMap::new();
         // 从文件或环境变量加载配置
         config.insert("DATABASE_URL".to_string(), "postgres://localhost:5432".to_string());
@@ -65,12 +64,11 @@ fn update_config(key: &str, value: &str) {
 }
 
 
-fn get_config(key: &str) -> `Option`<String>` {
+fn get_config(key: &str) -> Option<String> {
     let config = CONFIG.lock().unwrap();
     config.get(key).cloned()
 }
 ```
-
 #### 2.2. 正则表达式缓存
 ```rust
 use lazy_static::lazy_static;
@@ -98,7 +96,6 @@ fn validate_phone(phone: &str) -> bool {
     PHONE_RE.is_match(phone)
 }
 ```
-
 ### 3. 高级特性
 #### 3.1. 线程安全的单例模式
 ```rust
@@ -120,20 +117,19 @@ impl Database {
     }
 
 
-    fn query(&self, sql: &str) -> `Vec`<String>` {
+    fn query(&self, sql: &str) -> Vec<String> {
         // 模拟查询操作
         vec![format!("Query result for: {}", sql)]
     }
 }
 lazy_static! {
-    static ref DB: `Mutex`<Database>` = Mutex::new(Database::new());
+    static ref DB: Mutex<Database> = Mutex::new(Database::new());
 }
-fn execute_query(sql: &str) -> `Vec`<String>` {
+fn execute_query(sql: &str) -> Vec<String> {
     let db = DB.lock().unwrap();
     db.query(sql)
 }
 ```
-
 #### 3.2. 复杂初始化逻辑
 ```rust
 use lazy_static::lazy_static;
@@ -142,8 +138,8 @@ use std::sync::RwLock;
 
 
 struct ComplexData {
-    cache: `HashMap`<String, `Vec<u32>`>,
-    config: `HashMap`<String, String>`,
+    cache: HashMap<String, Vec<u32>>,
+    config: HashMap<String, String>,
 }
 impl ComplexData {
     fn new() -> Self {
@@ -166,10 +162,9 @@ impl ComplexData {
     }
 }
 lazy_static! {
-    static ref COMPLEX_DATA: `RwLock`<ComplexData>` = RwLock::new(ComplexData::new());
+    static ref COMPLEX_DATA: RwLock<ComplexData> = RwLock::new(ComplexData::new());
 }
 ```
-
 ### 4. 性能优化技巧
 #### 4.1. 读写锁的使用
 ```rust
@@ -179,18 +174,17 @@ use std::collections::HashMap;
 
 
 lazy_static! {
-    static ref CACHE: `RwLock`<`HashMap<String, Vec<u8>`>> = RwLock::new(HashMap::new());
+    static ref CACHE: RwLock<HashMap<String, Vec<u8>>> = RwLock::new(HashMap::new());
 }
-fn read_cache(key: &str) -> `Option`<`Vec<u8>`> {
+fn read_cache(key: &str) -> Option<Vec<u8>> {
     let cache = CACHE.read().unwrap();
     cache.get(key).cloned()
 }
-fn write_cache(key: &str, value: `Vec`<u8>`) {
+fn write_cache(key: &str, value: Vec<u8>) {
     let mut cache = CACHE.write().unwrap();
     cache.insert(key.to_string(), value);
 }
 ```
-
 #### 4.2. 免过度使用
 ```rust
 // ❌ 不推荐
@@ -200,7 +194,6 @@ lazy_static! {
 // ✅ 推荐
 const SMALL_VALUE: i32 = 42;
 ```
-
 ### 5. 实战应用
 #### 5.1. 全局日志器
 ```rust
@@ -230,7 +223,7 @@ impl Logger {
 
 
 lazy_static! {
-    static ref LOGGER: `Mutex`<Logger>` = Mutex::new(Logger::new("APP"));
+    static ref LOGGER: Mutex<Logger> = Mutex::new(Logger::new("APP"));
 }
 
 
@@ -238,7 +231,6 @@ fn log_message(msg: &str) {
     LOGGER.lock().unwrap().log(msg);
 }
 ```
-
 #### 5.2. 配置管理系统
 ```rust
 use lazy_static::lazy_static;
@@ -255,7 +247,7 @@ struct AppConfig {
 
 
 lazy_static! {
-    static ref APP_CONFIG: `RwLock`<AppConfig>` = RwLock::new(AppConfig {
+    static ref APP_CONFIG: RwLock<AppConfig> = RwLock::new(AppConfig {
         database_url: "localhost:5432".to_string(),
         max_connections: 100,
         timeout: 30,

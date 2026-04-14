@@ -46,8 +46,8 @@ IO多路转接也称为IO多路复用，它是一种网络通信的手段（机�
 
 下面来看一下这个函数的函数原型：
 
-```plain
-#include `<sys/select.h>`
+```cpp
+#include <sys/select.h>
 struct timeval {
     time_t      tv_sec;         /* seconds */
     suseconds_t tv_usec;        /* microseconds */
@@ -56,7 +56,6 @@ struct timeval {
 int select(int nfds, fd_set *readfds, fd_set *writefds,
            fd_set *exceptfds, struct timeval * timeout);
 ```
-
 + 函数参数：
     - nfds：委托内核检测的这三个集合中最大的文件描述符 + 1
         * 内核需要线性遍历这些集合中的文件描述符，这个值是循环结束的条件
@@ -78,7 +77,7 @@ int select(int nfds, fd_set *readfds, fd_set *writefds,
 
 另外初始化`fd_set`类型的参数还需要使用相关的一些列操作函数，具体如下：
 
-```plain
+```cpp
 // 将文件描述符fd从set集合中删除 == 将fd对应的标志位设置为0        
 void FD_CLR(int fd, fd_set *set);
 // 判断文件描述符fd是否在set集合中 == 读一下fd对应的标志位到底是0还是1
@@ -88,14 +87,12 @@ void FD_SET(int fd, fd_set *set);
 // 将set集合中, 所有文件文件描述符对应的标志位设置为0, 集合中没有添加任何文件描述符
 void FD_ZERO(fd_set *set);
 ```
-
 ### 4. 细节描述
 在`select()`函数中第2、3、4个参数都是`fd_set`类型，它表示一个文件描述符的集合，类似于信号集 `sigset_t`，这个类型的数据有128个字节，也就是1024个标志位，和内核中文件描述符表中的文件描述符个数是一样的。
 
-```plain
+```cpp
 sizeof(fd_set) = 128 字节 * 8 = 1024 bit      // int [32]
 ```
-
 这并不是巧合，而是故意为之。这块内存中的每一个bit 和 文件描述符表中的每一个文件描述符是一一对应的关系，这样就可以使用最小的存储空间将要表达的意思描述出来了。
 
 下图中的fd_set中存储了要委托内核检测读缓冲区的文件描述符集合。
@@ -136,12 +133,12 @@ sizeof(fd_set) = 128 字节 * 8 = 1024 bit      // int [32]
 ### 7. 信代码
 **服务器端代码如下：**
 
-```plain
-#include `<stdio.h>`
-#include `<stdlib.h>`
-#include `<unistd.h>`
-#include `<string.h>`
-#include `<arpa/inet.h>`
+```cpp
+#include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
+#include <string.h>
+#include <arpa/inet.h>
 
 int main()
 {
@@ -196,7 +193,7 @@ int main()
         }
 
         // 没有新连接, 通信
-        for(int i=0; `i`<maxfd+1; ++i)
+        for(int i=0; i<maxfd+1; ++i)
         {
 			// 判断从监听的文件描述符之后到maxfd这个范围内的文件描述符是否读缓冲区有数据
             if(i != lfd && FD_ISSET(i, &rdtemp))
@@ -205,7 +202,7 @@ int main()
                 char buf[10] = {0};
                 // 一次只能接收10个字节, 客户端一次发送100个字节
                 // 一次是接收不完的, 文件描述符对应的读缓冲区中还有数据
-                // 下一轮select检测的时候, 内核还会标记这个文件描述符缓冲区有数据 ->` 再读一次
+                // 下一轮select检测的时候, 内核还会标记这个文件描述符缓冲区有数据 -> 再读一次
                 // 	循环会一直持续, 知道缓冲区数据被读完位置
                 int len = read(i, buf, sizeof(buf));
                 if(len == 0)
@@ -233,27 +230,25 @@ int main()
     return 0;
 }
 ```
-
 > 在上面的代码中，创建了两个`fd_set`变量，用于保存要检测的读集合：
 >
 
-```plain
+```cpp
 // 初始化检测的读集合
 fd_set rdset;
 fd_set rdtemp;
 ```
-
 > `rdset`用于保存要检测的原始数据，这个变量不能作为参数传递给select函数，因为在函数内部这个变量中的值会被内核修改，函数调用完毕返回之后，里边就不是原始数据了，大部分情况下是值为1的标志位变少了，不可能每一轮检测，所有的文件描述符都是就行的状态。因此需要通过`rdtemp`变量将原始数据传递给内核，select() 调用完毕之后再将内核数据传出，这两个变量的功能是不一样的。
 >
 
 **客户端代码:**
 
-```plain
-#include `<stdio.h>`
-#include `<stdlib.h>`
-#include `<unistd.h>`
-#include `<string.h>`
-#include `<arpa/inet.h>`
+```cpp
+#include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
+#include <string.h>
+#include <arpa/inet.h>
 
 int main()
 {

@@ -39,9 +39,9 @@ slug: /C++/Boost深度剖析/boost-中asio的io_context的理解
 示例代码：
 
 ```cpp
-#include `<boost/asio.hpp>`
-#include `<thread>`
-#include `<vector>`
+#include <boost/asio.hpp>
+#include <thread>
+#include <vector>
 
 void worker(boost::asio::io_context& io) {
     io.run();
@@ -51,7 +51,7 @@ int main() {
     boost::asio::io_context io;
     
     // 创建多个线程来处理io_context
-    ``std::`vector`<std::thread>` threads;
+    std::vector<std::thread> threads;
     for (int i = 0; i < 4; ++i) {
         threads.push_back(std::thread(worker, std::ref(io)));
     }
@@ -67,7 +67,6 @@ int main() {
     return 0;
 }
 ```
-
 #### 4. 停止io_context**
 要停止`io_context`的事件循环，可以调用`stop()`方法。这会通知`io_context`停止接受新的任务，并立即返回。  
 示例代码：
@@ -75,18 +74,16 @@ int main() {
 ```cpp
 io.stop();
 ```
-
 #### 5. 使用strand进行同步**
 在多线程环境中，为了避免竞态条件，可以使用`strand`来确保特定任务在同一个线程中顺序执行。  
 示例代码：
 
 ```cpp
-boost::asio::`strand`<boost::asio::io_context::executor_type>` strand(io.get_executor());
+boost::asio::strand<boost::asio::io_context::executor_type> strand(io.get_executor());
 strand.post([]() {
     // 这个任务会在同一个线程中顺序执行
 });
 ```
-
 #### 6. 定时器的使用**
 `io_context` 支持定时器，用于在指定时间后执行任务。  
 示例代码：
@@ -99,7 +96,6 @@ timer.async_wait([](const boost::system::error_code& error) {
     }
 });
 ```
-
 #### 7. 处理I/O操作的完成**
 I/O操作通常是异步的，通过`async_`开头的方法进行。当I/O操作完成时，会调用完成处理函数。  
 示例代码：

@@ -41,7 +41,6 @@ let x = 10;let add = |y| x + y;  // 闭包捕获了环境中的xprintln!("结果
 ```rust
 FnOnce ← FnMut ← Fn
 ```
-
 + Fn实现了FnMut和FnOnce
 + FnMut实现了FnOnce
 + 这是一个继承关系，越往右要求越严格
@@ -65,7 +64,6 @@ fn main() {
     println!("第三次调用: {}", counter()); // 3
 }
 ```
-
 解释：
 
 + 这是一个典型的FnMut示例
@@ -75,7 +73,7 @@ fn main() {
 
 #### 1.2. 事件监听器（Fn示例）
 ```rust
-struct `EventListener`<F>`
+struct EventListener<F>
     where
         F: Fn(i32),
 {
@@ -83,7 +81,7 @@ struct `EventListener`<F>`
 }
 
 
-`impl`<F>` `EventListener`<F>`
+impl<F> EventListener<F>
     where
         F: Fn(i32),
 {
@@ -115,7 +113,6 @@ fn main() {
     println!("原始数据: {:?}", data);
 }
 ```
-
 解释：
 
 + 使用Fn特征因为回调需要多次调用
@@ -140,7 +137,7 @@ impl Resource {
 }
 
 
-fn `process_resource`<F>`(resource: Resource, cleanup: F)
+fn process_resource<F>(resource: Resource, cleanup: F)
     where
         F: FnOnce(Resource),
 {
@@ -164,7 +161,6 @@ fn main() {
     // 这里不能再使用resource
 }
 ```
-
 解释：
 
 + 使用FnOnce因为cleanup只需要执行一次
@@ -175,13 +171,13 @@ fn main() {
 
 #### 1.4. 数据转换管道（Fn示例）
 ```rust
-struct `Pipeline`<T, U>` {
-    transform: `Box`<dyn Fn(T) ->` U>,
+struct Pipeline<T, U> {
+    transform: Box<dyn Fn(T) -> U>,
 }
 
 
-`impl`<T, U>` `Pipeline`<T, U>` {
-    fn `new`<F>`(transform: F) -> Self
+impl<T, U> Pipeline<T, U> {
+    fn new<F>(transform: F) -> Self
         where
             F: Fn(T) -> U + 'static,
     {
@@ -209,7 +205,6 @@ fn main() {
     println!("{}", result);  // 输出：处理后的数据: HELLO WORLD
 }
 ```
-
 解释：
 
 + 使用Fn因为转换函数需要被重复调用
@@ -226,7 +221,7 @@ struct GameState {
 
 
 struct StateUpdater {
-    updates: `Vec`<`Box<dyn FnMut(&mut GameState)>`>,
+    updates: Vec<Box<dyn FnMut(&mut GameState)>>,
 }
 
 
@@ -238,7 +233,7 @@ impl StateUpdater {
     }
 
 
-    fn `add_update`<F>`(&mut self, update: F)
+    fn add_update<F>(&mut self, update: F)
         where
             F: FnMut(&mut GameState) + 'static,
     {
@@ -283,7 +278,6 @@ fn main() {
     println!("更新后: {:?}", state);
 }
 ```
-
 解释：
 
 + 使用FnMut因为更新函数需要修改状态
@@ -304,7 +298,7 @@ struct Config {
 
 struct ConfigBuilder {
     config: Config,
-    finalizers: `Vec`<`Box<dyn FnOnce(&mut Config)>`>,
+    finalizers: Vec<Box<dyn FnOnce(&mut Config)>>,
 }
 
 
@@ -329,7 +323,7 @@ impl ConfigBuilder {
     }
 
 
-    fn `add_finalizer`<F>`(&mut self, finalizer: F)
+    fn add_finalizer<F>(&mut self, finalizer: F)
         where
             F: FnOnce(&mut Config) + 'static,
     {

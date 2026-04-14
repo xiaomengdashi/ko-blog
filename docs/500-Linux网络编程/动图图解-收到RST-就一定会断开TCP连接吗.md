@@ -104,7 +104,7 @@ TCP连接未监听的端口
 ###### 3.1.1.1. 端口未监听就一定会发RST吗？
 **不一定**。上面提到，发RST的前提是**正常情况下**，我们看下源码。
 
-```plain
+```cpp
 // net/ipv4/tcp_ipv4.c  
 // 代码经过删减
 int tcp_v4_rcv(struct sk_buff *skb)
@@ -116,7 +116,7 @@ int tcp_v4_rcv(struct sk_buff *skb)
 
 no_tcp_socket:
     // 检查数据包有没有出错
-    if (skb->len < (th->doff `<< 2) || tcp_checksum_complete(skb)) {
+    if (skb->len < (th->doff << 2) || tcp_checksum_complete(skb)) {
         // 错误记录
     } else {
         // 发送RST
@@ -124,7 +124,6 @@ no_tcp_socket:
     }
 }
 ```
-
 内核在收到数据后会从物理层、数据链路层、网络层、传输层、应用层，一层一层往上传递。到传输层的时候，根据当前数据包的协议是**TCP还是UDP**走不一样的函数方法。可以简单认为，**TCP**数据包都会走到 `tcp_v4_rcv()`。这个方法会从`全局哈希表`里获取 `sock`，如果此时服务端没有`listen()`过 , 那肯定获取不了`sock`，会跳转到`no_tcp_socket`的逻辑。
 
 注意这里会先走一个 `tcp_checksum_complete()`，目的是看看数据包的**校验和(Checksum)**是否合法。
@@ -260,7 +259,7 @@ RST丢失后keepalive
 #### 5. 收到RST就一定会断开连接吗?
 先说结论，**不一定会断开**。我们看下源码。
 
-```plain
+```cpp
 // net/ipv4/tcp_input.c
 static bool tcp_validate_incoming()
 {
@@ -268,7 +267,7 @@ static bool tcp_validate_incoming()
     struct tcp_sock *tp = tcp_sk(sk);
 
     // step 1：先判断seq是否合法（是否在合法接收窗口范围内）
-    if (!tcp_sequence(tp, TCP_SKB_CB(skb)->`seq, TCP_SKB_CB(skb)->end_seq)) {
+    if (!tcp_sequence(tp, TCP_SKB_CB(skb)->seq, TCP_SKB_CB(skb)->end_seq)) {
         goto discard;
     }
 
@@ -282,7 +281,6 @@ static bool tcp_validate_incoming()
     }
 }
 ```
-
 收到RST包，第一步会通过`tcp_sequence`先看下这个seq是否合法，其实主要是看下这个seq是否在合法**接收窗口**范围内。**如果不在范围内，这个RST包就会被丢弃。**
 
 至于接收窗口是个啥，我们先看下面这个图。
@@ -329,12 +327,11 @@ RST攻击
 ###### 5.2.1. 盲猜seq
 窗口数值seq本质上只是个uint32类型。
 
-```plain
+```cpp
 struct tcp_skb_cb {
     __u32       seq;        /* Starting sequence number */
 }
 ```
-
 如果在这个范围内疯狂猜测seq数值，并构造对应的包，发到目的机器，虽然概率低，但是总是能被试出来，从而实现**RST攻击**。这种乱棍打死老师傅的方式，就是所谓的**合法窗口盲打（blind in-window attacks）**。
 
 觉得这种方式比较**笨**？那有没有聪明点的方式，还真有，但是在这之前需要先看下面的这个问题。
@@ -349,7 +346,7 @@ struct tcp_skb_cb {
 
 **但实际，并不是**。
 
-```plain
+```cpp
 static bool tcp_validate_incoming()
 {
     struct tcp_sock *tp = tcp_sk(sk);

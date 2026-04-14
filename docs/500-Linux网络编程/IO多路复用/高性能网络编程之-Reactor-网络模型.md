@@ -175,7 +175,7 @@ Reactor（反应器）模式是高性能网络编程在设计和架构层面的�
 > + [内核提供的select/poll/epoll模型](https://blog.csdn.net/ldw201510803006/article/details/124223086?spm=1001.2014.3001.5501)
 > + [doug lea - scalable io in java](http://www.4e00.com/blog/java/2019/03/15/doug-lea-scalable-io-in-java.html)
 > + [Understanding Reactor Pattern for Highly Scalable I/O Bound Web Server](https://tianpan.co/blog/2015-01-13-understanding-reactor-pattern-for-highly-scalable-i-o-bound-web-server)
-> + `<<Java高并发核心编程（卷1）：NIO、Netty、Redis、ZooKeeper>`> 尼恩
+> + 《Java高并发核心编程（卷1）：NIO、Netty、Redis、ZooKeeper》 尼恩
 >
 
   
@@ -183,4 +183,3 @@ Reactor（反应器）模式是高性能网络编程在设计和架构层面的�
 
 > 来自: [高性能网络编程之 Reactor 网络模型（彻底搞懂）_reactor网络模型-CSDN博客](https://blog.csdn.net/ldw201510803006/article/details/124365838)
 >
-

@@ -58,7 +58,6 @@ ssize_t do_tcp_sendpages(struct sock *sk, struct page *page, int offset,
     return sk_stream_error(sk, flags, err);
 }
 ```
-
 sk_stream_error 函数主要工作就是给正在 current（发送数据的进程）发送一个 SIGPIPE 信号。
 
 ```c
@@ -70,7 +69,6 @@ int sk_stream_error(struct sock *sk, int flags, int err)
     return err;
 }
 ```
-
 ### 2. 内核 SIGPIPE 信号处理流程
 上一节我们看到如果遇到网络连接异常断开，内核会给当前进程发送一个 SIGPIPE 信号。那么为啥这个信号就能把服务程序给搞崩而且没留下 coredump 文件呢？
 
@@ -92,7 +90,6 @@ static void do_signal(struct pt_regs *regs)
     ...
     }
 ```
-
 在 do_signal 主要包含 get_signal 和 handle_signal 两个操作。
 
 内核在 get_signal 中是获取一个信号。值得注意的是，内核获取到信号后，还会判断信号的关联行为。如果发现这个信号内核可以处理，内核直接就操作了。
@@ -134,7 +131,6 @@ bool get_signal(struct ksignal *ksig)
     return ksig->sig > 0;
 }
 ```
-
 在 get_signal 函数里主要做了三件事。
 
 + 一是通过 dequeue_xxx 函数来获取一个信号
@@ -181,7 +177,6 @@ bool get_signal(struct ksignal *ksig)
     ......
     }
 ```
-
 内核默认行为大概是分成四种。
 
 第一种是默认要忽略的信号。从内核源码里可以看到 SIGCONT、SIGCHLD、SIGWINCH 和 SIGURG，这几个信号内核都是默认忽略的。
@@ -193,7 +188,6 @@ bool get_signal(struct ksignal *ksig)
         rt_sigmask(SIGCONT)   |  rt_sigmask(SIGCHLD)   | \
  rt_sigmask(SIGWINCH)  |  rt_sigmask(SIGURG)    )
 ```
-
 第二种是暂停信号。内核对 SIGSTOP、SIGTSTP、SIGTTIN、SIGTTOU 这几个信号的默认行为是暂停进程运行。
 
 是的，你没猜错。各个 IDE 中集成的代码断点调试器就是使用 SIGSTOP 信号来工作的。调试器给被调试进程发送 SIGSTOP 信号，让其进入停止状态。等到需要继续运行的时候，再发送 SIGCONT 信号让被调试进程继续运行。
@@ -207,7 +201,6 @@ bool get_signal(struct ksignal *ksig)
  rt_sigmask(SIGSTOP)   |  rt_sigmask(SIGTSTP)   | \
  rt_sigmask(SIGTTIN)   |  rt_sigmask(SIGTTOU)   )
 ```
-
 第三种是需要终止程序运行，并生成 coredump 文件的信号。通过源码我们可以看到 SIGQUIT、SIGILL、SIGTRAP、SIGABRT、SIGABRT、SIGFPE、SIGSEGV、SIGBUS、SIGSYS、SIGXCPU、SIGXFSZ 这些信号的默认行为走这个逻辑。
 
 我们以 SIGSEGV 为例，当应用程序试图访问空指针、数组越界访问等无效的内存操作时，内核会给当前进程发送 SIGSEGV 信号。
@@ -227,7 +220,6 @@ bool get_signal(struct ksignal *ksig)
         rt_sigmask(SIGXCPU)   |  rt_sigmask(SIGXFSZ)   | \
  SIGEMT_MASK           )
 ```
-
 但是看了这么多信号名了，还是找不到我们开篇提到的 SIGPIPE，好气！！！
 
 最后仔细看完代码以后，发现对于非上面提到的信号外，对于其它的所有信号包括 SIGPIPE 的默认行为都是调用 do_group_exit。这个内核函数的行为也是杀死进程下的所有线程，但**不生成 coredump 文件！！！**
@@ -260,7 +252,6 @@ unsafe {
         .expect("Failed to set SIGPIPE handler to ignore");
 }
 ```
-
 这样就不会走到内核在处理 SIGPIPE 信号时，在 get_signal 函数中发现用户进程设置了 SIGPIPE 信号的行为是 SIG_IGN，则就直接跳过，再也不会把进程杀死了。
 
 ```c
@@ -281,7 +272,6 @@ bool get_signal(struct ksignal *ksig)
     ...
     }
 ```
-
 不少同学可能会好奇，为啥我的进程中从来没处理过 SIGPIPE 信号，咋就没遇到过这种诡异的崩溃问题呢？
 
 原因是 Golang 等语言运行时会替我们做好这个设置。但我的开发场景是使用 Golang 作为宿主，又通过 cgo 调用了 Rust 的动态链接库。而 Golang 并没有针对这种场景做好处理。
@@ -296,7 +286,6 @@ broken pipe on file descriptors 1 or 2 (standard output or standard
 to a broken pipe on some other file descriptor will take no action on
 the SIGPIPE signal, and the write will fail with an EPIPE error.
 ```
-
 这段注释清晰地说了 Go 语言运行时对于 SIGPIPE 信号处理
 
 + 如果 fd 是 stdout、stderr，那么程序收到 SIGPIPE 信号，默认行为是程序会退出；

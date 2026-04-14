@@ -45,18 +45,18 @@ slug: /C++/项目实战/高并发环境下的C-定时器解决方案
 下面是一个简化的 C++ 代码示例，展示如何使用红黑树实现定时器：
 
 ```cpp
-#include `<iostream>`
-#include `<set>`
-#include `<functional>`
-#include `<chrono>`
+#include <iostream>
+#include <set>
+#include <functional>
+#include <chrono>
 // 定义定时器节点
 struct TimerNode {
     // 任务到期时间，采用time_t类型表示从某个固定时间点（如1970年1月1日00:00:00 UTC）到现在的秒数
     std::chrono::system_clock::time_point expire;
     // 任务执行函数，使用std::function来存储可调用对象，增加了函数存储的灵活性
-    ``std::`function`<void()>` callback;
+    std::function<void()> callback;
     // 重载小于运算符，用于红黑树的排序
-    bool operator`<(const TimerNode& other) const {
+    bool operator<(const TimerNode& other) const {
         return expire < other.expire;
     }
 };
@@ -64,7 +64,7 @@ struct TimerNode {
 class Timer {
 public:
     // 添加定时器任务
-    void addTimer(int delay,`std::function<void()>`cb) {
+    void addTimer(int delay,std::function<void()>cb) {
         // 计算任务到期时间，通过获取当前时间加上延迟时间得到
         auto expireTime = std::chrono::system_clock::now() + std::chrono::seconds(delay);
         // 创建定时器节点并插入到红黑树中
@@ -84,11 +84,10 @@ public:
         }
     }
 private:
-    // 使用std::set来实现红黑树，std::set底层基于红黑树，能自动根据节点的` < 运算符进行排序
-`std::set<TimerNode>`timerSet;
+    // 使用std::set来实现红黑树，std::set底层基于红黑树，能自动根据节点的 < 运算符进行排序
+std::set<TimerNode>timerSet;
 };
 ```
-
 **你可以使用以下方式调用：**
 
 ```cpp
@@ -96,7 +95,7 @@ int main() {
     Timer timer;
     // 添加一个3秒后执行的任务
     timer.addTimer(3, []() {
-        std::cout `<< "Task 1 executed" << std::endl;
+        std::cout << "Task 1 executed" << std::endl;
     });
     // 添加一个5秒后执行的任务
     timer.addTimer(5, []() {
@@ -111,7 +110,6 @@ int main() {
     return 0;
 }
 ```
-
 在上述代码中，TimerNode 结构体表示定时器节点，包含任务的到期时间和回调函数。Timer 类使用 std::set 来存储定时器节点，利用 std::set 的红黑树特性实现任务的自动排序。addTimer 方法用于添加新的定时器任务，checkAndExecute 方法用于检查并执行到期的任务。通过这种方式，我们实现了一个基于红黑树的简单定时器。在实际应用中，可以根据具体需求对代码进行扩展和优化，例如添加任务取消功能、支持更细粒度的时间控制等。
 
 ### 3. 三、最小堆实现高性能定时器**
@@ -131,18 +129,18 @@ int main() {
 下面是一个基于 C++ 的最小堆实现定时器的代码示例：
 
 ```cpp
-#include <iostream>`
-#include `<vector>`
-#include `<functional>`
-#include `<chrono>`
+#include <iostream>
+#include <vector>
+#include <functional>
+#include <chrono>
 // 定义定时器任务结构体
 struct TimerTask {
 // 任务到期时间
 std::chrono::system_clock::time_point expire;
 // 任务执行函数
-``std::`function`<void()>` callback;
+std::function<void()> callback;
 // 重载小于运算符，用于最小堆的比较
-bool operator`<(const TimerTask& other) const {
+bool operator<(const TimerTask& other) const {
     return expire < other.expire;
 }
 };
@@ -150,7 +148,7 @@ bool operator`<(const TimerTask& other) const {
 class MinHeapTimer {
 public:
 // 添加任务到最小堆
-void addTask(int delay,`std::function<void()>`cb) {
+void addTask(int delay,std::function<void()>cb) {
     // 计算任务到期时间
     auto expireTime = std::chrono::system_clock::now() + std::chrono::seconds(delay);
     TimerTask task = {expireTime, cb};
@@ -169,7 +167,7 @@ void checkAndExecute() {
 }
 private:
 // 最小堆存储任务
-``std::`vector`<TimerTask>` heap;
+std::vector<TimerTask> heap;
 // 上浮调整，保持最小堆性质
 void siftUp(int index) {
     while (index > 0) {
@@ -212,7 +210,6 @@ void removeTop() {
 }
 };
 ```
-
 你可以使用以下方式调用：
 
 ```cpp
@@ -220,7 +217,7 @@ int main() {
     MinHeapTimer timer;
     // 添加一个2秒后执行的任务
     timer.addTask(2, []() {
-        std::cout `<< "Task 1 executed" << std::endl;
+        std::cout << "Task 1 executed" << std::endl;
     });
     // 添加一个4秒后执行的任务
     timer.addTask(4, []() {
@@ -235,7 +232,6 @@ int main() {
     return 0;
 }
 ```
-
 在上述代码中，TimerTask 结构体表示定时器任务，包含任务的到期时间和回调函数。MinHeapTimer 类使用 std::vector 来实现最小堆，通过 addTask 方法将任务添加到最小堆中，并在添加后通过 siftUp 方法进行上浮调整以保持最小堆的性质。checkAndExecute 方法用于检查并执行到期的任务，它首先获取当前时间，然后不断检查堆顶任务是否到期，若到期则执行其回调函数，并通过 removeTop 方法删除堆顶任务，在删除后通过 siftDown 方法进行下沉调整以维持最小堆的特性。通过这种方式，我们利用最小堆实现了一个简单的定时器，能够高效地管理和执行定时任务。在实际应用中，还可以根据具体需求对代码进行进一步的优化和扩展，例如支持任务的取消、调整任务的到期时间等功能。
 
 ### 4. 四、时间轮实现高性能定时器**
@@ -255,15 +251,15 @@ int main() {
 下面是一个简单的 C++ 代码示例，用于展示时间轮的基本实现：
 
 ```cpp
-#include <iostream>`
-#include `<vector>`
-#include `<list>`
-#include `<functional>`
-#include `<chrono>`
+#include <iostream>
+#include <vector>
+#include <list>
+#include <functional>
+#include <chrono>
 // 定义定时器任务结构体
 struct TimerTask {
 // 任务执行函数
-``std::`function`<void()>` callback;
+std::function<void()> callback;
 // 任务到期时间
 std::chrono::system_clock::time_point expire;
 };
@@ -278,7 +274,7 @@ TimeWheel(int slotCount, int interval) : slotCount(slotCount), interval(interval
     currentTime = std::chrono::system_clock::now();
 }
 // 添加定时器任务
-void addTask(int delay, ``std::`function`<void()>` cb) {
+void addTask(int delay, std::function<void()> cb) {
     // 计算任务到期时间
     auto expireTime = std::chrono::system_clock::now() + std::chrono::milliseconds(delay);
     TimerTask task = {cb, expireTime};
@@ -310,7 +306,7 @@ private:
 // 根据延迟时间计算槽位索引
 int getSlotIndex(int delay) {
     // 计算从当前时间开始经过延迟时间后的总毫秒数
-    auto totalMs = std::chrono::`duration_cast`<std::chrono::milliseconds>`(
+    auto totalMs = std::chrono::duration_cast<std::chrono::milliseconds>(
     (std::chrono::system_clock::now() + std::chrono::milliseconds(delay)) - currentTime).count();
     // 计算槽位索引
     return totalMs % slotCount;
@@ -320,12 +316,11 @@ int slotCount;
 // 每个槽的时间间隔（毫秒）
 int interval;
 // 时间轮的槽，每个槽是一个任务列表
-``std::`vector`<`std::list<TimerTask>`> slots;
+std::vector<std::list<TimerTask>> slots;
 // 当前时间
 std::chrono::system_clock::time_point currentTime;
 };
 ```
-
 你可以使用以下方式调用：
 
 ```cpp
@@ -333,7 +328,7 @@ int main() {
     TimeWheel timeWheel(100, 100); // 初始化时间轮，100个槽，每个槽100毫秒
     // 添加一个500毫秒后执行的任务
     timeWheel.addTask(500, []() {
-        std::cout `<< "Task executed" << std::endl;
+        std::cout << "Task executed" << std::endl;
     });
     // 模拟时间推进
     for (int i = 0; i < 10; ++i) {

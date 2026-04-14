@@ -15,14 +15,12 @@ slug: /Rust/Rust-中的-S3-魔法-s3s-实战指南与优雅代码之旅
 ```rust
 curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
 ```
-
 安装完成后，确保 Rust 和 Cargo 已经正确安装：
 
 ```rust
 rustc --version
 cargo --version
 ```
-
 #### 1.2. 安装 AWS CLI
 AWS CLI 是一个命令行工具，用于与 AWS 服务进行交互。你可以通过以下命令安装：
 
@@ -34,13 +32,11 @@ pip install awscli
 # 对于 Windows
 pip install awscli
 ```
-
 安装完成后，配置 AWS CLI：
 
 ```rust
 aws configure
 ```
-
 按照提示输入你的 AWS Access Key ID、Secret Access Key、默认区域和输出格式。
 
 ---
@@ -52,7 +48,6 @@ aws configure
 s3s = "0.1.0"
 tokio = { version = "1", features = ["full"] }
 ```
-
 `tokio`是一个异步运行时，`s3s`依赖于它来处理异步操作。
 
 ---
@@ -71,7 +66,7 @@ use s3s::request::S3RequestBuilder;
 
 
 #[tokio::main]
-async fn main() -> `Result`<(), S3Error>` {
+async fn main() -> Result<(), S3Error> {
     // 配置 AWS 凭证
     let credentials = Credentials::new(
         "YOUR_ACCESS_KEY_ID",
@@ -99,7 +94,7 @@ async fn main() -> `Result`<(), S3Error>` {
 
 
     // 发送请求并获取响应
-    let response: `S3Response`<ListObjectsV2Output>` = s3_service.send(request).await?;
+    let response: S3Response<ListObjectsV2Output> = s3_service.send(request).await?;
 
 
     // 打印对象列表
@@ -113,7 +108,6 @@ async fn main() -> `Result`<(), S3Error>` {
     Ok(())
 }
 ```
-
 将`YOUR_ACCESS_KEY_ID`和`YOUR_SECRET_ACCESS_KEY`替换为你的 AWS 凭证。
 
 ---
@@ -134,7 +128,7 @@ use tokio::io::AsyncWriteExt;
 
 
 #[tokio::main]
-async fn main() -> `Result`<(), S3Error>` {
+async fn main() -> Result<(), S3Error> {
     // 配置 AWS 凭证
     let credentials = Credentials::new(
         "YOUR_ACCESS_KEY_ID",
@@ -160,7 +154,7 @@ async fn main() -> `Result`<(), S3Error>` {
         .build()?;
 
 
-    let response: `S3Response`<ListObjectsV2Output>` = s3_service.send(request).await?;
+    let response: S3Response<ListObjectsV2Output> = s3_service.send(request).await?;
 
 
     // 遍历对象并同步到目标存储桶
@@ -181,7 +175,7 @@ async fn main() -> `Result`<(), S3Error>` {
                 .build()?;
 
 
-            let response: `S3Response`<GetObjectOutput>` = s3_service.send(request).await?;
+            let response: S3Response<GetObjectOutput> = s3_service.send(request).await?;
 
 
             // 将对象保存到本地文件
@@ -213,7 +207,6 @@ async fn main() -> `Result`<(), S3Error>` {
     Ok(())
 }
 ```
-
 将`YOUR_ACCESS_KEY_ID`和`YOUR_SECRET_ACCESS_KEY`替换为你的 AWS 凭证。
 
 ---
@@ -230,7 +223,6 @@ let list_objects_input = ListObjectsV2Input::builder()
     .prefix("logs/")
     .build()?;
 ```
-
 #### 4.2. 示例：设置并发数
 你可以通过`tokio`的并发机制来设置同步的并发数：
 
@@ -239,7 +231,7 @@ use tokio::task;
 
 
 #[tokio::main]
-async fn main() -> `Result`<(), S3Error>` {
+async fn main() -> Result<(), S3Error> {
     // 配置 AWS 凭证
     let credentials = Credentials::new(
         "YOUR_ACCESS_KEY_ID",
@@ -265,11 +257,11 @@ async fn main() -> `Result`<(), S3Error>` {
         .build()?;
 
 
-    let response: `S3Response`<ListObjectsV2Output>` = s3_service.send(request).await?;
+    let response: S3Response<ListObjectsV2Output> = s3_service.send(request).await?;
 
 
     // 并发同步对象
-    let tasks: `Vec`<_>` = if let Some(contents) = response.output.contents {
+    let tasks: Vec<_> = if let Some(contents) = response.output.contents {
         contents.into_iter().map(|object| {
             let s3_service = s3_service.clone();
             let object_key = object.key.unwrap_or_default();
@@ -288,7 +280,7 @@ async fn main() -> `Result`<(), S3Error>` {
                     .build()?;
 
 
-                let response: `S3Response`<GetObjectOutput>` = s3_service.send(request).await?;
+                let response: S3Response<GetObjectOutput> = s3_service.send(request).await?;
 
 
                 // 将对象保存到本地文件
@@ -312,7 +304,7 @@ async fn main() -> `Result`<(), S3Error>` {
                 s3_service.send(request).await?;
 
 
-                Ok::`<(), S3Error>`(())
+                Ok::<(), S3Error>(())
             })
         }).collect()
     } else {

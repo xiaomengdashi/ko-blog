@@ -28,8 +28,8 @@ slug: /Linux系统编程/详解linux多线程-互斥锁-条件变量-读写锁-�
 3. 对互斥锁进行加锁后，任何其他试图再次对互斥锁加锁的线程将会被阻塞，直到锁被释放。对互斥锁进行加锁后，任何其他试图再次对互斥锁加锁的线程将会被阻塞，直到锁被释放。
 
 ```cpp
-#include `<pthread.h>`
-#include `<time.h>`
+#include <pthread.h>
+#include <time.h>
 // 初始化一个互斥锁。
 int pthread_mutex_init(pthread_mutex_t *mutex, 
 						const pthread_mutexattr_t *attr);
@@ -49,15 +49,14 @@ int pthread_mutex_unlock(pthread_mutex_t *mutex);
 // 必须要对互斥锁进行销毁，以释放资源。
 int pthread_mutex_destroy(pthread_mutex_t *mutex);
 ```
-
 ### 1.1. Demo：阻塞模式
 ```cpp
 //使用互斥量解决多线程抢占资源的问题
-#include `<stdio.h>`
-#include `<stdlib.h>`
-#include `<unistd.h>`
-#include `<pthread.h>`
-#include `<string.h>`
+#include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
+#include <pthread.h>
+#include <string.h>
  
 char* buf[5]; //字符指针数组  全局变量
 int pos; //用于指定上面数组的下标
@@ -104,13 +103,12 @@ int main(void)
     return 0;
 }
 ```
-
 ### 1.2. Demo：非阻塞模式
 ```cpp
-#include `<stdio.h>`
-#include `<pthread.h>`
-#include `<time.h>`
-#include `<string.h>`
+#include <stdio.h>
+#include <pthread.h>
+#include <time.h>
+#include <string.h>
  
 int main (void)
 {
@@ -135,13 +133,10 @@ int main (void)
     if (err == 0)
         printf ("mutex locked again\n");
     else 
-        printf ("can`t lock mutex again:%s\n", strerror (err));
+        printf ("cant lock mutex again:%s\n", strerror (err));
     return 0;
 }
 ```
-
-
-
 ## 2. 条件变量（同步）
 与互斥锁不同，条件变量是用来等待而不是用来上锁的。条件变量用来自动阻塞一个线程，直 到某特殊情况发生为止。通常条件变量和互斥锁同时使用。
 
@@ -165,7 +160,7 @@ int main (void)
 4. 清除条件变量：destroy;无线程等待,否则返回EBUSY清除条件变量:destroy;无线程等待,否则返回EBUSY
 
 ```cpp
-#include `<pthread.h>`
+#include <pthread.h>
 // 初始化条件变量
 int pthread_cond_init(pthread_cond_t *cond,
 						pthread_condattr_t *cond_attr);
@@ -181,7 +176,6 @@ int pthread_cond_signal(pthread_cond_t *cond);
 // 唤醒等待该条件的所有线程
 int pthread_cond_broadcast(pthread_cond_t *cond);  
 ```
-
 1、线程的条件变量实例1
 
 Jack开着一辆出租车来到一个站点停车，看见没人就走了。过段时间，Susan来到站点准备乘车，但是没有来，于是就等着。过了一会Mike开着车来到了这个站点，Sunsan就上了Mike的车走了。如图所示：
@@ -189,10 +183,10 @@ Jack开着一辆出租车来到一个站点停车，看见没人就走了。过�
 ![](/img/posts/c79d809006a9a85e65599abef4d2dd68.gif)
 
 ```cpp
-#include `<stdio.h>`  
-#include `<stdlib.h>`  
-#include `<unistd.h>`  
-#include `<pthread.h>`  
+#include <stdio.h>  
+#include <stdlib.h>  
+#include <unistd.h>  
+#include <pthread.h>  
   
 pthread_cond_t taxicond = PTHREAD_COND_INITIALIZER;  
 pthread_mutex_t taximutex = PTHREAD_MUTEX_INITIALIZER;  
@@ -240,7 +234,6 @@ int main (int argc, char **argv)
     return 0;  
 }
 ```
-
 2、线程的条件变量实例2
 
 Jack开着一辆出租车来到一个站点停车，看见没人就等着。过段时间，Susan来到站点准备乘车看见了Jack的出租车，于是就上去了。过了一会Mike开着车来到了这个站点，看见没人救等着。如图所示：
@@ -248,10 +241,10 @@ Jack开着一辆出租车来到一个站点停车，看见没人就等着。过�
 ![](/img/posts/ecbcda96e3e5cd3f708f83c8c35040ff.gif)
 
 ```cpp
-#include `<stdio.h>`
-#include `<stdlib.h>`
-#include `<unistd.h>`
-#include `<pthread.h>`
+#include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
+#include <pthread.h>
  
 int travelercount = 0;
 pthread_cond_t taxicond = PTHREAD_COND_INITIALIZER;
@@ -308,7 +301,6 @@ int main (int argc, char **argv)
     return 0;
 }
 ```
-
 ## 3. 虚假唤醒（Spurious Wakeup）
 虚假唤醒(spurious wakeup)在采用条件等待时：
 
@@ -323,7 +315,6 @@ If( 条件不满足 )
    Condition_wait(cond,mutex);  
 }   
 ```
-
 这是因为可能会存在虚假唤醒”spurious wakeup”的情况。
 
 也就是说，即使没有线程调用condition_signal, 原先调用condition_wait的函数也可能会返回。此时线程被唤醒了，但是条件并不满足，这个时候如果不对条件进行检查而往下执行，就可能会导致后续的处理出现错误。
@@ -356,7 +347,7 @@ If( 条件不满足 )
 ---
 
 ```cpp
-#include `<pthread.h>`
+#include <pthread.h>
 // 初始化读写锁
 int pthread_rwlock_init(pthread_rwlock_t *rwlock, 
 						const pthread_rwlockattr_t *attr); 
@@ -372,16 +363,15 @@ int pthread_rwlock_unlock (pthread_rwlock_t *rwlock);
 // 销毁读写锁
 int pthread_rwlock_destroy(pthread_rwlock_t *rwlock);
 ```
-
 【Demo】：
 
 ```cpp
 // 一个使用读写锁来实现 4 个线程读写一段数据是实例。
 // 在此示例程序中，共创建了 4 个线程，
 // 其中两个线程用来写入数据，两个线程用来读取数据
-#include `<stdio.h>`  
-#include `<unistd.h>`  
-#include `<pthread.h>`  
+#include <stdio.h>  
+#include <unistd.h>  
+#include <pthread.h>  
 pthread_rwlock_t rwlock; //读写锁  
 int num = 1;  
   
@@ -458,7 +448,6 @@ int main()
     return 0;  
 }  
 ```
-
 ## 5. 自旋锁（同步）
 自旋锁与互斥量功能一样，唯一一点不同的就是互斥量阻塞后休眠让出cpu，而自旋锁阻塞后不会让出cpu，会一直忙等待，直到得到锁。
 
@@ -472,7 +461,7 @@ int main()
 编程时可根据操作信号量值的结果判断是否对公共资源具有访问的权限，当信号量值大于 0 时，则可以访问，否则将阻塞。PV 原语是对信号量的操作，一次 P 操作使信号量减１，一次 V 操作使信号量加１。
 
 ```cpp
-#include `<semaphore.h>`
+#include <semaphore.h>
 // 初始化信号量
 int sem_init(sem_t *sem, int pshared, unsigned int value);
 // 信号量 P 操作（减 1）
@@ -486,16 +475,15 @@ int sem_getvalue(sem_t *sem, int *sval);
 // 销毁信号量
 int sem_destroy(sem_t *sem);
 ```
-
 ### 6.1. 信号量用于同步
 ![](/img/posts/87a2e1c7ff31221ce061ebca95e4ca5c.png)
 
 ```cpp
 // 信号量用于同步实例
-#include `<stdio.h>`
-#include `<unistd.h>`
-#include `<pthread.h>`
-#include `<semaphore.h>`
+#include <stdio.h>
+#include <unistd.h>
+#include <pthread.h>
+#include <semaphore.h>
  
 sem_t sem_g,sem_p;   //定义两个信号量
 char ch = 'a';
@@ -539,16 +527,15 @@ int main(int argc, char *argv[])
     return 0;
 }
 ```
-
 ### 6.2. 信号量用于互斥
 ![](/img/posts/7fc6a143f770037a7a5439181aa5846e.png)
 
 ```cpp
 // 信号量用于互斥实例
-#include `<stdio.h>`
-#include `<pthread.h>`
-#include `<unistd.h>`
-#include `<semaphore.h>`
+#include <stdio.h>
+#include <pthread.h>
+#include <unistd.h>
+#include <semaphore.h>
  
 sem_t sem; //信号量
  
