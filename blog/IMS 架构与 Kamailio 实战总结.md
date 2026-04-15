@@ -1,3 +1,11 @@
+---
+slug: ims-kamailio
+title: IMS 架构与 Kamailio 实战总结
+authors: [kolane]
+date: 2026-03-10
+tags: [网络编程, SIP, Kamailio]
+---
+
 ## 📌 1. IMS 基本概念
 
 IMS（IP Multimedia Subsystem）是运营商用于提供语音、视频、消息等多媒体通信服务的核心架构。

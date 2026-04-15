@@ -1,3 +1,11 @@
+---
+slug: sogou-cpp-workflow
+title: Sogou C++ Workflow 框架技术文档
+authors: [kolane]
+date: 2026-03-10
+tags: [C++, 并发编程, 异步框架]
+---
+
 > **仓库**：https://github.com/sogou/workflow  
 > **License**：Apache 2.0  
 > **语言标准**：C++11 及以上  

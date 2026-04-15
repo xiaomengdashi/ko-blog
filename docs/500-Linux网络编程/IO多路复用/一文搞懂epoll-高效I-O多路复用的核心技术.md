@@ -51,7 +51,7 @@ select/poll会因为监听fd的数量而导致效率低下，因为它是轮询�
 
 btw:TCP/IP协议栈使用内存池管理sk_buff结构，你还可以通过修改内存池pool的大小，毕竟linux支持各种微调内核。
 
-### 1. 二、epoll核心原理**
+### 1. 二、epoll核心原理
 #### 1.1. 2.1epoll的工作方式
 **epoll分为两种工作方式LT和ET：**
 
@@ -261,7 +261,7 @@ callback = functools.partial(connection_ready, sock)
 
 说了这么多，总算引出了我们的主人公 epoll 了。不同于忙轮询和无差别轮询，epoll 会把哪个流发生了怎样的 I/O 事件通知我们。此时我们对这些流的操作都是有意义的。（复杂度降低到了O(k)，k为产生 I/O 事件的流的个数。
 
-### 2. 三、epoll实现原理**
+### 2. 三、epoll实现原理
 #### 2.1. 3.1epoll 操作
 epoll 在 linux 内核中申请了一个简易的文件系统，把原先的一个 select 或者 poll 调用分为了三个部分：调用 epoll_create 建立一个 epoll 对象（在 epoll 文件系统中给这个句柄分配资源）、调用 epoll_ctl 向 epoll 对象中添加连接的套接字、调用 epoll_wait 收集发生事件的连接。
 
@@ -351,7 +351,7 @@ PS. 普通文件不是 pollable 的，详情请看 epoll_does_not_work_with_file
 
 当然，在 LT 模式下开发基于 epoll 的应用要简单一些，不太容易出错，而在 ET 模式下事件发生时，如果没有彻底地将缓冲区的数据处理完，则会导致缓冲区的用户请求得不到响应。注意，默认情况下 Nginx 采用 ET 模式使用 epoll 的。
 
-### 3. 四、epoll内核源码详解**
+### 3. 四、epoll内核源码详解
 网上很多博客说epoll使用了共享内存,这个是完全错误的 ,可以阅读源码,会发现完全没有使用共享内存的任何api，而是 使用了copy_from_user跟__put_user进行内核跟用户虚拟空间数据交互。
 
 ```cpp
@@ -1289,7 +1289,7 @@ static inline int is_file_epoll(struct file *f)
 #### 3.3. 4.3epoll_wait操作
 计算睡眠时间(如果有),判断eventpoll对象的链表是否为空,不为空那就干活不睡明.并且初始化一个等待队列,把自己挂上去,设置自己的进程状态，为可睡眠状态.判断是否有信号到来(有的话直接被中断醒来,),如果啥事都没有那就调用schedule_timeout进行睡眠，如果超时或者被唤醒,首先从自己初始化的等待队列删除,然后开始拷贝资源给用户空间了，拷贝资源则是先把就绪事件链表转移到中间链表,然后挨个遍历拷贝到用户空间, 并且挨个判断其是否为水平触发,是的话再次插入到就绪链表。
 
-### 4. 五、epoll使用实例：TCP服务器处理多个客户端请求**
+### 4. 五、epoll使用实例：TCP服务器处理多个客户端请求
 #### 4.1. 5.1epoll创建
 ```cpp
 int epoll_create(int size); //监听个数

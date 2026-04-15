@@ -14,7 +14,7 @@ slug: /C++/Boost深度剖析/boost使用CMake和MinGW-w64的编译安装-CherryH
 + GCC 版本: mingw-x64
 + CMake
 
-#### 1.1. 1.**下载解压 Boost 源码，并解压**
+#### 1.1. 1.**下载解压 Boost 源码，并解压
 #### 1.2. 2.安装
 1. 进入 `tools\build\v2\` 目录(注: 此处**最好查阅一下官方文档**, 如最新 Boost 1.80.0 版本中只进入到 `tools\build\` 目录), **重点是确认当前路径下具有 **`**bootstrap.bat**`**（一定要有） 和 **`**b2.exe**`**（这个文件没有也没关系，新版本可能没有） 两个文件**.
 2. 运行**使用 GCC** 运行 `bootstrap.bat` 脚本, **注意要使用 **`**gcc**`** 作为参数**.
@@ -25,7 +25,7 @@ slug: /C++/Boost深度剖析/boost使用CMake和MinGW-w64的编译安装-CherryH
 #### 1.3. bash
 **安装成功后, 在 Boost.Build 安装路径下找到 **`**b2.exe**`** 文件: 在 1.54.0 版本是在 **`**bin**`** 目录下; 而在 1.80.0 版本直接在 Boost.Build 的安装目录下.**
 
-#### 1.4. 3.**编译安装 Boost**
+#### 1.4. 3.**编译安装 Boost
 在 Boost 的根目录使用以下命令使用 GCC 编译安装 Boost:
 
 #### 1.5. bash
@@ -52,7 +52,7 @@ slug: /C++/Boost深度剖析/boost使用CMake和MinGW-w64的编译安装-CherryH
 
 ![](/img/posts/4a561a8c99e1aa6a96e1fa7661c3ce62.png)
 
-### 3. 4.**MinGW编译Boost库报错处理**
+### 3. 4.**MinGW编译Boost库报错处理
 #### 3.1. 1.错误
 运行[boost](https://so.csdn.net/so/search?q=boost&spm=1001.2101.3001.7020)编译指令，报错“notice: could not find main target stage
 

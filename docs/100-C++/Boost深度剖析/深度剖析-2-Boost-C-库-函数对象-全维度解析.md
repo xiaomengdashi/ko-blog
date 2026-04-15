@@ -16,12 +16,12 @@ slug: /C++/Boost深度剖析/深度剖析-2-Boost-C-库-函数对象-全维度�
 
 ![](/img/posts/47222bf32efec7e7441ac75a458555cd.png)
 
-### 1. 一：基础知识**
+### 1. 一：基础知识
 本章介绍的是函数对象，可能称为'高阶函数'更为适合。 它实际上是指那些可以被传入到其它函数或是从其它函数返回的一类函数。 在C++中高阶函数是被实现为函数对象的，所以这个标题还是有意义的。
 
 在这整一章中，将会介绍几个用于处理函数对象的Boost C++库。 其中，Boost.Bind可替换来自C++标准的著名的`std::bind1st()`和std::bind2nd()函数，而Boost.Function则提供了一个用于封装函数指针的类。 最后，Boost.Lambda则引入了一种创建匿名函数的方法。
 
-### 2. 二：Boost.Bind**
+### 2. 二：Boost.Bind
 `Boost.Bind`是Boost库中的一个组件，它提供了一种方便的方式来创建函数对象，用于绑定函数及其参数。下面是一个综合实例，展示了`Boost.Bind`的多种使用场景，包括绑定自由函数、成员函数和带占位符的绑定。
 
 ```cpp
@@ -68,7 +68,7 @@ std::vector<int>numbers = {1, 2, 3, 4, 5};
     return 0;
 }
 ```
-### 3. 三：Boost.Ref**
+### 3. 三：Boost.Ref
 `Boost.Ref` 库提供了 `boost::ref` 和 `boost::cref` 两个工具，用于在需要按引用传递对象时避免对象的复制。`boost::ref` 用于传递非 `const` 对象的引用，`boost::cref` 用于传递 `const` 对象的引用。下面为你提供一个综合实例代码，展示 `Boost.Ref` 在不同场景下的使用。
 
 ```cpp
@@ -113,7 +113,7 @@ int main() {
     return 0;
 }
 ```
-### 4. 四：Boost.Function**
+### 4. 四：Boost.Function
 为了封装函数指针，Boost.Function 提供了一个名为 `boost::function` 的类。 它定义于 `boost/function.hpp`，用法如下：
 
 ```cpp
@@ -176,7 +176,7 @@ std::vector<boost::function<int(int, int)>> operations;
     return 0;
 }
 ```
-### 5. 五：Boost.Lambda**
+### 5. 五：Boost.Lambda
 `Boost.Lambda` 库允许你在代码中创建轻量级的匿名函数对象，这些函数对象可以在需要函数的地方直接使用，无需显式定义一个命名的函数或函数对象类。下面是一个综合实例代码，展示了 `Boost.Lambda` 在不同场景下的使用：
 
 ```cpp
@@ -239,7 +239,7 @@ std::vector<Point>points = {{1, 2}, {3, 4}, {5, 6}};
     return 0;
 }
 ```
-### 6. 六：综合实战案例（Ubuntu平台运行）**
+### 6. 六：综合实战案例（Ubuntu平台运行）
 ```cpp
 #include <iostream>
 #include <boost/bind.hpp>
@@ -313,7 +313,7 @@ g++ -o boost_example boost_example.cpp -lboost_system -lboost_filesystem
 
 ![](/img/posts/e52f4b3454ecebd3ff043fbe4f150448.png)
 
-### 7. 七：动手练习操作**
+### 7. 七：动手练习操作
 #### 7.1. 1：简化以下程序，将函数对象divide_by 转换为一个函数，并将for 循环替换为用一个标准的 C++ 算法来输出数据：
 
 ```cpp

@@ -1,3 +1,11 @@
+---
+slug: pi-agent-framework
+title: 使用 PI 构建自定义 Agent 框架
+authors: [kolane]
+date: 2026-03-04
+tags: [AI, Agent, 编程工具]
+---
+
 ## 使用 PI 构建自定义 Agent 框架
 
 一份详尽的 TypeScript 教程，介绍如何使用 PI 工具包（pi-ai、pi-agent-core、pi-coding-agent、pi-tui）构建生产级 AI Agent —— 这些正是 OpenClaw 的核心依赖

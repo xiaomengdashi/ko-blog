@@ -1,3 +1,11 @@
+---
+slug: userver
+title: userver - Yandex C++ 异步框架技术文档
+authors: [kolane]
+date: 2026-03-10
+tags: [C++, 异步框架, 高性能]
+---
+
 > **仓库**：https://github.com/userver-framework/userver  
 > **官网**：https://userver.tech  
 > **官方文档**：https://userver.tech/de/d6a/md_en_2index.html  
