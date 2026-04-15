@@ -3,12 +3,6 @@ sidebar_position: 1
 slug: /Rust/与C混合编译/Rust-与C交互动态库和静态库的尝试
 ---
 
----
-title: 'Rust : 与C交互动态库和静态库的尝试'
-date: '2024-12-27 22:42:38'
-updated: '2024-12-27 23:05:51'
-slug: /Rust/与C混合编译/Rust-与C交互动态库和静态库的尝试
-rust调用C端的库函数，有很多方法，场景也有所不同。包括windows还是linux，内置库还是自定义库，还是三方库等等。
 
 #### 1. rust调用其内置的C库
 这个很简单，直接把extern "C"引入即可：  

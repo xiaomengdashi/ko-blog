@@ -33,7 +33,7 @@ PI 是一个用于构建 AI Agent 的 TypeScript 工具包。它是一个 monore
 
 * * *
 
-### [安装](#安装)
+### [1. 安装](#安装)
 
 ```bash
 mkdir pi-agent && cd pi-agent
@@ -42,7 +42,7 @@ npm install @mariozechner/pi-ai @mariozechner/pi-agent-core @mariozechner/pi-cod
 npm install -D typescript @types/node tsx
 ```
 
-### [设置 API Key](#设置-api-key)
+### [2. 设置 API Key](#设置-api-key)
 
 ```bash
 export ANTHROPIC_API_KEY=sk-ant-...
@@ -52,7 +52,7 @@ export OPENAI_API_KEY=sk-...
 
 * * *
 
-### [基础调用](#基础调用)
+### [3. 基础调用](#基础调用)
 
 ```typescript
 import { getModel, completeSimple } from "@mariozechner/pi-ai";
@@ -80,7 +80,7 @@ async function main() {
 main();
 ```
 
-### [流式输出](#流式输出)
+### [4. 流式输出](#流式输出)
 
 ```typescript
 import { getModel, streamSimple } from "@mariozechner/pi-ai";
@@ -113,7 +113,7 @@ async function main() {
 main();
 ```
 
-### [多供应商切换](#多供应商切换)
+### [5. 多供应商切换](#多供应商切换)
 
 只需更改 `getModel` 调用，其他代码保持不变：
 
@@ -124,7 +124,7 @@ const model = getModel("anthropic", "claude-opus-4-5");
 // const model = getModel("groq", "llama-3.3-70b-versatile");
 ```
 
-### [自定义本地模型](#自定义本地模型)
+### [6. 自定义本地模型](#自定义本地模型)
 
 ```typescript
 import type { Model } from "@mariozechner/pi-ai";
@@ -145,7 +145,7 @@ const localModel: Model<"openai-completions"> = {
 
 * * *
 
-### [定义工具](#定义工具)
+### [7. 定义工具](#定义工具)
 
 工具使用 [TypeBox](https://github.com/sinclairzx81/typebox) schema 进行类型安全的参数定义：
 
@@ -172,7 +172,7 @@ const weatherTool: AgentTool<typeof weatherParams> = {
 };
 ```
 
-### [创建 Agent](#创建-agent)
+### [8. 创建 Agent](#创建-agent)
 
 ```typescript
 import { Agent } from "@mariozechner/pi-agent-core";
@@ -191,7 +191,7 @@ const agent = new Agent({
 });
 ```
 
-### [订阅事件](#订阅事件)
+### [9. 订阅事件](#订阅事件)
 
 ```typescript
 agent.subscribe((event) => {
@@ -221,7 +221,7 @@ agent.subscribe((event) => {
 });
 ```
 
-### [运行 Agent](#运行-agent)
+### [10. 运行 Agent](#运行-agent)
 
 ```typescript
 await agent.prompt("What's the weather in Tokyo and London?");
@@ -229,7 +229,7 @@ await agent.prompt("What's the weather in Tokyo and London?");
 
 * * *
 
-### [内置工具](#内置工具)
+### [11. 内置工具](#内置工具)
 
 **默认工具（已启用）：**
 
@@ -255,7 +255,7 @@ codingTools;    // [read, bash, edit, write]  - 默认
 readOnlyTools;  // [read, grep, find, ls]     - 只读探索
 ```
 
-### [创建会话](#创建会话)
+### [12. 创建会话](#创建会话)
 
 ```typescript
 import { createAgentSession, SessionManager } from "@mariozechner/pi-coding-agent";
@@ -290,7 +290,7 @@ async function main() {
 main();
 ```
 
-### [会话持久化](#会话持久化)
+### [13. 会话持久化](#会话持久化)
 
 ```typescript
 import * as path from "path";
@@ -308,7 +308,7 @@ const sessionManager = SessionManager.open("/path/to/session.jsonl");
 const sessionManager = SessionManager.continueRecent(process.cwd());
 ```
 
-### [上下文压缩](#上下文压缩)
+### [14. 上下文压缩](#上下文压缩)
 
 ```typescript
 import { estimateTokens } from "@mariozechner/pi-coding-agent";
@@ -325,7 +325,7 @@ if (totalTokens > 100_000) {
 }
 ```
 
-### [扩展系统](#扩展系统)
+### [15. 扩展系统](#扩展系统)
 
 ```typescript
 import type { ExtensionAPI } from "@mariozechner/pi-coding-agent";
@@ -420,7 +420,7 @@ tui.start();
 
 OpenClaw 在此基础上添加了更多生产级功能：
 
-### [多供应商认证](#多供应商认证)
+### [16. 多供应商认证](#多供应商认证)
 
 ```typescript
 import { AuthStorage, ModelRegistry } from "@mariozechner/pi-coding-agent";
@@ -435,7 +435,7 @@ const { session } = await createAgentSession({
 });
 ```
 
-### [工作区范围工具](#工作区范围工具)
+### [17. 工作区范围工具](#工作区范围工具)
 
 ```typescript
 import {
@@ -455,7 +455,7 @@ function buildTools(workspace: string): AgentTool[] {
 }
 ```
 
-### [事件路由](#事件路由)
+### [18. 事件路由](#事件路由)
 
 ```typescript
 session.subscribe((event) => {

@@ -1,13 +1,11 @@
 ---
 sidebar_position: 9
-slug: /C++/面试题/秋招面经字节-抖音C-开发面经-超详细解读-建议收藏-
----
-
----
-title: 【秋招面经】字节--抖音C++开发面经，超详细解读，建议收藏~
+title: 秋招面经：字节（抖音）C++开发面经，超详细解读（建议收藏）
 date: '2025-08-31 02:05:24'
 updated: '2025-09-23 23:00:54'
 slug: /C++/面试题/秋招面经字节-抖音C-开发面经-超详细解读-建议收藏-
+---
+
 大家好，我是Q。
 
 前几天为大家总结了C++中的一些模块的知识点，包括：[智能指针](https://mp.weixin.qq.com/s?__biz=MzU5MTgxNzI5Nw==&mid=2247492279&idx=1&sn=34a78a965e3b90d468edd66a404f3dc8&scene=21#wechat_redirect)、[设计模式](https://mp.weixin.qq.com/s?__biz=MzU5MTgxNzI5Nw==&mid=2247492311&idx=1&sn=daff1e60799cfeaef3add27087f17702&scene=21#wechat_redirect)、[多线程编程](https://mp.weixin.qq.com/s?__biz=MzU5MTgxNzI5Nw==&mid=2247492334&idx=1&sn=de1ca3caacdb650401277d05cc2b2343&scene=21#wechat_redirect)、[STL剖析](https://mp.weixin.qq.com/s?__biz=MzU5MTgxNzI5Nw==&mid=2247492370&idx=1&sn=c5963be03c21cdb3ccd94ebdb860c011&scene=21#wechat_redirect)等，反馈相当不错！！

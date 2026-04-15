@@ -3,11 +3,6 @@ sidebar_position: 7
 slug: /C++/Boost深度剖析/Boost高性能并发无锁队列指南-boost-lockfree-queue-IT知识-六
 ---
 
----
-title: 'Boost高性能并发无锁队列指南:boost::lockfree::queue - IT知识 - 六'
-date: '2025-11-02 01:27:29'
-updated: '2025-11-02 01:27:29'
-slug: /C++/Boost深度剖析/Boost高性能并发无锁队列指南-boost-lockfree-queue-IT知识-六
 ### 1. 库的介绍
 boost::lockfree::queue是Boost C++库中lockfree模块的一部分，它提供了一个线程安全的无锁队列实现。无锁队列允许多个线程在不使用互斥锁的情况下并发地访问共享数据结构，从而避免了传统锁带来的线程阻塞和上下文切换开销。
 

@@ -1,13 +1,11 @@
 ---
 sidebar_position: 11
-slug: /C++/基础知识/C!C++——new和delete的实现原理---详解---delete的实现原理
----
-
----
-title: 'C/C++——new和delete的实现原理（详解）_delete[]的实现原理-CSDN博客'
+title: C/C++——new和delete的实现原理（详解）
 date: '2024-12-31 01:07:41'
 updated: '2024-12-31 01:10:03'
 slug: /C++/基础知识/C!C++——new和delete的实现原理---详解---delete的实现原理
+---
+
 ##### 0.0.1. C/C++内存管理
 + [1.C/C++内存分布](https://blog.csdn.net/qq_45657288/article/details/114699235#1CC_1)
 + [2.C语言中动态内存管理方式](https://blog.csdn.net/qq_45657288/article/details/114699235#2C_14)

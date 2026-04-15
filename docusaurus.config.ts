@@ -98,29 +98,46 @@ const config: Config = {
       style: 'dark',
       links: [
         {
-          title: '文档',
+          title: '内容',
           items: [
             {
-              label: '入门',
+              label: '文档首页',
               to: '/docs/intro',
             },
-          ],
-        },
-        {
-          title: '更多',
-          items: [
             {
               label: '博客',
               to: '/blog',
             },
+          ],
+        },
+        {
+          title: '精选专题',
+          items: [
+            {
+              label: 'C++ 专题',
+              to: '/docs/category/c',
+            },
+            {
+              label: 'Linux 网络编程',
+              to: '/docs/category/linux网络编程',
+            },
+          ],
+        },
+        {
+          title: '链接',
+          items: [
             {
               label: 'GitHub',
               href: 'https://github.com/xiaomengdashi/ko-blog',
             },
+            {
+              label: 'RSS',
+              to: '/blog/rss.xml',
+            },
           ],
         },
       ],
-      copyright: `Copyright © ${new Date().getFullYear()} ko-blog. Built with Docusaurus.`,
+      copyright: `© ${new Date().getFullYear()} ko-blog · 技术学习笔记`,
     },
     prism: {
       theme: prismThemes.github,

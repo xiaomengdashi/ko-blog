@@ -3,11 +3,6 @@ sidebar_position: 6
 slug: /C++/基础知识/一分钟学C-std中的move与forward
 ---
 
----
-title: 【一分钟学C++】std中的move与forward
-date: '2025-09-01 23:23:24'
-updated: '2026-03-04 01:21:11'
-slug: /C++/基础知识/一分钟学C-std中的move与forward
 当第一次了解到移动语义（move semantics）和完美转发（perfect forwarding）的时候，它们看起来非常直观：
 
 + 移动语义使编译器有可能用廉价的移动操作来代替昂贵的拷贝操作。正如拷贝构造函数和拷贝赋值操作符给了你控制拷贝语义的权力，移动构造函数和移动赋值操作符也给了你控制移动语义的权力。移动语义也允许创建只可移动（move-only）的类型，例如 std::unique_ptr，std::future 和 std::thread。

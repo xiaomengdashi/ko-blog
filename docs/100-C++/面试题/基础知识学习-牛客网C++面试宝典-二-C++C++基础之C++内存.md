@@ -1,27 +1,24 @@
 ---
 sidebar_position: 6
-slug: /C++/面试题/基础知识学习-牛客网C-面试宝典-二-C-C-基础之C-内存
+title: 基础知识学习：牛客网C++面试宝典（二）C/C++基础之C++内存
+slug: /C++/面试题/基础知识学习-牛客网C-面试宝典-二-C-基础之C-内存
 ---
 
----
-title: 基础知识学习---牛客网C++面试宝典（二）C/C++基础之C++内存-CSDN博客
-date: '2025-01-01 02:22:35'
-updated: '2025-01-01 02:22:35'
-slug: /C++/面试题/基础知识学习-牛客网C-面试宝典-二-C-C-基础之C-内存
+
+
 > 1、本栏用来记录社招找工作过程中的内容，包括基础知识学习以及面试问题的记录等，以便于后续个人回顾学习； 暂时只有2023年3月份，第一次社招找工作的过程；
 >
-> 2、个人经历： 研究生期间课题是[SLAM](https://so.csdn.net/so/search?q=SLAM&spm=1001.2101.3001.7020)在无人机上的应用，有接触SLAM、Linux、ROS、C/C++、DJI OSDK等；  
-3、参加工作后（2021-2023年）岗位是[嵌入式软件开发](https://so.csdn.net/so/search?q=%E5%B5%8C%E5%85%A5%E5%BC%8F%E8%BD%AF%E4%BB%B6%E5%BC%80%E5%8F%91&spm=1001.2101.3001.7020)，主要是服务器开发，Linux、C/C++、网络编程、docker容器、CMake、makefile、Shell脚本、JSON等。
+> 2、个人经历： 研究生期间课题是[SLAM](https://so.csdn.net/so/search?q=SLAM&spm=1001.2101.3001.7020)在无人机上的应用，有接触SLAM、Linux、ROS、C/C++、DJI OSDK等；
+>
+> 3、参加工作后（2021-2023年）岗位是[嵌入式软件开发](https://so.csdn.net/so/search?q=%E5%B5%8C%E5%85%A5%E5%BC%8F%E8%BD%AF%E4%BB%B6%E5%BC%80%E5%8F%91&spm=1001.2101.3001.7020)，主要是服务器开发，Linux、C/C++、网络编程、docker容器、CMake、makefile、Shell脚本、JSON等。
 >
 > 4、求职岗位是嵌入式软件开发、C/C++开发、自动驾驶岗位开发等。
->
 
-![](/img/posts/32df9089d70340c84f0926d21b5f1ff9.jpeg)
 
 > 此系列为在学习牛客网C++面试宝典过程中记录的笔记，本篇记录第一章C/C++基础部分的第二节：C++内存。
 >
 
-牛客网C++面试宝典链接：[https://www.nowcoder.com/issue/tutorial?tutorialId=93&uuid=8f38bec08f974de192275e5366d8ae24](https://www.nowcoder.com/issue/tutorial?tutorialId=93&uuid=8f38bec08f974de192275e5366d8ae24)  
+[牛客网C++面试宝典链接](https://www.nowcoder.com/issue/tutorial?tutorialId=93&uuid=8f38bec08f974de192275e5366d8ae24)  
 
 
 ##### 0.0.1. 文章目录

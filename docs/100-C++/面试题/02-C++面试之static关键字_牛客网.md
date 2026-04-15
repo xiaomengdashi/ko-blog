@@ -1,5 +1,6 @@
 ---
 sidebar_position: 1
+title: C++面试之static关键字（牛客网）
 slug: /C++/面试题/C-面试之static关键字_牛客网
 ---
 

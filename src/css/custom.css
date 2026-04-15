@@ -28,3 +28,46 @@
   --ifm-color-primary-lightest: #a3ceff;
   --docusaurus-highlighted-code-line-bg: rgba(0, 0, 0, 0.3);
 }
+
+/* 文档正文中的行内 code（如 `Child`）使用红色强调 */
+.theme-doc-markdown :not(pre) > code {
+  color: #e5534b;
+}
+
+/* Make inline code in list items stand out in red */
+.theme-doc-markdown li > code {
+  color: #d73a49;
+}
+
+[data-theme='dark'] .theme-doc-markdown li > code {
+  color: #ff7b72;
+}
+
+.footer {
+  --ifm-footer-padding-vertical: 2.75rem;
+}
+
+.footer__title {
+  font-size: 1rem;
+  margin-bottom: 0.75rem;
+}
+
+.footer__link-item {
+  opacity: 0.9;
+}
+
+.footer__link-item:hover {
+  opacity: 1;
+  text-decoration: none;
+}
+
+.footer__bottom {
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  margin-top: 1.4rem;
+  padding-top: 1rem;
+}
+
+.footer__copyright {
+  font-size: 0.92rem;
+  opacity: 0.92;
+}

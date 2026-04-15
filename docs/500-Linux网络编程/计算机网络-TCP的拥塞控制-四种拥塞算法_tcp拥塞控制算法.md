@@ -3,11 +3,6 @@ sidebar_position: 3
 slug: /Linux网络编程/计算机网络-TCP的拥塞控制-四种拥塞算法_tcp拥塞控制算法
 ---
 
----
-title: '计算机网络: TCP的拥塞控制，四种拥塞算法_tcp拥塞控制算法-CSDN博客'
-date: '2025-06-26 01:03:34'
-updated: '2025-06-26 02:24:40'
-slug: /Linux网络编程/计算机网络-TCP的拥塞控制-四种拥塞算法_tcp拥塞控制算法
 ##### 0.1. 目录
     - [一. 基本概念](https://blog.csdn.net/love_668/article/details/116913790#__2)
     - [二. TCP拥塞控制的四种拥塞算法](https://blog.csdn.net/love_668/article/details/116913790#_TCP_40)

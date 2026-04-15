@@ -1,13 +1,11 @@
 ---
 sidebar_position: 13
-slug: /C++/面试题/C-基础面试题-C-中const的作用-
----
-
----
-title: C++基础面试题 | C++中const的作用？
+title: C++基础面试题：C++中const的作用
 date: '2025-02-17 22:03:58'
 updated: '2025-02-17 22:03:59'
 slug: /C++/面试题/C-基础面试题-C-中const的作用-
+---
+
 ![](/img/posts/a462cbb90a858ac8b305fef3d6c370bd.png)
 
 #### 1. 回答重点

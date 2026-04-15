@@ -3,11 +3,7 @@ sidebar_position: 5
 slug: /C++/Boost深度剖析/boost-interprocess-进程间通信之消息队列的实现_boost-interproce
 ---
 
----
-title: 'boost::interprocess 进程间通信之消息队列的实现_boost interproce'
-date: '2025-05-15 23:55:44'
-updated: '2025-05-16 00:49:56'
-slug: /C++/Boost深度剖析/boost-interprocess-进程间通信之消息队列的实现_boost-interproce
+
 ### 1. boost::interprocess 进程间通信之消息队列的实现
 #### 1.1. 首先需要建立两个工程，processA, ProcessB
 #### 1.2. [](/img/posts/dae5255d27e3b9639698e479cd8d9396.png)
